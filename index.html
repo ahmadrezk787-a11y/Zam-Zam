@@ -2,7 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>عيادة زمزم - نظام الإدارة الشامل</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عيادة زمزم - نظام الإدارة المتكامل</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -10,100 +11,270 @@
         body { font-family: 'Cairo', sans-serif; background-color: #f4f7f6; }
         .tab-content { display: none; }
         .active-tab { display: block; }
-        .card { background: #ffffff; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .card { background: #ffffff; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body class="flex h-screen overflow-hidden">
 
-    <aside class="w-64 bg-slate-900 text-white p-6">
-        <h1 class="text-2xl font-bold mb-10 text-teal-400"><i class="fa-solid fa-tooth ml-2"></i> عيادة زمزم</h1>
-        <ul class="space-y-4">
-            <li><button onclick="showTab('add-patient')" class="w-full text-right p-3 hover:bg-teal-700 rounded transition"><i class="fa-solid fa-user-plus ml-2"></i> إضافة مريض</button></li>
-            <li><button onclick="showTab('patients-list')" class="w-full text-right p-3 hover:bg-teal-700 rounded transition"><i class="fa-solid fa-users ml-2"></i> سجل المرضى</button></li>
-        </ul>
+    <aside class="w-64 bg-slate-800 text-white p-6 shadow-xl flex flex-col justify-between">
+        <div>
+            <h1 class="text-2xl font-bold mb-10 text-teal-400 border-b border-slate-700 pb-4">
+                <i class="fa-solid fa-tooth ml-2"></i> عيادة زمزم
+            </h1>
+            <ul class="space-y-4">
+                <li>
+                    <button onclick="showTab('add-patient')" class="w-full text-right p-3 hover:bg-teal-700 rounded transition flex items-center">
+                        <i class="fa-solid fa-user-plus ml-3 text-teal-400"></i> تسجيل مريض جديد
+                    </button>
+                </li>
+                <li>
+                    <button onclick="showTab('patients-list')" class="w-full text-right p-3 hover:bg-teal-700 rounded transition flex items-center">
+                        <i class="fa-solid fa-users ml-3 text-teal-400"></i> سجل ملفات المرضى
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <div class="text-xs text-slate-500 text-center border-t border-slate-700 pt-4">
+            v1.0.0 — جاهز للتطوير
+        </div>
     </aside>
 
     <main class="flex-1 p-8 overflow-y-auto">
         
-        <div id="add-patient" class="tab-content active-tab max-w-3xl mx-auto card p-8">
-            <h2 class="text-2xl font-bold text-slate-800 mb-6">تسجيل مريض جديد</h2>
-            <form id="patientForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <input type="date" id="visitDate" class="p-3 rounded-lg border">
-                <select id="visitType" class="p-3 rounded-lg border"><option>جديد</option><option>متابعة</option></select>
-                <input type="text" id="patientName" placeholder="اسم المريض" class="col-span-2 p-3 rounded-lg border">
-                <select id="procedureType" class="col-span-2 p-3 rounded-lg border">
-                    <option>كشف</option><option>حشو عادي</option><option>حشو عصب</option><option>خلع عادي</option><option>خلع جراحي</option><option>تركيبات</option>
-                </select>
-                <textarea id="notes" placeholder="ملاحظات طبية..." class="col-span-2 p-3 rounded-lg border h-24"></textarea>
-                <button type="button" onclick="savePatient()" class="col-span-2 bg-teal-600 text-white p-4 rounded-lg font-bold">حفظ بيانات المريض</button>
+        <div id="add-patient" class="tab-content active-tab max-w-2xl mx-auto card p-8">
+            <h2 id="formTitle" class="text-2xl font-bold text-slate-700 mb-8 flex items-center">
+                <i class="fa-solid fa-user-plus ml-3 text-teal-600"></i> تسجيل مريض جديد
+            </h2>
+            <form id="patientForm" class="space-y-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-600 mb-2">نوع الزيارة</label>
+                        <select id="visitType" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-teal-500">
+                            <option>مريض جديد</option>
+                            <option>متابعة</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-600 mb-2">تاريخ الزيارة</label>
+                        <input type="date" id="visitDate" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-teal-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-600 mb-2">اسم المريض</label>
+                    <input type="text" id="patientName" placeholder="اكتب اسم المريض هنا" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-teal-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-600 mb-2">نوع الإجراء الطبي</label>
+                    <select id="procedureType" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-teal-500">
+                        <option disabled selected>اختر الإجراء...</option>
+                        <option>كشف</option>
+                        <option>تنظيف وتلميع أسنان</option>
+                        <option>حشو عادي</option>
+                        <option>حشو عصب</option>
+                        <option>خلع عادي</option>
+                        <option>خلع جراحي</option>
+                        <option>خلع ضرس عقل</option>
+                        <option>تركيبات / تيجان</option>
+                        <option>تبييض أسنان</option>
+                        <option>تقويم</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-600 mb-2">ملاحظات إضافية</label>
+                    <textarea id="notes" placeholder="اكتب أي ملاحظات طبية أو توصيات هنا..." class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-teal-500 h-24"></textarea>
+                </div>
+
+                <button type="button" id="submitBtn" onclick="handleSubmit()" class="w-full bg-teal-600 text-white py-4 rounded-xl font-bold hover:bg-teal-700 transition shadow-md">
+                    حفظ بيانات المريض
+                </button>
             </form>
         </div>
 
         <div id="patients-list" class="tab-content card p-8">
-            <input type="text" id="searchInput" onkeyup="searchPatient()" placeholder="🔍 ابحث عن مريض بالاسم..." class="w-full p-3 mb-6 rounded-lg border">
-            <table class="w-full text-right border-collapse">
-                <thead><tr class="border-b text-slate-500"><th class="p-3">التاريخ</th><th class="p-3">الاسم</th><th class="p-3">النوع</th><th class="p-3">الإجراء</th><th class="p-3">تحكم</th></tr></thead>
-                <tbody id="patientsTableBody"></tbody>
-            </table>
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <h2 class="text-xl font-bold text-slate-700 flex items-center">
+                    <i class="fa-solid fa-users ml-3 text-teal-600"></i> سجل ملفات المرضى
+                </h2>
+                <input type="text" id="searchInput" onkeyup="searchPatient()" placeholder="🔍 ابحث عن مريض بالاسم..." class="w-full md:w-72 p-3 rounded-xl border border-slate-200 outline-none focus:border-teal-500">
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse">
+                    <thead>
+                        <tr class="border-b text-slate-500 bg-slate-50 text-sm">
+                            <th class="p-4 font-semibold">التاريخ</th>
+                            <th class="p-4 font-semibold">اسم المريض</th>
+                            <th class="p-4 font-semibold">نوع الزيارة</th>
+                            <th class="p-4 font-semibold">الإجراء الطبي</th>
+                            <th class="p-4 font-semibold text-center">التحكم</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patientsTableBody" class="text-slate-700 divider-y">
+                        </tbody>
+                </table>
+            </div>
         </div>
     </main>
 
-    <div id="patientModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center">
-        <div class="bg-white p-8 rounded-2xl w-2/3 max-h-[80vh] overflow-y-auto">
-            <h2 id="modalName" class="text-2xl font-bold mb-4"></h2>
-            <label class="block mb-2">ملاحظات إضافية:</label>
-            <textarea class="w-full p-3 border rounded-lg mb-4 h-32"></textarea>
-            <label class="block mb-2">رفع صور أشعة:</label>
-            <input type="file" class="mb-6">
-            <div class="flex gap-4">
-                <button onclick="document.getElementById('patientModal').classList.add('hidden')" class="bg-gray-500 text-white px-6 py-2 rounded-lg">إغلاق</button>
-                <button class="bg-teal-600 text-white px-6 py-2 rounded-lg">حفظ التعديلات</button>
+    <div id="patientModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fade-in">
+        <div class="bg-white p-8 rounded-2xl w-full max-w-xl shadow-2xl mx-4">
+            <div class="flex justify-between items-center border-b pb-4 mb-6">
+                <h3 id="modalPatientName" class="text-2xl font-bold text-slate-800"></h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <span class="text-sm font-bold text-slate-500 block mb-1">الإجراء الطبي المسجل:</span>
+                    <p id="modalPatientProc" class="bg-slate-50 p-3 rounded-xl text-slate-700 border border-slate-100"></p>
+                </div>
+                <div>
+                    <label class="text-sm font-bold text-slate-500 block mb-1">الملف الطبي والملاحظات المستمرة:</label>
+                    <textarea id="modalNotes" class="w-full p-3 border border-slate-200 rounded-xl h-32 outline-none focus:border-teal-500"></textarea>
+                </div>
+                <div>
+                    <label class="text-sm font-bold text-slate-500 block mb-1">أشعة وصور الحالة (X-Rays):</label>
+                    <input type="file" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer">
+                </div>
+            </div>
+            <div class="flex gap-3 mt-8 justify-end border-t pt-4">
+                <button onclick="closeModal()" class="bg-slate-100 text-slate-600 px-5 py-2.5 rounded-xl font-medium hover:bg-slate-200 transition">إغلاق</button>
+                <button onclick="saveModalChanges()" class="bg-teal-600 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-teal-700 transition shadow-sm">حفظ التغييرات بالملف</button>
             </div>
         </div>
     </div>
 
     <script>
+        // مصفوفة تخزين المرضى المؤقتة
+        let patients = [];
+        let editIndex = null;
+        let currentModalIndex = null;
+
+        // تعيين تاريخ اليوم تلقائياً
         document.getElementById('visitDate').valueAsDate = new Date();
 
+        // التبديل بين الشاشات
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
             document.getElementById(tabId).classList.add('active-tab');
         }
 
-        function savePatient() {
-            const name = document.getElementById('patientName').value;
+        // معالجة الضغط على زر الحفظ (إضافة أو تحديث)
+        function handleSubmit() {
+            const name = document.getElementById('patientName').value.trim();
             const date = document.getElementById('visitDate').value;
             const type = document.getElementById('visitType').value;
             const proc = document.getElementById('procedureType').value;
-            const tbody = document.getElementById('patientsTableBody');
-            
-            tbody.innerHTML += `
-                <tr class="border-b hover:bg-slate-50">
-                    <td class="p-3">${date}</td>
-                    <td class="p-3 text-blue-600 font-bold cursor-pointer" onclick="openModal('${name}')">${name}</td>
-                    <td class="p-3">${type}</td>
-                    <td class="p-3">${proc}</td>
-                    <td class="p-3">
-                        <button class="text-blue-500 ml-2"><i class="fa-solid fa-pen"></i></button>
-                        <button class="text-red-500" onclick="this.parentElement.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                </tr>`;
-            alert("تم حفظ المريض بنجاح!");
+            const notes = document.getElementById('notes').value.trim();
+
+            if (!name || !proc) {
+                alert("من فضلك أدخل اسم المريض واختر الإجراء الطبي");
+                return;
+            }
+
+            if (editIndex === null) {
+                // إضافة مريض جديد
+                patients.push({ name, date, type, proc, notes });
+                alert("تم حفظ بيانات المريض بنجاح!");
+            } else {
+                // تحديث مريض حالي
+                patients[editIndex] = { name, date, type, proc, notes };
+                alert("تم تحديث بيانات المريض بنجاح!");
+                editIndex = null;
+                document.getElementById('submitBtn').innerText = "حفظ بيانات المريض";
+                document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-user-plus ml-3 text-teal-600"></i> تسجيل مريض جديد`;
+            }
+
             document.getElementById('patientForm').reset();
+            document.getElementById('visitDate').valueAsDate = new Date();
+            renderTable();
         }
 
-        function openModal(name) {
-            document.getElementById('modalName').innerText = "ملف المريض: " + name;
+        // رسم الجدول بناءً على البيانات الموجودة بالمصفوفة
+        function renderTable(dataArray = patients) {
+            const tbody = document.getElementById('patientsTableBody');
+            tbody.innerHTML = '';
+
+            dataArray.forEach((patient, index) => {
+                // إيجاد الفهرس الحقيقي في المصفوفة الأصلية
+                const realIndex = patients.indexOf(patient);
+                
+                tbody.innerHTML += `
+                    <tr class="border-b hover:bg-slate-50 transition">
+                        <td class="p-4 text-sm text-slate-500">${patient.date}</td>
+                        <td class="p-4 font-semibold text-teal-600 hover:underline cursor-pointer" onclick="openModal(${realIndex})">${patient.name}</td>
+                        <td class="p-4">
+                            <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${patient.type === 'مريض جديد' ? 'bg-blue-50 text-blue-600' : 'bg-amber-50 text-amber-600'}">
+                                ${patient.type}
+                            </span>
+                        </td>
+                        <td class="p-4 text-sm text-slate-600">${patient.proc}</td>
+                        <td class="p-4 text-center flex justify-center gap-3">
+                            <button onclick="editPatient(${realIndex})" class="text-blue-500 hover:text-blue-700 bg-blue-50 p-2 rounded-lg transition" title="تعديل الحقول الأساسية"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deletePatient(${realIndex})" class="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded-lg transition" title="حذف"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        // حذف مريض
+        function deletePatient(index) {
+            if (confirm("هل أنت متأكد من حذف هذا المريض نهائياً؟")) {
+                patients.splice(index, 1);
+                renderTable();
+            }
+        }
+
+        // تعديل مريض وإرجاعه للفورم
+        function editPatient(index) {
+            editIndex = index;
+            const p = patients[index];
+            
+            document.getElementById('patientName').value = p.name;
+            document.getElementById('visitDate').value = p.date;
+            document.getElementById('visitType').value = p.type;
+            document.getElementById('procedureType').value = p.proc;
+            document.getElementById('notes').value = p.notes;
+
+            document.getElementById('submitBtn').innerText = "تحديث بيانات المريض";
+            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen ml-3 text-blue-600"></i> تعديل بيانات: ${p.name}`;
+            
+            showTab('add-patient');
+        }
+
+        // البحث اللحظي بالاسم
+        function searchPatient() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = patients.filter(p => p.name.toLowerCase().includes(query));
+            renderTable(filtered);
+        }
+
+        // فتح صفحة المريض المنبثقة
+        function openModal(index) {
+            currentModalIndex = index;
+            const p = patients[index];
+            document.getElementById('modalPatientName').innerText = `ملف المريض: ${p.name}`;
+            document.getElementById('modalPatientProc').innerText = p.proc;
+            document.getElementById('modalNotes').value = p.notes;
             document.getElementById('patientModal').classList.remove('hidden');
         }
 
-        function searchPatient() {
-            let filter = document.getElementById('searchInput').value.toUpperCase();
-            let rows = document.querySelectorAll("#patientsTableBody tr");
-            rows.forEach(row => {
-                let name = row.cells[1].textContent.toUpperCase();
-                row.style.display = name.includes(filter) ? "" : "none";
-            });
+        // إغلاق الصفحة المنبثقة
+        function closeModal() {
+            document.getElementById('patientModal').classList.add('hidden');
+            currentModalIndex = null;
+        }
+
+        // حفظ التعديلات من داخل صفحة المريض المنبثقة
+        function saveModalChanges() {
+            if (currentModalIndex !== null) {
+                patients[currentModalIndex].notes = document.getElementById('modalNotes').value;
+                alert("تم تحديث الملف الطبي للمريض!");
+                closeModal();
+                renderTable();
+            }
         }
     </script>
 </body>
