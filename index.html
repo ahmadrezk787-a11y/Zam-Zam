@@ -10,8 +10,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap');
         
         :root {
-            /* ألوان هوية عيادة زمزم من اللوجو */
-            --brand-blue: #083b8d;
+            var(--brand-blue): #083b8d;
             --brand-green: #65b32e;
             --brand-blue-light: #f0f4f8;
             --brand-green-light: #f4fbf0;
@@ -53,19 +52,19 @@
             outline: none; background-color: #f8fafc; transition: all 0.2s; font-weight: 700;
         }
         .input-styled:focus {
-            border-color: var(--brand-blue); background-color: #fff; box-shadow: 0 0 0 4px rgba(8, 59, 141, 0.1);
+            border-color: #083b8d; background-color: #fff; box-shadow: 0 0 0 4px rgba(8, 59, 141, 0.1);
         }
 
         .nav-item {
             display: flex; align-items: center; width: 100%; padding: 0.875rem 1rem;
             border-radius: 12px; font-weight: 800; transition: all 0.2s; color: #64748b;
         }
-        .nav-item:hover { background-color: var(--brand-blue-light); color: var(--brand-blue); }
+        .nav-item:hover { background-color: var(--brand-blue-light); color: #083b8d; }
         .nav-item.active {
-            background-color: var(--brand-blue); color: #fff; box-shadow: 0 4px 12px rgba(8, 59, 141, 0.2);
+            background-color: #083b8d; color: #fff; box-shadow: 0 4px 12px rgba(8, 59, 141, 0.2);
         }
         .nav-item.active i { color: #fff !important; }
-        .nav-item i { width: 24px; color: var(--brand-blue); transition: color 0.2s; }
+        .nav-item i { width: 24px; color: #083b8d; transition: color 0.2s; }
     </style>
 </head>
 <body class="flex h-screen overflow-hidden">
@@ -80,12 +79,12 @@
             <div class="text-center mb-10 border-b border-slate-100 pb-6">
                 <div class="inline-block">
                     <h1 class="text-4xl font-black tracking-tight flex items-center justify-center">
-                        <span style="color: var(--brand-blue);">ZAM</span>
-                        <span style="color: var(--brand-green);">ZAM</span>
+                        <span style="color: #083b8d;">ZAM</span>
+                        <span style="color: #65b32e;">ZAM</span>
                     </h1>
                     <div class="flex items-center justify-center gap-2 mt-1">
                         <div class="h-px bg-slate-300 flex-1"></div>
-                        <span class="text-xs tracking-[0.2em] font-semibold" style="color: var(--brand-blue);">CLINIC</span>
+                        <span class="text-xs tracking-[0.2em] font-semibold" style="color: #083b8d;">CLINIC</span>
                         <div class="h-px bg-slate-300 flex-1"></div>
                     </div>
                 </div>
@@ -104,12 +103,12 @@
 
     <main class="flex-1 p-4 md:p-8 overflow-y-auto w-full">
         
-        <div class="md:hidden flex flex-col mb-6 p-5 rounded-2xl shadow-lg gap-4" style="background: linear-gradient(135deg, var(--brand-blue), #1e3a8a);">
+        <div class="md:hidden flex flex-col mb-6 p-5 rounded-2xl shadow-lg gap-4" style="background: linear-gradient(135deg, #083b8d, #1e3a8a);">
             <div class="flex justify-between items-center w-full">
-                <h1 class="text-3xl font-black tracking-tight"><span class="text-white">ZAM</span><span style="color: var(--brand-green);">ZAM</span></h1>
+                <h1 class="text-3xl font-black tracking-tight"><span class="text-white">ZAM</span><span style="color: #65b32e;">ZAM</span></h1>
             </div>
             <div class="flex gap-2 w-full justify-between bg-white/10 p-1.5 rounded-xl">
-                <button onclick="showTab('add-patient', null)" class="flex-1 text-xs bg-white py-2.5 rounded-lg font-bold shadow-sm transition text-center" style="color: var(--brand-blue);">الزيارة</button>
+                <button onclick="showTab('add-patient', null)" class="flex-1 text-xs bg-white py-2.5 rounded-lg font-bold shadow-sm transition text-center" style="color: #083b8d;">الزيارة</button>
                 <button onclick="showTab('patients-list', null)" class="flex-1 text-xs text-white hover:bg-white/20 py-2.5 rounded-lg font-bold transition text-center">الملفات</button>
                 <button onclick="showTab('accounts-section', null)" class="flex-1 text-xs text-white hover:bg-white/20 py-2.5 rounded-lg font-bold transition text-center">الحسابات</button>
             </div>
@@ -117,7 +116,7 @@
 
         <div id="add-patient" class="tab-section fade-in max-w-4xl mx-auto premium-card p-6 md:p-10">
             <div class="flex items-center gap-4 mb-8 border-b border-slate-100 pb-5">
-                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl" style="background-color: var(--brand-blue-light); color: var(--brand-blue);">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl" style="background-color: var(--brand-blue-light); color: #083b8d;">
                     <i class="fa-solid fa-file-medical"></i>
                 </div>
                 <div>
@@ -130,7 +129,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">نوع الزيارة</label>
-                        <select id="visitType" onchange="handleNameInput()" class="input-styled cursor-pointer text-[var(--brand-blue)]">
+                        <select id="visitType" onchange="handleNameInput()" class="input-styled cursor-pointer" style="color: #083b8d;">
                             <option value="مريض جديد">مريض جديد</option>
                             <option value="متابعة">متابعة (مريض مسجل)</option>
                         </select>
@@ -152,7 +151,7 @@
                     </div>
                     <div class="relative">
                         <i class="fa-solid fa-user absolute right-4 top-4 text-slate-400"></i>
-                        <input type="text" id="patientName" oninput="handleNameInput()" autocomplete="off" placeholder="ابحث باسم المريض أو أضف اسم جديد..." class="input-styled pr-12 text-lg !font-black" style="color: var(--brand-blue);">
+                        <input type="text" id="patientName" oninput="handleNameInput()" autocomplete="off" placeholder="ابحث باسم المريض أو أضف اسم جديد..." class="input-styled pr-12 text-lg !font-black" style="color: #083b8d;">
                     </div>
                     <div id="suggestionsDropdown" class="hidden absolute right-0 left-0 top-full mt-2 bg-white border border-slate-200 rounded-xl shadow-xl max-h-64 overflow-y-auto z-50"></div>
                 </div>
@@ -177,16 +176,16 @@
 
                 <div class="grid grid-cols-2 gap-5 p-6 rounded-2xl border-2" style="background-color: var(--brand-blue-light); border-color: rgba(8, 59, 141, 0.1);">
                     <div>
-                        <label class="block text-sm font-black mb-2" style="color: var(--brand-blue);">إجمالي التكلفة (ج.م)</label>
+                        <label class="block text-sm font-black mb-2" style="color: #083b8d;">إجمالي التكلفة (ج.م)</label>
                         <input type="number" id="totalCost" placeholder="0" oninput="calculateFormDebt()" class="input-styled !text-xl !font-black !text-slate-800">
                     </div>
                     <div>
-                        <label class="block text-sm font-black mb-2" style="color: var(--brand-green);">المدفوع كاش اليوم (ج.م)</label>
-                        <input type="number" id="paidAmount" placeholder="0" oninput="calculateFormDebt()" class="input-styled !text-xl !font-black bg-white shadow-sm border-emerald-200" style="color: var(--brand-green);">
+                        <label class="block text-sm font-black mb-2" style="color: #65b32e;">المدفوع كاش اليوم (ج.م)</label>
+                        <input type="number" id="paidAmount" placeholder="0" oninput="calculateFormDebt()" class="input-styled !text-xl !font-black bg-white shadow-sm border-emerald-200" style="color: #65b32e;">
                     </div>
-                    <div class="col-span-2 text-left pt-4 border-t border-dashed mt-2 flex justify-between items-center" style="border-color: var(--brand-blue);">
-                        <span class="text-sm font-bold" style="color: var(--brand-blue);">متبقي من حساب الجلسة الحالية:</span>
-                        <span id="formDebtBadge" class="text-xl font-black text-rose-500 bg-white px-4 py-1.5 rounded-lg shadow-sm border border-rose-100">0 ج.م</span>
+                    <div class="col-span-2 text-left pt-4 border-t border-dashed mt-2 flex justify-between items-center" style="border-color: #083b8d;">
+                        <span class="text-sm font-bold" style="color: #083b8d;">حساب الجلسة الحالية:</span>
+                        <span id="formDebtBadge" class="text-xl font-black text-slate-500 bg-white px-4 py-1.5 rounded-lg shadow-sm border border-slate-100">0 ج.م</span>
                     </div>
                 </div>
 
@@ -195,7 +194,7 @@
                     <textarea id="notes" placeholder="اكتب الأدوية، التعليمات، أو الملاحظات لحالة المريض اليوم..." class="input-styled h-32 leading-relaxed resize-none"></textarea>
                 </div>
 
-                <button type="button" id="submitBtn" onclick="handleSubmit()" class="w-full text-white py-4 rounded-xl font-bold text-lg transition shadow-lg hover:shadow-xl transform hover:-translate-y-1 duration-200 flex justify-center items-center gap-2" style="background: linear-gradient(135deg, var(--brand-blue), #1e3a8a);">
+                <button type="button" id="submitBtn" onclick="handleSubmit()" class="w-full text-white py-4 rounded-xl font-bold text-lg transition shadow-lg hover:shadow-xl transform hover:-translate-y-1 duration-200 flex justify-center items-center gap-2" style="background: linear-gradient(135deg, #083b8d, #1e3a8a);">
                     <i class="fa-solid fa-check-circle text-xl"></i> <span>حفظ بيانات الزيارة وتحديث الملف</span>
                 </button>
             </form>
@@ -226,7 +225,7 @@
                             <th>كل الإجراءات</th>
                             <th>الإجمالي</th>
                             <th>المدفوع</th>
-                            <th>المتبقي (الديون)</th>
+                            <th>الديون (الكلي)</th>
                             <th class="text-center">إدارة</th>
                         </tr>
                     </thead>
@@ -236,14 +235,13 @@
         </div>
 
         <div id="accounts-section" class="tab-section hidden fade-in space-y-8 max-w-6xl mx-auto">
-            
             <div class="text-center mb-8">
                 <h2 class="text-3xl font-black text-slate-800 flex justify-center items-center gap-3">
-                    <i class="fa-solid fa-sack-dollar" style="color: var(--brand-green);"></i> الحسابات والملخص المالي العام
+                    <i class="fa-solid fa-sack-dollar" style="color: #65b32e;"></i> الحسابات والملخص المالي العام
                 </h2>
             </div>
 
-            <div class="premium-card p-6 border-t-4" style="border-top-color: var(--brand-green);">
+            <div class="premium-card p-6 border-t-4" style="border-top-color: #65b32e;">
                 <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
                     <h3 class="font-black text-slate-800 text-xl">متحصلات اليوم الفورية</h3>
                     <input type="date" id="dailyAccountDate" onchange="renderAllAccounts()" class="p-2 rounded-lg border border-slate-200 bg-slate-50 text-sm font-bold text-slate-700 outline-none">
@@ -260,23 +258,23 @@
                     
                     <div class="p-5 rounded-2xl border flex justify-between items-center" style="background-color: var(--brand-green-light); border-color: rgba(101, 179, 46, 0.2);">
                         <div>
-                            <p class="text-sm font-bold mb-1" style="color: var(--brand-green);">الكاش المحصل بالخزينة</p>
-                            <h4 class="text-3xl font-black" style="color: var(--brand-green);" id="dailyCashCollected">0 ج</h4>
+                            <p class="text-sm font-bold mb-1" style="color: #65b32e;">الكاش المحصل بالخزينة (يشمل السداد)</p>
+                            <h4 class="text-3xl font-black" style="color: #65b32e;" id="dailyCashCollected">0 ج</h4>
                         </div>
-                        <i class="fa-solid fa-money-bills text-4xl" style="color: var(--brand-green); opacity: 0.2;"></i>
+                        <i class="fa-solid fa-money-bills text-4xl" style="color: #65b32e; opacity: 0.2;"></i>
                     </div>
 
                     <div class="p-5 rounded-2xl border border-slate-100 bg-slate-50 shadow-sm flex justify-between items-center">
                         <div>
                             <p class="text-sm font-bold text-slate-600 mb-1">حصة الدكتور من الكاش (60%)</p>
-                            <h4 class="text-3xl font-black text-[var(--brand-blue)]" id="dailyDocCashShare">0 ج</h4>
+                            <h4 class="text-3xl font-black text-[var(--brand-blue)]" id="dailyDocCashShare" style="color: #083b8d;">0 ج</h4>
                         </div>
-                        <i class="fa-solid fa-user-doctor text-3xl text-[var(--brand-blue)] opacity-20"></i>
+                        <i class="fa-solid fa-user-doctor text-3xl opacity-20" style="color: #083b8d;"></i>
                     </div>
 
                     <div class="p-5 rounded-2xl border border-rose-100 bg-rose-50 shadow-sm flex justify-between items-center">
                         <div>
-                            <p class="text-sm font-bold text-rose-600 mb-1">المتبقي ديون (اليوم الجديد)</p>
+                            <p class="text-sm font-bold text-rose-600 mb-1">ديون جديدة متولدة هذا اليوم</p>
                             <h4 class="text-3xl font-black text-rose-600" id="dailyDebtGenerated">0 ج</h4>
                         </div>
                         <i class="fa-solid fa-hourglass-half text-3xl text-rose-600 opacity-20"></i>
@@ -284,10 +282,10 @@
                 </div>
             </div>
 
-            <div class="premium-card p-6 border-t-4" style="border-top-color: var(--brand-blue);">
+            <div class="premium-card p-6 border-t-4" style="border-top-color: #083b8d;">
                 <div class="flex justify-between items-center mb-5 border-b border-slate-100 pb-4">
-                    <h3 class="font-black text-slate-800 text-xl">المرضى، المدفوعات والديون</h3>
-                    <input type="text" id="accSearchInput" onkeyup="renderAccountsTables()" placeholder="بحث سريع عن مريض..." class="input-styled w-64 !py-2 !rounded-full bg-slate-50 text-sm">
+                    <h3 class="font-black text-slate-800 text-xl">المرضى والمدفوعات (يومي/شهري)</h3>
+                    <input type="text" id="accSearchInput" onkeyup="renderAccountsTables()" placeholder="بحث سريع..." class="input-styled w-64 !py-2 !rounded-full bg-slate-50 text-sm">
                 </div>
                 
                 <div class="overflow-x-auto rounded-xl border border-slate-200">
@@ -299,16 +297,16 @@
                                 <th>الإجراء</th>
                                 <th>الإجمالي</th>
                                 <th>المدفوع</th>
-                                <th>المتبقي</th>
+                                <th>تأثير الزيارة</th>
                             </tr>
                         </thead>
                         <tbody id="accTableBody"></tbody>
                         <tfoot>
                             <tr>
                                 <td colspan="3">الإجماليات الظاهرة:</td>
-                                <td id="accTableTotal" class="text-[var(--brand-blue)]">0 ج</td>
-                                <td id="accTablePaid" style="color: var(--brand-green);">0 ج</td>
-                                <td id="accTableDebt" class="text-rose-500">0 ج</td>
+                                <td id="accTableTotal" style="color: #083b8d;">0 ج</td>
+                                <td id="accTablePaid" style="color: #65b32e;">0 ج</td>
+                                <td id="accTableDebt" class="text-slate-600">0 ج (تغير صافي الديون)</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -327,7 +325,7 @@
                         <tbody id="accDebtTableBody"></tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="2">إجمالي المتأخرات القائمة على المرضى:</td>
+                                <td colspan="2">إجمالي المتأخرات القائمة على جميع المرضى:</td>
                                 <td id="accTotalDebts" class="text-rose-600 text-lg">0 ج</td>
                                 <td id="accTotalDocDebts" class="text-amber-600 text-lg">0 ج</td>
                             </tr>
@@ -348,22 +346,21 @@
                         <h4 class="text-3xl font-black text-slate-800" id="monthlyTotalVal">0 ج</h4>
                     </div>
                     <div class="p-5 rounded-2xl text-center shadow-sm" style="background-color: var(--brand-green-light); border: 1px solid rgba(101, 179, 46, 0.2);">
-                        <p class="text-sm font-bold mb-2" style="color: var(--brand-green);">إجمالي الكاش المحصل</p>
-                        <h4 class="text-3xl font-black" style="color: var(--brand-green);" id="monthlyCashCollected">0 ج</h4>
+                        <p class="text-sm font-bold mb-2" style="color: #65b32e;">إجمالي الكاش المحصل</p>
+                        <h4 class="text-3xl font-black" style="color: #65b32e;" id="monthlyCashCollected">0 ج</h4>
                     </div>
                     <div class="p-5 rounded-2xl border border-rose-200 bg-rose-50 text-center shadow-sm">
-                        <p class="text-sm font-bold text-rose-600 mb-2">ديون متولدة هذا الشهر</p>
+                        <p class="text-sm font-bold text-rose-600 mb-2">ديون جديدة متولدة هذا الشهر</p>
                         <h4 class="text-3xl font-black text-rose-600" id="monthlyDebtGenerated">0 ج</h4>
                     </div>
                     <div class="md:col-span-3 mt-2">
-                        <div class="p-5 rounded-2xl text-center shadow-sm text-white" style="background: linear-gradient(135deg, var(--brand-blue), #1e3a8a);">
+                        <div class="p-5 rounded-2xl text-center shadow-sm text-white" style="background: linear-gradient(135deg, #083b8d, #1e3a8a);">
                             <p class="text-sm font-bold text-blue-100 mb-2">صافي مستحقات الطبيب (الكاش × 60%)</p>
                             <h4 class="text-4xl font-black" id="monthlyDocCashShare">0 ج</h4>
                         </div>
                     </div>
                 </div>
             </div>
-            
             <div class="h-10"></div>
         </div>
     </main>
@@ -371,28 +368,26 @@
     <div id="patientModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[60] p-4 transition-opacity">
         <div class="bg-white p-6 md:p-8 rounded-3xl w-full max-w-2xl shadow-2xl border border-slate-100 animate-[fadeIn_0.3s_ease-out]">
             <div class="flex justify-between items-center border-b border-slate-100 pb-5 mb-6">
-                <h3 id="modalPatientName" class="text-2xl font-black flex items-center gap-3" style="color: var(--brand-blue);"></h3>
+                <h3 id="modalPatientName" class="text-2xl font-black flex items-center gap-3" style="color: #083b8d;"></h3>
                 <button onclick="closeModal()" class="text-slate-400 hover:text-rose-500 text-2xl transition bg-slate-50 hover:bg-rose-50 w-10 h-10 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            
             <div class="mb-6 bg-slate-50 p-4 rounded-xl border border-slate-100 inline-flex items-center gap-2">
                 <span class="text-slate-500 text-sm font-bold">عمر المريض:</span> 
                 <strong id="modalAge" class="text-slate-800 text-lg"></strong>
             </div>
-
             <div class="space-y-6">
                 <div>
-                    <span class="text-sm font-bold flex items-center gap-2 mb-3" style="color: var(--brand-blue);"><i class="fa-solid fa-list-check"></i> السجل الطبي والمالي:</span>
+                    <span class="text-sm font-bold flex items-center gap-2 mb-3" style="color: #083b8d;"><i class="fa-solid fa-list-check"></i> السجل الطبي والمالي:</span>
                     <div id="modalPatientProc" class="bg-slate-50 p-2 rounded-2xl max-h-56 overflow-y-auto pr-2 border border-slate-200"></div>
                 </div>
                 <div>
-                    <label class="text-sm font-bold flex items-center gap-2 mb-3" style="color: var(--brand-blue);"><i class="fa-solid fa-file-prescription"></i> الروشتة والملاحظات:</label>
+                    <label class="text-sm font-bold flex items-center gap-2 mb-3" style="color: #083b8d;"><i class="fa-solid fa-file-prescription"></i> الروشتة والملاحظات:</label>
                     <textarea id="modalNotes" class="input-styled h-32 leading-relaxed resize-none"></textarea>
                 </div>
             </div>
             <div class="flex gap-3 mt-8 justify-end border-t border-slate-100 pt-6">
                 <button onclick="closeModal()" class="bg-white border-2 border-slate-200 text-slate-600 px-8 py-3 rounded-xl font-bold hover:bg-slate-50 transition">إلغاء</button>
-                <button onclick="saveModalChanges()" class="text-white px-8 py-3 rounded-xl font-bold transition shadow-md hover:shadow-lg flex items-center gap-2" style="background-color: var(--brand-blue);">
+                <button onclick="saveModalChanges()" class="text-white px-8 py-3 rounded-xl font-bold transition shadow-md hover:shadow-lg flex items-center gap-2" style="background-color: #083b8d;">
                     <i class="fa-solid fa-check"></i> حفظ الملاحظات
                 </button>
             </div>
@@ -416,10 +411,9 @@
 
         function showTab(tabId, btnElement) {
             document.querySelectorAll('.tab-section').forEach(sec => { sec.classList.add('hidden'); sec.classList.remove('fade-in'); });
-            const activeTab = document.getElementById(tabId);
-            activeTab.classList.remove('hidden');
-            void activeTab.offsetWidth;
-            activeTab.classList.add('fade-in');
+            document.getElementById(tabId).classList.remove('hidden');
+            void document.getElementById(tabId).offsetWidth;
+            document.getElementById(tabId).classList.add('fade-in');
             
             if (btnElement && btnElement.classList.contains('nav-item')) {
                 document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
@@ -446,10 +440,23 @@
             setTimeout(() => { toast.classList.remove('opacity-100', 'translate-y-0'); toast.classList.add('opacity-0', '-translate-y-4'); setTimeout(() => { toast.classList.add('hidden'); }, 300); }, 3000);
         }
 
+        // التعديل 1: معالجة سداد الديون بالشاشة الرئيسية
         function calculateFormDebt() {
             const total = parseFloat(document.getElementById('totalCost').value) || 0;
             const paid = parseFloat(document.getElementById('paidAmount').value) || 0;
-            document.getElementById('formDebtBadge').innerText = `${total - paid} ج.م`;
+            const diff = total - paid;
+            const badge = document.getElementById('formDebtBadge');
+            
+            if (diff > 0) {
+                badge.innerHTML = `${diff} ج.م <span class="text-xs">متبقي آجل</span>`;
+                badge.className = "text-lg font-black text-rose-500 bg-white px-4 py-1.5 rounded-lg shadow-sm border border-rose-100";
+            } else if (diff < 0) {
+                badge.innerHTML = `${Math.abs(diff)} ج.م <span class="text-xs">سداد مديونية</span>`;
+                badge.className = "text-lg font-black text-[#65b32e] bg-[#f4fbf0] px-4 py-1.5 rounded-lg shadow-sm border border-[#65b32e]";
+            } else {
+                badge.innerHTML = `0 ج.م`;
+                badge.className = "text-lg font-black text-slate-500 bg-slate-50 px-4 py-1.5 rounded-lg shadow-sm border border-slate-200";
+            }
         }
 
         function handleNameInput() {
@@ -472,12 +479,12 @@
             matches.forEach(p => {
                 const div = document.createElement('div');
                 div.className = "p-4 hover:bg-slate-100 cursor-pointer border-b border-slate-100 flex justify-between items-center";
-                div.innerHTML = `<span class="font-black text-[var(--brand-blue)]"><i class="fa-solid fa-user ml-2"></i>${p.name}</span> <span class="text-xs font-bold ${p.debt>0?'bg-rose-100 text-rose-600':'bg-[#f4fbf0] text-[#65b32e]'} px-3 py-1 rounded-lg">ديون: ${p.debt} ج</span>`;
+                div.innerHTML = `<span class="font-black" style="color: #083b8d;"><i class="fa-solid fa-user ml-2"></i>${p.name}</span> <span class="text-xs font-bold ${p.debt>0?'bg-rose-100 text-rose-600':'bg-[#f4fbf0] text-[#65b32e]'} px-3 py-1 rounded-lg">الديون: ${p.debt} ج</span>`;
                 div.onclick = () => {
                     document.getElementById('patientName').value = p.name;
                     document.getElementById('patientAge').value = p.age || '';
                     drop.classList.add('hidden');
-                    badge.innerText = `تحذير: مديونية سابقة ${p.debt} ج.م`; badge.classList.remove('hidden');
+                    badge.innerText = `تنبيه مديونية سابقة: ${p.debt} ج.م`; badge.classList.remove('hidden');
                 };
                 drop.appendChild(div);
             });
@@ -517,7 +524,7 @@
                         patients[idx].proc += ` | ${date}: ${proc}`; 
                         patients[idx].totalCost += totalCost;
                         patients[idx].paidAmount += paidAmount;
-                        patients[idx].debt = patients[idx].totalCost - patients[idx].paidAmount;
+                        patients[idx].debt = patients[idx].totalCost - patients[idx].paidAmount; // الديون الكلية تقل هنا تلقائياً
                         if (notes) patients[idx].notes += `\n[${date}]: ${notes}`;
                         patients[idx].visits.push(vObj);
                         triggerAlert(`تم إضافة المتابعة لـ ${name}!`);
@@ -541,6 +548,7 @@
             document.getElementById('patientForm').reset();
             document.getElementById('visitDate').valueAsDate = new Date();
             document.getElementById('formDebtBadge').innerText = "0 ج.م";
+            document.getElementById('formDebtBadge').className = "text-xl font-black text-slate-500 bg-white px-4 py-1.5 rounded-lg shadow-sm border border-slate-100";
             document.getElementById('formPreviousDebt').classList.add('hidden');
             saveAndSyncSystemData();
         }
@@ -552,15 +560,15 @@
                 tbody.innerHTML += `
                     <tr>
                         <td class="text-slate-500 font-bold">${p.date}</td>
-                        <td class="font-black text-[var(--brand-blue)] hover:opacity-80 cursor-pointer transition" onclick="openModal(${i})">${p.name}</td>
+                        <td class="font-black hover:opacity-80 cursor-pointer transition" style="color: #083b8d;" onclick="openModal(${i})">${p.name}</td>
                         <td class="font-bold">${p.age || '-'}</td>
-                        <td><span class="px-3 py-1 rounded-lg font-bold text-xs ${p.type === 'مريض جديد'?'bg-[var(--brand-blue-light)] text-[var(--brand-blue)]':'bg-slate-100 text-slate-600'}">${p.type}</span></td>
+                        <td><span class="px-3 py-1 rounded-lg font-bold text-xs ${p.type === 'مريض جديد'?'bg-[#f0f4f8] text-[#083b8d]':'bg-slate-100 text-slate-600'}">${p.type}</span></td>
                         <td class="font-bold truncate max-w-[150px]" title="${p.proc}">${p.proc}</td>
                         <td class="font-black text-slate-800">${p.totalCost} ج</td>
-                        <td class="font-black" style="color: var(--brand-green);">${p.paidAmount} ج</td>
-                        <td class="font-black ${p.debt > 0 ? 'text-rose-600 bg-rose-50/50 rounded-lg' : 'text-slate-400'}">${p.debt} ج</td>
+                        <td class="font-black" style="color: #65b32e;">${p.paidAmount} ج</td>
+                        <td class="font-black ${p.debt > 0 ? 'text-rose-500 bg-rose-50/50 rounded-lg' : 'text-slate-400'}">${p.debt} ج</td>
                         <td class="flex justify-center gap-2">
-                            <button onclick="editPatient(${i})" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-[var(--brand-blue)]"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="editPatient(${i})" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-blue-600"><i class="fa-solid fa-pen"></i></button>
                             <button onclick="deletePatient(${i})" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-rose-500"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>`;
@@ -592,15 +600,15 @@
 
         function openModal(i) {
             currentModalIndex = i; const p = patients[i];
-            document.getElementById('modalPatientName').innerHTML = `<div class="w-10 h-10 rounded-full bg-[var(--brand-blue-light)] flex items-center justify-center text-lg"><i class="fa-solid fa-folder-open"></i></div> <span>${p.name}</span>`;
+            document.getElementById('modalPatientName').innerHTML = `<div class="w-10 h-10 rounded-full bg-[#f0f4f8] flex items-center justify-center text-lg"><i class="fa-solid fa-folder-open"></i></div> <span>${p.name}</span>`;
             document.getElementById('modalAge').innerText = p.age ? p.age + ' سنة' : '-';
             
             let html = '<div class="space-y-3">';
             if(p.visits && p.visits.length > 0) {
                 p.visits.forEach((v, idx) => {
                     html += `<div class="bg-white p-4 rounded-xl border border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-3 shadow-sm">
-                        <div class="flex items-center gap-3"><span class="text-[var(--brand-blue)] font-black bg-[var(--brand-blue-light)] px-3 py-1 rounded-lg text-xs">${v.date} (${idx===0?'أولى':'متابعة'})</span> <span class="font-bold text-slate-700">${v.proc}</span></div>
-                        <div class="text-xs flex gap-4 bg-slate-50 px-4 py-2 rounded-lg"><span class="font-bold">التكلفة: <strong class="text-slate-800 text-sm mx-1">${v.totalCost}</strong> ج</span> | <span class="font-bold">المدفوع: <strong class="text-sm mx-1" style="color: var(--brand-green);">${v.paidAmount}</strong> ج</span></div>
+                        <div class="flex items-center gap-3"><span class="text-white font-black bg-[#083b8d] px-3 py-1 rounded-lg text-xs">${v.date} (${idx===0?'أولى':'متابعة'})</span> <span class="font-bold text-slate-700">${v.proc}</span></div>
+                        <div class="text-xs flex gap-4 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100"><span class="font-bold">التكلفة: <strong class="text-slate-800 text-sm mx-1">${v.totalCost}</strong> ج</span> | <span class="font-bold">المدفوع: <strong class="text-sm mx-1" style="color: #65b32e;">${v.paidAmount}</strong> ج</span></div>
                     </div>`;
                 });
             } else html += '<p class="text-slate-400 text-sm font-bold text-center py-4">لا يوجد تفاصيل للزيارات.</p>';
@@ -616,14 +624,27 @@
             if (currentModalIndex !== null) { patients[currentModalIndex].notes = document.getElementById('modalNotes').value; triggerAlert("تم حفظ الملاحظات!"); closeModal(); saveAndSyncSystemData(); }
         }
 
-        // الحسابات
+        // التعديل 2: معالجة ديون اليوم والشهر (منع ظهور الديون بالسالب)
         function renderAllAccounts() {
             // يومي
             const dDate = document.getElementById('dailyAccountDate').value;
-            let dTot = 0, dCash = 0;
-            patients.forEach(p => { if (p.visits) p.visits.forEach(v => { if (v.date === dDate) { dTot += v.totalCost; dCash += v.paidAmount; } }); });
-            document.getElementById('dailyTotalVal').innerText = dTot + ' ج'; document.getElementById('dailyCashCollected').innerText = dCash + ' ج';
-            document.getElementById('dailyDocCashShare').innerText = (dCash * 0.60).toFixed(1) + ' ج'; document.getElementById('dailyDebtGenerated').innerText = (dTot - dCash) + ' ج';
+            let dTot = 0, dCash = 0, dNewDebt = 0;
+            patients.forEach(p => { 
+                if (p.visits) p.visits.forEach(v => { 
+                    if (v.date === dDate) { 
+                        dTot += v.totalCost; 
+                        dCash += v.paidAmount; 
+                        if (v.totalCost > v.paidAmount) {
+                            dNewDebt += (v.totalCost - v.paidAmount); // يحسب ديون جديدة فقط لو التكلفة أكبر من الكاش
+                        }
+                    } 
+                }); 
+            });
+            
+            document.getElementById('dailyTotalVal').innerText = dTot + ' ج'; 
+            document.getElementById('dailyCashCollected').innerText = dCash + ' ج';
+            document.getElementById('dailyDocCashShare').innerText = (dCash * 0.60).toFixed(1) + ' ج'; 
+            document.getElementById('dailyDebtGenerated').innerText = dNewDebt + ' ج';
 
             // جداول
             const q = document.getElementById('accSearchInput').value.toLowerCase();
@@ -637,26 +658,52 @@
                     if(p.debt > 0) {
                         sgDebt += p.debt; sgDocDebt += p.debt * 0.60;
                         const ld = p.visits && p.visits.length > 0 ? p.visits[p.visits.length - 1].date : p.date;
-                        tb2.innerHTML += `<tr><td class="font-bold text-slate-500">${ld}</td><td class="font-black text-[var(--brand-blue)]">${p.name}</td><td class="font-black text-rose-500">${p.debt} ج</td><td class="font-black text-amber-600">${(p.debt*0.60).toFixed(1)} ج</td></tr>`;
+                        tb2.innerHTML += `<tr><td class="font-bold text-slate-500">${ld}</td><td class="font-black" style="color: #083b8d;">${p.name}</td><td class="font-black text-rose-500">${p.debt} ج</td><td class="font-black text-amber-600">${(p.debt*0.60).toFixed(1)} ج</td></tr>`;
                     }
                 }
             });
 
             allV.sort((a, b) => new Date(b.date) - new Date(a.date));
             allV.forEach(v => {
-                const rem = v.totalCost - v.paidAmount; sTot += v.totalCost; sPaid += v.paidAmount; sDebt += rem;
-                tb1.innerHTML += `<tr><td class="font-bold text-slate-500">${v.date}</td><td class="font-black text-[var(--brand-blue)]">${v.name}</td><td class="font-bold truncate max-w-[150px]">${v.proc}</td><td class="font-black text-slate-800">${v.totalCost} ج</td><td class="font-black" style="color: var(--brand-green);">${v.paidAmount} ج</td><td class="font-black ${rem>0?'text-rose-500':'text-slate-400'}">${rem} ج</td></tr>`;
+                const rem = v.totalCost - v.paidAmount; 
+                sTot += v.totalCost; sPaid += v.paidAmount; sDebt += rem; 
+                
+                // التعديل 3: تغيير لون واسم الدين في الجدول
+                let remHtml = '';
+                if (rem > 0) remHtml = `<span class="text-rose-500">${rem} ج (دين)</span>`;
+                else if (rem < 0) remHtml = `<span style="color: #65b32e;">${Math.abs(rem)} ج (سداد)</span>`;
+                else remHtml = `<span class="text-slate-400">0 ج</span>`;
+
+                tb1.innerHTML += `<tr><td class="font-bold text-slate-500">${v.date}</td><td class="font-black" style="color: #083b8d;">${v.name}</td><td class="font-bold truncate max-w-[150px]">${v.proc}</td><td class="font-black text-slate-800">${v.totalCost} ج</td><td class="font-black" style="color: #65b32e;">${v.paidAmount} ج</td><td class="font-black">${remHtml}</td></tr>`;
             });
 
-            document.getElementById('accTableTotal').innerText = sTot + ' ج'; document.getElementById('accTablePaid').innerText = sPaid + ' ج'; document.getElementById('accTableDebt').innerText = sDebt + ' ج';
-            document.getElementById('accTotalDebts').innerText = sgDebt + ' ج'; document.getElementById('accTotalDocDebts').innerText = sgDocDebt.toFixed(1) + ' ج';
+            document.getElementById('accTableTotal').innerText = sTot + ' ج'; 
+            document.getElementById('accTablePaid').innerText = sPaid + ' ج'; 
+            document.getElementById('accTableDebt').innerText = Math.abs(sDebt) + (sDebt < 0 ? ' ج (تم سدادهم)' : ' ج (ديون زادت)');
+            document.getElementById('accTotalDebts').innerText = sgDebt + ' ج'; 
+            document.getElementById('accTotalDocDebts').innerText = sgDocDebt.toFixed(1) + ' ج';
 
             // شهري
             const mDate = document.getElementById('monthlyAccountDate').value;
-            let mTot = 0, mCash = 0;
-            if(mDate) patients.forEach(p => { if (p.visits) p.visits.forEach(v => { if (v.date && v.date.startsWith(mDate)) { mTot += v.totalCost; mCash += v.paidAmount; } }); });
-            document.getElementById('monthlyTotalVal').innerText = mTot + ' ج'; document.getElementById('monthlyCashCollected').innerText = mCash + ' ج';
-            document.getElementById('monthlyDebtGenerated').innerText = (mTot - mCash) + ' ج'; document.getElementById('monthlyDocCashShare').innerText = (mCash * 0.60).toFixed(1) + ' ج';
+            let mTot = 0, mCash = 0, mNewDebt = 0;
+            if(mDate) {
+                patients.forEach(p => { 
+                    if (p.visits) p.visits.forEach(v => { 
+                        if (v.date && v.date.startsWith(mDate)) { 
+                            mTot += v.totalCost; 
+                            mCash += v.paidAmount; 
+                            if (v.totalCost > v.paidAmount) {
+                                mNewDebt += (v.totalCost - v.paidAmount);
+                            }
+                        } 
+                    }); 
+                });
+            }
+            
+            document.getElementById('monthlyTotalVal').innerText = mTot + ' ج'; 
+            document.getElementById('monthlyCashCollected').innerText = mCash + ' ج';
+            document.getElementById('monthlyDebtGenerated').innerText = mNewDebt + ' ج'; 
+            document.getElementById('monthlyDocCashShare').innerText = (mCash * 0.60).toFixed(1) + ' ج';
         }
 
         saveAndSyncSystemData(); showTab('add-patient', document.querySelector('.nav-item')); 
