@@ -8,10 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap');
-        body { font-family: 'Cairo', sans-serif; background-color: #f4f7f6; }
-        .card { background: #ffffff; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; } /* لون خلفية مريح جداً للعين */
+        .card { background: #ffffff; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; }
         
-        /* تأثير الانتقال بين التابات */
         .fade-in {
             animation: fadeIn 0.4s ease-in-out;
         }
@@ -19,107 +18,99 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        /* تجميل السكرول بار */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden text-slate-800">
+<body class="flex h-screen overflow-hidden text-slate-700">
 
-    <div id="customAlert" class="hidden fixed top-5 left-1/2 transform -translate-x-1/2 z-[100] bg-white border border-slate-100 shadow-2xl p-4 rounded-2xl flex items-center gap-3 min-w-[320px] transition-all duration-300 opacity-0 -translate-y-4">
+    <div id="customAlert" class="hidden fixed top-5 left-1/2 transform -translate-x-1/2 z-[100] bg-white border border-slate-100 shadow-xl p-4 rounded-xl flex items-center gap-3 min-w-[320px] transition-all duration-300 opacity-0 -translate-y-4">
         <div id="alertIcon" class="w-10 h-10 rounded-xl flex items-center justify-center text-lg"></div>
         <div>
             <p id="alertMessage" class="font-semibold text-slate-700 text-sm"></p>
         </div>
     </div>
 
-    <aside class="w-64 bg-slate-800 text-white p-6 shadow-xl flex flex-col justify-between hidden md:flex z-10">
+    <aside class="w-64 bg-slate-900 text-white p-6 shadow-xl flex flex-col justify-between hidden md:flex z-10">
         <div>
-            <h1 class="text-2xl font-bold mb-10 text-teal-400 border-b border-slate-700 pb-4 flex items-center">
+            <h1 class="text-2xl font-bold mb-10 text-blue-400 border-b border-slate-700 pb-4 flex items-center">
                 <i class="fa-solid fa-tooth ml-3 text-3xl"></i> عيادة زمزم
             </h1>
             <ul class="space-y-3">
                 <li>
-                    <button onclick="showTab('add-patient')" class="w-full text-right p-3 hover:bg-teal-700 bg-teal-700/20 rounded-xl transition flex items-center font-semibold border border-transparent hover:border-teal-600">
-                        <i class="fa-solid fa-user-plus ml-3 text-teal-400 w-5"></i> زيارة جديدة
+                    <button onclick="showTab('add-patient')" class="w-full text-right p-3 hover:bg-blue-600/30 bg-blue-600/20 rounded-xl transition flex items-center font-semibold border border-transparent hover:border-blue-500/50 text-blue-50">
+                        <i class="fa-solid fa-user-plus ml-3 text-blue-400 w-5"></i> زيارة جديدة
                     </button>
                 </li>
                 <li>
-                    <button onclick="showTab('patients-list')" class="w-full text-right p-3 hover:bg-teal-700 rounded-xl transition flex items-center font-semibold">
-                        <i class="fa-solid fa-users ml-3 text-teal-400 w-5"></i> سجل المرضى
+                    <button onclick="showTab('patients-list')" class="w-full text-right p-3 hover:bg-slate-800 rounded-xl transition flex items-center font-semibold text-slate-300 hover:text-white">
+                        <i class="fa-solid fa-users ml-3 text-blue-400 w-5"></i> سجل المرضى
                     </button>
                 </li>
                 <li>
-                    <button onclick="showTab('accounts-section')" class="w-full text-right p-3 hover:bg-teal-700 rounded-xl transition flex items-center font-semibold">
-                        <i class="fa-solid fa-money-bill-wave ml-3 text-teal-400 w-5"></i> الحسابات
+                    <button onclick="showTab('accounts-section')" class="w-full text-right p-3 hover:bg-slate-800 rounded-xl transition flex items-center font-semibold text-slate-300 hover:text-white">
+                        <i class="fa-solid fa-money-bill-wave ml-3 text-blue-400 w-5"></i> الحسابات
                     </button>
                 </li>
             </ul>
         </div>
-        <div class="text-xs text-slate-400 text-center border-t border-slate-700 pt-4 bg-slate-800">
-            v2.4.0 — جاهز للربط السحابي
+        <div class="text-xs text-slate-500 text-center border-t border-slate-800 pt-4">
+            v2.5.0 — تصميم احترافي
         </div>
     </aside>
 
     <main class="flex-1 p-4 md:p-8 overflow-y-auto relative">
         
-        <div class="md:hidden flex flex-wrap justify-between items-center mb-6 bg-slate-800 text-white p-4 rounded-2xl shadow-lg gap-3">
-            <h1 class="text-lg font-bold text-teal-400 flex items-center"><i class="fa-solid fa-tooth ml-2"></i> عيادة زمزم</h1>
+        <div class="md:hidden flex flex-wrap justify-between items-center mb-6 bg-slate-900 text-white p-4 rounded-xl shadow-lg gap-3">
+            <h1 class="text-lg font-bold text-blue-400 flex items-center"><i class="fa-solid fa-tooth ml-2"></i> عيادة زمزم</h1>
             <div class="flex gap-2 w-full justify-between">
-                <button onclick="showTab('add-patient')" class="flex-1 text-xs bg-teal-600 py-2 rounded-lg font-bold shadow hover:bg-teal-500 transition">زيارة</button>
-                <button onclick="showTab('patients-list')" class="flex-1 text-xs bg-slate-600 py-2 rounded-lg font-bold shadow hover:bg-slate-500 transition">الملفات</button>
-                <button onclick="showTab('accounts-section')" class="flex-1 text-xs bg-emerald-600 py-2 rounded-lg font-bold shadow hover:bg-emerald-500 transition">الحسابات</button>
+                <button onclick="showTab('add-patient')" class="flex-1 text-xs bg-blue-600 py-2.5 rounded-lg font-bold hover:bg-blue-500 transition">زيارة</button>
+                <button onclick="showTab('patients-list')" class="flex-1 text-xs bg-slate-700 py-2.5 rounded-lg font-bold hover:bg-slate-600 transition">الملفات</button>
+                <button onclick="showTab('accounts-section')" class="flex-1 text-xs bg-emerald-600 py-2.5 rounded-lg font-bold hover:bg-emerald-500 transition">الحسابات</button>
             </div>
         </div>
 
         <div id="add-patient" class="tab-section fade-in max-w-3xl mx-auto card p-6 md:p-8">
-            <h2 id="formTitle" class="text-2xl font-bold text-slate-700 mb-8 flex items-center border-b pb-4">
-                <i class="fa-solid fa-user-plus ml-3 text-teal-600 text-3xl"></i> تسجيل مريض أو زيارة
+            <h2 id="formTitle" class="text-2xl font-bold text-slate-800 mb-8 flex items-center border-b border-slate-100 pb-4">
+                <i class="fa-solid fa-user-plus ml-3 text-blue-600 text-3xl"></i> تسجيل مريض أو زيارة
             </h2>
             <form id="patientForm" class="space-y-6" onsubmit="event.preventDefault();">
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                     <div>
                         <label class="block text-sm font-semibold text-slate-600 mb-2">نوع الزيارة</label>
-                        <select id="visitType" onchange="handleNameInput()" class="w-full p-3.5 rounded-xl border border-slate-200 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition bg-slate-50">
+                        <select id="visitType" onchange="handleNameInput()" class="w-full p-3.5 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition bg-slate-50">
                             <option value="مريض جديد">مريض جديد</option>
                             <option value="متابعة">متابعة</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-600 mb-2">تاريخ الزيارة</label>
-                        <input type="date" id="visitDate" class="w-full p-3.5 rounded-xl border border-slate-200 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition bg-slate-50">
-                    </div>
-                </div>
-
-                <div class="relative bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-                    <div class="flex justify-between items-center mb-2">
-                        <label class="block text-sm font-semibold text-slate-600">اسم المريض الرباعي</label>
-                        <span id="formPreviousDebt" class="text-xs font-bold text-amber-600 hidden bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200 animate-pulse"></span>
-                    </div>
-                    <div class="relative">
-                        <i class="fa-solid fa-user absolute right-4 top-4 text-slate-400"></i>
-                        <input type="text" id="patientName" oninput="handleNameInput()" autocomplete="off" placeholder="ابدأ بكتابة الاسم..." class="w-full p-3.5 pr-12 rounded-xl border border-slate-200 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 font-semibold text-slate-700 transition">
-                    </div>
-                    <div id="suggestionsDropdown" class="hidden absolute right-0 left-0 top-full mt-2 bg-white border border-slate-200 rounded-xl shadow-2xl max-h-60 overflow-y-auto z-50"></div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-600 mb-2">رقم التليفون</label>
-                        <input type="tel" id="patientPhone" placeholder="01X XXXX XXXX" class="w-full p-3.5 rounded-xl border border-slate-200 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition bg-slate-50 text-left" dir="ltr">
+                        <input type="date" id="visitDate" class="w-full p-3.5 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition bg-slate-50">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-600 mb-2">العمر</label>
-                        <input type="number" id="patientAge" placeholder="سنة" class="w-full p-3.5 rounded-xl border border-slate-200 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition bg-slate-50">
+                        <input type="number" id="patientAge" placeholder="سنة" class="w-full p-3.5 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition bg-slate-50">
                     </div>
+                </div>
+
+                <div class="relative bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-sm font-semibold text-slate-700">اسم المريض الرباعي</label>
+                        <span id="formPreviousDebt" class="text-xs font-bold text-rose-600 hidden bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-100 animate-pulse"></span>
+                    </div>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute right-4 top-4 text-slate-400"></i>
+                        <input type="text" id="patientName" oninput="handleNameInput()" autocomplete="off" placeholder="ابدأ بكتابة الاسم..." class="w-full p-3.5 pr-12 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 font-bold text-slate-700 transition bg-slate-50">
+                    </div>
+                    <div id="suggestionsDropdown" class="hidden absolute right-0 left-0 top-full mt-2 bg-white border border-slate-200 rounded-xl shadow-xl max-h-60 overflow-y-auto z-50"></div>
                 </div>
 
                 <div>
                     <label class="block text-sm font-semibold text-slate-600 mb-2">نوع الإجراء الطبي الحالي</label>
-                    <select id="procedureType" class="w-full p-3.5 rounded-xl border border-slate-200 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition bg-slate-50">
+                    <select id="procedureType" class="w-full p-3.5 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition bg-slate-50">
                         <option disabled selected>اختر الإجراء...</option>
                         <option>كشف</option>
                         <option>تنظيف وتلميع أسنان</option>
@@ -135,50 +126,50 @@
                     </select>
                 </div>
 
-                <div class="grid grid-cols-2 gap-5 p-5 bg-teal-50/50 rounded-2xl border border-teal-100">
+                <div class="grid grid-cols-2 gap-5 p-5 bg-blue-50/50 rounded-2xl border border-blue-100">
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">تكلفة اليوم (ج.م)</label>
-                        <input type="number" id="totalCost" placeholder="0" oninput="calculateFormDebt()" class="w-full p-3.5 rounded-xl border border-teal-200 outline-none focus:border-teal-500 font-bold text-slate-800 text-lg">
+                        <input type="number" id="totalCost" placeholder="0" oninput="calculateFormDebt()" class="w-full p-3.5 rounded-xl border border-blue-200 outline-none focus:border-blue-500 font-bold text-slate-800 text-lg">
                     </div>
                     <div>
-                        <label class="block text-sm font-bold text-teal-700 mb-2">المدفوع اليوم (ج.م)</label>
-                        <input type="number" id="paidAmount" placeholder="0" oninput="calculateFormDebt()" class="w-full p-3.5 rounded-xl border border-teal-200 outline-none focus:border-teal-500 font-bold text-teal-700 text-lg bg-white">
+                        <label class="block text-sm font-bold text-blue-700 mb-2">المدفوع اليوم (ج.م)</label>
+                        <input type="number" id="paidAmount" placeholder="0" oninput="calculateFormDebt()" class="w-full p-3.5 rounded-xl border border-blue-200 outline-none focus:border-blue-500 font-bold text-blue-700 text-lg bg-white shadow-sm">
                     </div>
-                    <div class="col-span-2 text-left pt-3 border-t border-dashed border-teal-200 mt-2 flex justify-between items-center bg-white p-3 rounded-xl">
+                    <div class="col-span-2 text-left pt-3 border-t border-dashed border-blue-200 mt-2 flex justify-between items-center bg-white p-3 rounded-xl border border-blue-50">
                         <span class="text-sm text-slate-600 font-bold">متبقي من حساب اليوم:</span>
-                        <span id="formDebtBadge" class="text-lg font-black text-rose-600 bg-rose-50 px-3 py-1 rounded-lg">0 ج.م</span>
+                        <span id="formDebtBadge" class="text-lg font-black text-rose-500 bg-rose-50 px-3 py-1 rounded-lg">0 ج.م</span>
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-sm font-semibold text-slate-600 mb-2">ملاحظات طبية / روشتة</label>
-                    <textarea id="notes" placeholder="اكتب الأدوية أو الملاحظات لحالة المريض اليوم..." class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 h-28 bg-slate-50 transition"></textarea>
+                    <textarea id="notes" placeholder="اكتب الأدوية أو الملاحظات لحالة المريض اليوم..." class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 h-28 bg-slate-50 transition"></textarea>
                 </div>
 
-                <button type="button" id="submitBtn" onclick="handleSubmit()" class="w-full bg-gradient-to-l from-teal-600 to-teal-500 text-white py-4 rounded-xl font-bold text-lg hover:from-teal-700 hover:to-teal-600 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-200">
+                <button type="button" id="submitBtn" onclick="handleSubmit()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-md hover:shadow-lg transform hover:-translate-y-0.5 duration-200">
                     <i class="fa-solid fa-floppy-disk ml-2"></i> حفظ بيانات الزيارة
                 </button>
             </form>
         </div>
 
         <div id="patients-list" class="tab-section hidden fade-in card p-4 md:p-8">
-            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 border-b pb-4">
-                <h2 class="text-xl font-bold text-slate-700 flex items-center">
-                    <i class="fa-solid fa-users ml-3 text-teal-600 text-2xl"></i> سجل المرضى
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 border-b border-slate-100 pb-4">
+                <h2 class="text-xl font-bold text-slate-800 flex items-center">
+                    <i class="fa-solid fa-users ml-3 text-blue-600 text-2xl"></i> سجل المرضى
                 </h2>
                 <div class="relative w-full md:w-80">
                     <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-slate-400"></i>
-                    <input type="text" id="searchInput" onkeyup="searchPatient()" placeholder="ابحث بالاسم أو التليفون..." class="w-full p-3 pr-11 rounded-xl border border-slate-200 outline-none focus:border-teal-500 bg-slate-50">
+                    <input type="text" id="searchInput" onkeyup="searchPatient()" placeholder="ابحث باسم المريض..." class="w-full p-3 pr-11 rounded-xl border border-slate-200 outline-none focus:border-blue-500 bg-slate-50 transition">
                 </div>
             </div>
             
-            <div class="overflow-x-auto rounded-xl border border-slate-100">
+            <div class="overflow-x-auto rounded-xl border border-slate-200">
                 <table class="w-full text-right border-collapse whitespace-nowrap">
                     <thead>
-                        <tr class="bg-slate-100 text-slate-600 text-sm">
+                        <tr class="bg-slate-50 text-slate-600 text-sm">
                             <th class="p-4 font-bold border-b border-slate-200">أول زيارة</th>
                             <th class="p-4 font-bold border-b border-slate-200">اسم المريض</th>
-                            <th class="p-4 font-bold border-b border-slate-200">التليفون</th>
+                            <th class="p-4 font-bold border-b border-slate-200">العمر</th>
                             <th class="p-4 font-bold border-b border-slate-200">النوع</th>
                             <th class="p-4 font-bold border-b border-slate-200">كل الإجراءات</th>
                             <th class="p-4 font-bold border-b border-slate-200">الإجمالي</th>
@@ -194,118 +185,113 @@
 
         <div id="accounts-section" class="tab-section hidden fade-in space-y-6">
             
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-calendar-day"></i></div>
+                    <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xl"><i class="fa-solid fa-calendar-day"></i></div>
                     <div>
                         <h3 class="font-bold text-slate-800 text-lg">تقفيل الحسابات</h3>
                         <p class="text-sm text-slate-500">اختر يوم محدد لمعرفة إيراداته، أو اعرض الكل</p>
                     </div>
                 </div>
                 <div class="flex gap-2 w-full md:w-auto">
-                    <input type="date" id="filterAccountDate" onchange="renderAccounts()" class="p-3 rounded-xl border border-slate-200 outline-none focus:border-teal-500 font-semibold text-slate-700 bg-slate-50 w-full md:w-48">
-                    <button onclick="clearDateFilter()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold px-5 py-3 rounded-xl text-sm transition whitespace-nowrap shadow">الكل</button>
+                    <input type="date" id="filterAccountDate" onchange="renderAccounts()" class="p-3 rounded-xl border border-slate-200 outline-none focus:border-blue-500 font-semibold text-slate-700 bg-slate-50 w-full md:w-48 transition">
+                    <button onclick="clearDateFilter()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold px-5 py-3 rounded-xl text-sm transition shadow">الكل</button>
                 </div>
             </div>
 
-            <div class="bg-gradient-to-br from-slate-800 to-slate-900 text-white p-6 md:p-8 rounded-3xl shadow-xl space-y-6 relative overflow-hidden">
-                <div class="absolute -left-10 -top-10 opacity-10 text-9xl"><i class="fa-solid fa-chart-pie"></i></div>
+            <div class="bg-slate-900 text-white p-6 md:p-8 rounded-3xl shadow-xl space-y-6 relative overflow-hidden">
+                <div class="absolute -left-10 -top-10 opacity-5 text-9xl"><i class="fa-solid fa-chart-pie"></i></div>
                 
-                <div class="flex justify-between items-center border-b border-slate-700 pb-4 relative z-10">
-                    <h3 id="accountContextTitle" class="text-lg md:text-xl font-bold text-teal-400 flex items-center">
+                <div class="flex justify-between items-center border-b border-slate-700/50 pb-4 relative z-10">
+                    <h3 id="accountContextTitle" class="text-lg md:text-xl font-bold text-blue-400 flex items-center">
                         <i class="fa-solid fa-user-doctor ml-3 text-2xl"></i> مستحقات الطبيب (نسبة 60%)
                     </h3>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
-                    <div class="bg-slate-700/50 p-5 rounded-2xl border border-slate-600/50 backdrop-blur-sm">
-                        <p class="text-sm text-slate-300 mb-2">النصيب من الإجمالي (شغل اليوم)</p>
-                        <h4 id="docTotalShare" class="text-3xl font-black text-cyan-300">0 <span class="text-lg font-normal">ج.م</span></h4>
+                    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                        <p class="text-sm text-slate-400 mb-2">النصيب من الإجمالي (شغل اليوم)</p>
+                        <h4 id="docTotalShare" class="text-3xl font-black text-blue-300">0 <span class="text-lg font-normal">ج.م</span></h4>
                     </div>
-                    <div class="bg-slate-700/50 p-5 rounded-2xl border border-slate-600/50 border-b-4 border-b-emerald-500 backdrop-blur-sm transform md:-translate-y-2 shadow-lg">
+                    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 border-b-4 border-b-emerald-500 transform md:-translate-y-2 shadow-lg">
                         <p class="text-sm text-white font-bold mb-2">صافي الربح الفعلي (من الكاش)</p>
                         <h4 id="docPaidShare" class="text-4xl font-black text-emerald-400">0 <span class="text-lg font-normal">ج.م</span></h4>
                     </div>
-                    <div class="bg-slate-700/50 p-5 rounded-2xl border border-slate-600/50 border-b-4 border-b-rose-500 backdrop-blur-sm">
-                        <p class="text-sm text-slate-300 mb-2">مستحقات آجلة (عند المرضى)</p>
+                    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 border-b-4 border-b-rose-500">
+                        <p class="text-sm text-slate-400 mb-2">مستحقات آجلة (عند المرضى)</p>
                         <h4 id="docDebtShare" class="text-3xl font-black text-rose-400">0 <span class="text-lg font-normal">ج.م</span></h4>
                     </div>
                 </div>
             </div>
 
-            <h3 class="font-bold text-slate-700 text-lg px-2">إحصائيات العيادة الإجمالية (لليوم المحدد)</h3>
+            <h3 class="font-bold text-slate-700 text-lg px-2 mt-8 border-b border-slate-200 pb-2">إحصائيات العيادة الإجمالية</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="card p-6 border-r-4 border-emerald-500 flex justify-between items-center hover:shadow-md transition">
+                <div class="card p-6 border-r-4 border-emerald-500 flex justify-between items-center">
                     <div>
                         <p class="text-sm text-slate-500 font-bold mb-1">الكاش المحصل (الدرج)</p>
-                        <h3 id="totalIncome" class="text-2xl font-black text-emerald-600">0 ج.م</h3>
+                        <h3 id="totalIncome" class="text-2xl font-black text-slate-800">0 ج.م</h3>
                     </div>
                     <div class="w-12 h-12 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center text-xl"><i class="fa-solid fa-cash-register"></i></div>
                 </div>
-                <div class="card p-6 border-r-4 border-rose-500 flex justify-between items-center hover:shadow-md transition">
+                <div class="card p-6 border-r-4 border-rose-500 flex justify-between items-center">
                     <div>
                         <p class="text-sm text-slate-500 font-bold mb-1">إجمالي الديون (بره)</p>
-                        <h3 id="totalExpenses" class="text-2xl font-black text-rose-600">0 ج.م</h3>
+                        <h3 id="totalExpenses" class="text-2xl font-black text-slate-800">0 ج.م</h3>
                     </div>
                     <div class="w-12 h-12 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center text-xl"><i class="fa-solid fa-hand-holding-dollar"></i></div>
                 </div>
-                <div class="card p-6 border-r-4 border-cyan-500 flex justify-between items-center hover:shadow-md transition">
+                <div class="card p-6 border-r-4 border-blue-500 flex justify-between items-center">
                     <div>
                         <p class="text-sm text-slate-500 font-bold mb-1">قيمة الشغل الكلية</p>
-                        <h3 id="netProfit" class="text-2xl font-black text-cyan-600">0 ج.م</h3>
+                        <h3 id="netProfit" class="text-2xl font-black text-slate-800">0 ج.م</h3>
                     </div>
-                    <div class="w-12 h-12 rounded-full bg-cyan-50 text-cyan-500 flex items-center justify-center text-xl"><i class="fa-solid fa-stethoscope"></i></div>
+                    <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center text-xl"><i class="fa-solid fa-stethoscope"></i></div>
                 </div>
             </div>
         </div>
     </main>
 
     <div id="patientModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
-        <div class="bg-white p-6 md:p-8 rounded-3xl w-full max-w-2xl shadow-2xl animate-[fadeIn_0.3s_ease-out]">
+        <div class="bg-white p-6 md:p-8 rounded-2xl w-full max-w-2xl shadow-2xl animate-[fadeIn_0.3s_ease-out]">
             <div class="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
-                <h3 id="modalPatientName" class="text-2xl font-bold text-teal-700 flex items-center"><i class="fa-solid fa-folder-open ml-3 text-slate-400"></i> </h3>
+                <h3 id="modalPatientName" class="text-2xl font-bold text-slate-800 flex items-center"><i class="fa-solid fa-folder-open ml-3 text-blue-600"></i> </h3>
                 <button onclick="closeModal()" class="text-slate-400 hover:text-rose-500 text-2xl transition bg-slate-50 hover:bg-rose-50 w-10 h-10 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <div class="grid grid-cols-2 gap-4 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                <div><span class="text-slate-500 text-sm">التليفون:</span> <strong id="modalPhone" class="text-slate-700" dir="ltr"></strong></div>
-                <div><span class="text-slate-500 text-sm">العمر:</span> <strong id="modalAge" class="text-slate-700"></strong></div>
+            <div class="mb-6 bg-slate-50 p-4 rounded-xl border border-slate-100 inline-block">
+                <span class="text-slate-500 text-sm">عمر المريض:</span> <strong id="modalAge" class="text-slate-800 ml-2"></strong>
             </div>
 
             <div class="space-y-5">
                 <div>
-                    <span class="text-sm font-bold text-slate-600 block mb-3"><i class="fa-solid fa-list-check ml-1"></i> السجل الطبي والتاريخ المالي (الزيارات):</span>
-                    <div id="modalPatientProc" class="bg-teal-50/30 p-3 rounded-xl border border-teal-100 max-h-48 overflow-y-auto"></div>
+                    <span class="text-sm font-bold text-slate-700 block mb-3"><i class="fa-solid fa-list-check ml-1 text-blue-500"></i> السجل الطبي والتاريخ المالي (الزيارات):</span>
+                    <div id="modalPatientProc" class="bg-white p-1 rounded-xl max-h-52 overflow-y-auto pr-2"></div>
                 </div>
                 <div>
-                    <label class="text-sm font-bold text-slate-600 block mb-2"><i class="fa-solid fa-file-prescription ml-1"></i> الروشتة والملاحظات المستمرة:</label>
-                    <textarea id="modalNotes" class="w-full p-4 border border-slate-200 rounded-xl h-24 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 bg-slate-50 transition leading-relaxed"></textarea>
+                    <label class="text-sm font-bold text-slate-700 block mb-2"><i class="fa-solid fa-file-prescription ml-1 text-blue-500"></i> الروشتة والملاحظات المستمرة:</label>
+                    <textarea id="modalNotes" class="w-full p-4 border border-slate-200 rounded-xl h-24 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-slate-50 transition leading-relaxed text-slate-700"></textarea>
                 </div>
             </div>
             <div class="flex gap-3 mt-8 justify-end border-t border-slate-100 pt-5">
-                <button onclick="closeModal()" class="bg-slate-100 text-slate-600 px-6 py-3 rounded-xl font-bold hover:bg-slate-200 transition">إلغاء</button>
-                <button onclick="saveModalChanges()" class="bg-teal-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-teal-700 transition shadow-md flex items-center"><i class="fa-solid fa-check ml-2"></i> حفظ التعديلات</button>
+                <button onclick="closeModal()" class="bg-white border border-slate-200 text-slate-600 px-6 py-2.5 rounded-xl font-bold hover:bg-slate-50 transition">إلغاء</button>
+                <button onclick="saveModalChanges()" class="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-blue-700 transition shadow-md flex items-center"><i class="fa-solid fa-check ml-2"></i> حفظ التعديلات</button>
             </div>
         </div>
     </div>
 
     <script>
-        // تحميل مصفوفة المرضى
         let patients = JSON.parse(localStorage.getItem('zamzam_patients_data')) || [];
         
-        // معالجة البيانات القديمة
         patients.forEach(p => {
             if (!p.visits) {
                 p.visits = [{ date: p.date, proc: p.proc, totalCost: p.totalCost, paidAmount: p.paidAmount }];
             }
-            if(!p.phone) p.phone = "-";
             if(!p.age) p.age = "-";
         });
 
         let editIndex = null;
         let currentModalIndex = null;
 
-        // التواريخ الافتراضية
         document.getElementById('visitDate').valueAsDate = new Date();
         document.getElementById('filterAccountDate').valueAsDate = new Date();
 
@@ -330,7 +316,7 @@
                 icon.className = "w-10 h-10 rounded-xl flex items-center justify-center text-lg bg-red-50 text-red-500";
                 icon.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
             } else {
-                icon.className = "w-10 h-10 rounded-xl flex items-center justify-center text-lg bg-teal-50 text-teal-600";
+                icon.className = "w-10 h-10 rounded-xl flex items-center justify-center text-lg bg-blue-50 text-blue-600";
                 icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
             }
 
@@ -348,7 +334,6 @@
         }
 
         function calculateFormDebt() {
-            // استخدام parseFloat مع دعم القيم الفارغة (NaN تتحول لصفر)
             const total = parseFloat(document.getElementById('totalCost').value) || 0;
             const paid = parseFloat(document.getElementById('paidAmount').value) || 0;
             const debt = total - paid;
@@ -369,7 +354,6 @@
                 badge.classList.add('hidden');
                 
                 if(visitType === 'مريض جديد' && !editIndex){
-                     document.getElementById('patientPhone').value = '';
                      document.getElementById('patientAge').value = '';
                 }
                 return;
@@ -386,18 +370,17 @@
             dropdown.classList.remove('hidden');
             matches.forEach(p => {
                 const item = document.createElement('div');
-                item.className = "p-3 hover:bg-teal-50 cursor-pointer border-b border-slate-100 last:border-0 flex justify-between items-center text-sm text-slate-700 font-medium transition";
+                item.className = "p-3 hover:bg-blue-50 cursor-pointer border-b border-slate-100 last:border-0 flex justify-between items-center text-sm text-slate-700 transition";
                 item.innerHTML = `
-                    <div class="flex flex-col">
-                        <span><i class="fa-solid fa-user ml-2 text-teal-500"></i>${p.name}</span>
-                        <span class="text-xs text-slate-400 mt-1"><i class="fa-solid fa-phone ml-1"></i>${p.phone || '-'}</span>
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-user text-blue-400 ml-2"></i>
+                        <span class="font-bold">${p.name}</span>
                     </div>
                     <span class="text-xs font-bold ${p.debt > 0 ? 'bg-rose-50 text-rose-600 border-rose-200' : 'bg-emerald-50 text-emerald-600 border-emerald-200'} px-2 py-1 rounded-lg border">ديون: ${p.debt} ج.م</span>
                 `;
                 
                 item.onclick = function() {
                     nameInput.value = p.name;
-                    document.getElementById('patientPhone').value = p.phone || '';
                     document.getElementById('patientAge').value = p.age || '';
                     dropdown.classList.add('hidden');
                     badge.innerText = `الديون السابقة: ${p.debt} ج.م`;
@@ -423,7 +406,6 @@
 
         function handleSubmit() {
             const name = document.getElementById('patientName').value.trim();
-            const phone = document.getElementById('patientPhone').value.trim();
             const age = document.getElementById('patientAge').value.trim();
             const date = document.getElementById('visitDate').value;
             const type = document.getElementById('visitType').value;
@@ -445,8 +427,6 @@
                     const existingIndex = patients.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
                     
                     if (existingIndex !== -1) {
-                        // لا نعدل تاريخ أول زيارة ولا النوع
-                        if(phone) patients[existingIndex].phone = phone;
                         if(age) patients[existingIndex].age = age;
                         
                         patients[existingIndex].proc += ` | ${date}: ${proc}`; 
@@ -461,19 +441,16 @@
                         patients[existingIndex].visits.push(currentVisitObj);
                         triggerAlert(`تم إضافة المتابعة وتحديث حساب ${name}!`, "success");
                     } else {
-                        // لو المريض مش موجود واختار متابعة بالغلط، هنعتبره مريض جديد
-                        patients.push({ name, phone, age, date, type: 'مريض جديد', proc, totalCost, paidAmount, debt, notes, visits: [currentVisitObj] });
+                        patients.push({ name, age, date, type: 'مريض جديد', proc, totalCost, paidAmount, debt, notes, visits: [currentVisitObj] });
                         triggerAlert("تم إنشاء ملف جديد لعدم وجود سجل سابق", "success");
                     }
                 } else {
-                    patients.push({ name, phone, age, date, type, proc, totalCost, paidAmount, debt, notes, visits: [currentVisitObj] });
+                    patients.push({ name, age, date, type, proc, totalCost, paidAmount, debt, notes, visits: [currentVisitObj] });
                     triggerAlert("تم تسجيل المريض الجديد بنجاح!", "success");
                 }
             } else {
                 patients[editIndex].name = name;
-                patients[editIndex].phone = phone;
                 patients[editIndex].age = age;
-                // هنا التعديل بيكون للزيارة الحالية فقط مش أول زيارة لو كان بيعدل ملف كامل
                 patients[editIndex].totalCost = totalCost;
                 patients[editIndex].paidAmount = paidAmount;
                 patients[editIndex].debt = totalCost - paidAmount;
@@ -485,12 +462,11 @@
                 triggerAlert("تم تعديل بيانات الزيارة بنجاح!", "success");
                 editIndex = null;
                 document.getElementById('submitBtn').innerHTML = `<i class="fa-solid fa-floppy-disk ml-2"></i> حفظ بيانات الزيارة`;
-                document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-user-plus ml-3 text-teal-600 text-3xl"></i> تسجيل مريض أو زيارة`;
+                document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-user-plus ml-3 text-blue-600 text-3xl"></i> تسجيل مريض أو زيارة`;
             }
 
             document.getElementById('patientForm').reset();
             document.getElementById('visitDate').valueAsDate = new Date();
-            // تصفير المدخلات
             document.getElementById('totalCost').value = "";
             document.getElementById('paidAmount').value = "";
             document.getElementById('formDebtBadge').innerText = "0 ج.م";
@@ -506,22 +482,22 @@
             dataArray.forEach((patient) => {
                 const realIndex = patients.indexOf(patient);
                 tbody.innerHTML += `
-                    <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
+                    <tr class="border-b border-slate-100 hover:bg-slate-100/50 transition">
                         <td class="p-4 text-xs text-slate-500 whitespace-nowrap font-bold">${patient.date}</td>
-                        <td class="p-4 font-bold text-teal-700 hover:text-teal-500 cursor-pointer transition" onclick="openModal(${realIndex})">${patient.name}</td>
-                        <td class="p-4 text-xs text-slate-500" dir="ltr">${patient.phone || '-'}</td>
+                        <td class="p-4 font-bold text-blue-600 hover:text-blue-500 cursor-pointer transition" onclick="openModal(${realIndex})">${patient.name}</td>
+                        <td class="p-4 text-xs text-slate-500 font-semibold">${patient.age || '-'}</td>
                         <td class="p-4 text-xs">
-                            <span class="px-3 py-1 rounded-full font-bold ${patient.type === 'مريض جديد' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'}">
+                            <span class="px-3 py-1.5 rounded-lg font-bold ${patient.type === 'مريض جديد' ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-100 text-slate-600'}">
                                 ${patient.type}
                             </span>
                         </td>
                         <td class="p-4 text-xs text-slate-600 max-w-[150px] truncate" title="${patient.proc}">${patient.proc}</td>
-                        <td class="p-4 font-bold text-slate-700">${patient.totalCost} ج.م</td>
+                        <td class="p-4 font-bold text-slate-800">${patient.totalCost} ج.م</td>
                         <td class="p-4 font-bold text-emerald-600">${patient.paidAmount} ج.م</td>
                         <td class="p-4 font-black ${patient.debt > 0 ? 'text-rose-600 bg-rose-50/70 rounded-lg' : 'text-slate-400'}">${patient.debt} ج.م</td>
                         <td class="p-4 text-center flex justify-center gap-2">
-                            <button onclick="editPatient(${realIndex})" class="text-blue-600 hover:text-white bg-blue-50 hover:bg-blue-600 p-2.5 rounded-xl transition shadow-sm" title="تعديل"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deletePatient(${realIndex})" class="text-rose-600 hover:text-white bg-rose-50 hover:bg-rose-600 p-2.5 rounded-xl transition shadow-sm" title="حذف"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="editPatient(${realIndex})" class="text-slate-400 hover:text-blue-600 bg-white hover:bg-blue-50 border border-slate-200 p-2.5 rounded-lg transition shadow-sm" title="تعديل"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deletePatient(${realIndex})" class="text-slate-400 hover:text-rose-600 bg-white hover:bg-rose-50 border border-slate-200 p-2.5 rounded-lg transition shadow-sm" title="حذف"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>`;
             });
@@ -539,9 +515,7 @@
             editIndex = index;
             const p = patients[index];
             document.getElementById('patientName').value = p.name;
-            document.getElementById('patientPhone').value = p.phone || '';
             document.getElementById('patientAge').value = p.age || '';
-            // هنعرض تاريخ آخر زيارة في التعديل
             const lastVisitDate = p.visits.length > 0 ? p.visits[p.visits.length - 1].date : p.date;
             document.getElementById('visitDate').value = lastVisitDate;
             document.getElementById('visitType').value = p.type;
@@ -567,40 +541,36 @@
 
             calculateFormDebt();
             document.getElementById('submitBtn').innerHTML = `<i class="fa-solid fa-pen-to-square ml-2"></i> تحديث بيانات الزيارة`;
-            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square ml-3 text-blue-600 text-3xl"></i> تعديل زيارة: <span class="text-teal-600 text-xl font-bold ml-2">${p.name}</span>`;
+            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square ml-3 text-blue-600 text-3xl"></i> تعديل زيارة: <span class="text-slate-800 text-xl font-bold ml-2">${p.name}</span>`;
             showTab('add-patient');
         }
 
         function searchPatient() {
             const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = patients.filter(p => 
-                p.name.toLowerCase().includes(query) || 
-                (p.phone && p.phone.includes(query))
-            );
+            const filtered = patients.filter(p => p.name.toLowerCase().includes(query));
             renderTable(filtered);
         }
 
         function openModal(index) {
             currentModalIndex = index;
             const p = patients[index];
-            document.getElementById('modalPatientName').innerHTML = `<i class="fa-solid fa-folder-open ml-3 text-teal-600"></i> ${p.name}`;
-            document.getElementById('modalPhone').innerText = p.phone || 'غير مسجل';
+            document.getElementById('modalPatientName').innerHTML = `<i class="fa-solid fa-folder-open ml-3 text-blue-600"></i> ${p.name}`;
             document.getElementById('modalAge').innerText = p.age ? p.age + ' سنة' : 'غير مسجل';
             
-            // بناء سجل الزيارات التفصيلي داخل الـ Modal
-            let visitsHtml = '<div class="space-y-3">';
+            let visitsHtml = '<div class="space-y-2">';
             if(p.visits && p.visits.length > 0) {
                 p.visits.forEach((v, idx) => {
                     let visitLabel = idx === 0 ? 'زيارة أولى' : `متابعة ${idx}`;
                     visitsHtml += `
-                    <div class="bg-white p-3 rounded-lg border border-slate-100 flex flex-col md:flex-row md:justify-between md:items-center text-sm shadow-sm gap-2">
+                    <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100 flex flex-col md:flex-row md:justify-between md:items-center text-sm gap-2">
                         <div>
-                            <span class="text-teal-700 font-bold bg-teal-50 px-2 py-1 rounded-md text-xs">${v.date} (${visitLabel})</span>
+                            <span class="text-blue-600 font-bold bg-blue-50/50 px-2.5 py-1 rounded-md text-xs">${v.date} (${visitLabel})</span>
                             <span class="ml-2 font-semibold text-slate-700">${v.proc}</span>
                         </div>
-                        <div class="text-xs bg-slate-50 px-3 py-2 rounded-md border border-slate-100">
-                            <span class="text-slate-500">التكلفة: <strong class="text-slate-800">${v.totalCost} ج.م</strong></span> <span class="mx-1 text-slate-300">|</span>
-                            <span class="text-slate-500">المدفوع: <strong class="text-emerald-600">${v.paidAmount} ج.م</strong></span>
+                        <div class="text-xs flex items-center gap-3">
+                            <span class="text-slate-500">التكلفة: <strong class="text-slate-800 text-sm">${v.totalCost} ج.م</strong></span>
+                            <span class="text-slate-300">|</span>
+                            <span class="text-slate-500">المدفوع: <strong class="text-emerald-600 text-sm">${v.paidAmount} ج.م</strong></span>
                         </div>
                     </div>`;
                 });
@@ -660,7 +630,7 @@
 
             const contextTitle = document.getElementById('accountContextTitle');
             if (filterDate) {
-                contextTitle.innerHTML = `<i class="fa-solid fa-calendar-check ml-3 text-2xl"></i> حسابات يوم: <span class="text-teal-300 mx-2">${filterDate}</span> (نسبة 60%)`;
+                contextTitle.innerHTML = `<i class="fa-solid fa-calendar-check ml-3 text-2xl"></i> حسابات يوم: <span class="text-blue-300 mx-2">${filterDate}</span> (نسبة 60%)`;
             } else {
                 contextTitle.innerHTML = `<i class="fa-solid fa-chart-line ml-3 text-2xl"></i> الحسابات التراكمية للعيادة (كل الأيام)`;
             }
@@ -672,7 +642,6 @@
             triggerAlert("تم عرض الإجماليات لكل الأيام", "success");
         }
 
-        // بدء التشغيل
         saveAndSyncSystemData();
         showTab('add-patient'); 
     </script>
