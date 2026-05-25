@@ -6,12 +6,52 @@
     <title>إدارة عيادة الأسنان</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        // ضع بيانات Firebase الخاصة بك هنا
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // وظيفة حفظ البيانات
+        window.savePatient = async function() {
+            const btn = document.getElementById('saveBtn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
+            
+            const data = {
+                visitType: document.getElementById('visitType').value,
+                date: document.getElementById('visitDate').value,
+                name: document.getElementById('patientName').value,
+                procedure: document.getElementById('procedureType').value,
+                notes: document.getElementById('notes').value,
+                createdAt: new Date()
+            };
+
+            try {
+                await addDoc(collection(db, "patients"), data);
+                alert("تم حفظ بيانات المريض بنجاح!");
+                // إعادة تعيين النموذج
+                document.querySelector('form').reset();
+            } catch (e) {
+                alert("خطأ في الحفظ: " + e.message);
+            }
+            btn.innerHTML = 'حفظ بيانات المريض';
+        }
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600&display=swap');
         body { font-family: 'Cairo', sans-serif; background-color: #f4f7f6; }
         .soft-card { background: #ffffff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        select, input, textarea { background-color: #fcfcfc; border: 1px solid #e2e8f0; transition: 0.3s; }
-        select:focus, input:focus { border-color: #94a3b8; outline: none; }
     </style>
 </head>
 <body class="p-6">
@@ -25,7 +65,7 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-slate-600 mb-2">نوع الزيارة</label>
-                    <select class="w-full p-3 rounded-xl border">
+                    <select id="visitType" class="w-full p-3 rounded-xl border">
                         <option>مريض جديد</option>
                         <option>متابعة</option>
                     </select>
@@ -38,12 +78,12 @@
 
             <div>
                 <label class="block text-sm font-semibold text-slate-600 mb-2">اسم المريض</label>
-                <input type="text" placeholder="اكتب اسم المريض هنا" class="w-full p-3 rounded-xl border">
+                <input type="text" id="patientName" placeholder="اكتب اسم المريض هنا" class="w-full p-3 rounded-xl border">
             </div>
 
             <div>
                 <label class="block text-sm font-semibold text-slate-600 mb-2">نوع الإجراء الطبي</label>
-                <select class="w-full p-3 rounded-xl border">
+                <select id="procedureType" class="w-full p-3 rounded-xl border">
                     <option disabled selected>اختر الإجراء...</option>
                     <option>كشف</option>
                     <option>تنظيف وتلميع أسنان</option>
@@ -60,17 +100,16 @@
 
             <div>
                 <label class="block text-sm font-semibold text-slate-600 mb-2">ملاحظات إضافية</label>
-                <textarea placeholder="أي ملاحظات خاصة..." class="w-full p-3 rounded-xl border h-24"></textarea>
+                <textarea id="notes" placeholder="أي ملاحظات خاصة..." class="w-full p-3 rounded-xl border h-24"></textarea>
             </div>
 
-            <button type="button" class="w-full bg-teal-600 text-white py-4 rounded-xl font-bold hover:bg-teal-700 transition shadow-md">
+            <button type="button" id="saveBtn" onclick="savePatient()" class="w-full bg-teal-600 text-white py-4 rounded-xl font-bold hover:bg-teal-700 transition shadow-md">
                 حفظ بيانات المريض
             </button>
         </form>
     </div>
 
     <script>
-        // ضبط تاريخ اليوم تلقائياً
         document.getElementById('visitDate').valueAsDate = new Date();
     </script>
 </body>
