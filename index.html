@@ -16,7 +16,14 @@
 </head>
 <body class="flex h-screen overflow-hidden">
 
-    <aside class="w-64 bg-slate-800 text-white p-6 shadow-xl flex flex-col justify-between">
+    <div id="customAlert" class="hidden fixed top-5 left-1/2 transform -translate-x-1/2 z-[100] bg-white border border-slate-100 shadow-2xl p-4 rounded-2xl flex items-center gap-3 min-w-[320px] transition-all duration-300 opacity-0 -translate-y-4">
+        <div id="alertIcon" class="w-10 h-10 rounded-xl flex items-center justify-center text-lg"></div>
+        <div>
+            <p id="alertMessage" class="font-semibold text-slate-700 text-sm"></p>
+        </div>
+    </div>
+
+    <aside class="w-64 bg-slate-800 text-white p-6 shadow-xl flex flex-col justify-between hidden md:flex">
         <div>
             <h1 class="text-2xl font-bold mb-10 text-teal-400 border-b border-slate-700 pb-4">
                 <i class="fa-solid fa-tooth ml-2"></i> عيادة زمزم
@@ -35,13 +42,21 @@
             </ul>
         </div>
         <div class="text-xs text-slate-500 text-center border-t border-slate-700 pt-4">
-            v1.0.0 — جاهز للتطوير
+            v1.0.0 — واجهة مطورة
         </div>
     </aside>
 
-    <main class="flex-1 p-8 overflow-y-auto">
+    <main class="flex-1 p-4 md:p-8 overflow-y-auto">
         
-        <div id="add-patient" class="tab-content active-tab max-w-2xl mx-auto card p-8">
+        <div class="md:hidden flex justify-between items-center mb-6 bg-slate-800 text-white p-4 rounded-xl shadow-md">
+            <h1 class="text-xl font-bold text-teal-400"><i class="fa-solid fa-tooth ml-2"></i> عيادة زمزم</h1>
+            <div class="flex gap-4">
+                <button onclick="showTab('add-patient')" class="text-sm bg-teal-600 px-3 py-1.5 rounded-lg font-bold">إضافة</button>
+                <button onclick="showTab('patients-list')" class="text-sm bg-slate-700 px-3 py-1.5 rounded-lg font-bold">السجل</button>
+            </div>
+        </div>
+
+        <div id="add-patient" class="tab-content active-tab max-w-2xl mx-auto card p-6 md:p-8">
             <h2 id="formTitle" class="text-2xl font-bold text-slate-700 mb-8 flex items-center">
                 <i class="fa-solid fa-user-plus ml-3 text-teal-600"></i> تسجيل مريض جديد
             </h2>
@@ -83,7 +98,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-slate-600 mb-2">ملاحظات إضافية</label>
+                    <label class="block text-sm font-semibold text-slate-600 mb-2">ملاحظات إداءية</label>
                     <textarea id="notes" placeholder="اكتب أي ملاحظات طبية أو توصيات هنا..." class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-teal-500 h-24"></textarea>
                 </div>
 
@@ -93,7 +108,7 @@
             </form>
         </div>
 
-        <div id="patients-list" class="tab-content card p-8">
+        <div id="patients-list" class="tab-content card p-6 md:p-8">
             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                 <h2 class="text-xl font-bold text-slate-700 flex items-center">
                     <i class="fa-solid fa-users ml-3 text-teal-600"></i> سجل ملفات المرضى
@@ -119,8 +134,8 @@
         </div>
     </main>
 
-    <div id="patientModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fade-in">
-        <div class="bg-white p-8 rounded-2xl w-full max-w-xl shadow-2xl mx-4">
+    <div id="patientModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="bg-white p-6 md:p-8 rounded-2xl w-full max-w-xl shadow-2xl mx-4">
             <div class="flex justify-between items-center border-b pb-4 mb-6">
                 <h3 id="modalPatientName" class="text-2xl font-bold text-slate-800"></h3>
                 <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
@@ -147,21 +162,46 @@
     </div>
 
     <script>
-        // مصفوفة تخزين المرضى المؤقتة
         let patients = [];
         let editIndex = null;
         let currentModalIndex = null;
 
-        // تعيين تاريخ اليوم تلقائياً
         document.getElementById('visitDate').valueAsDate = new Date();
 
-        // التبديل بين الشاشات
+        // دالة التنبيه الاحترافية الجديدة بديلة الـ Alert
+        function triggerAlert(message, type = 'success') {
+            const toast = document.getElementById('customAlert');
+            const icon = document.getElementById('alertIcon');
+            const msg = document.getElementById('alertMessage');
+
+            msg.innerText = message;
+
+            if (type === 'error') {
+                icon.className = "w-10 h-10 rounded-xl flex items-center justify-center text-lg bg-red-50 text-red-500";
+                icon.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
+            } else {
+                icon.className = "w-10 h-10 rounded-xl flex items-center justify-center text-lg bg-teal-50 text-teal-600";
+                icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+            }
+
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.remove('opacity-0', '-translate-y-4');
+                toast.classList.add('opacity-100', 'translate-y-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', '-translate-y-4');
+                setTimeout(() => { toast.classList.add('hidden'); }, 300);
+            }, 3000);
+        }
+
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
             document.getElementById(tabId).classList.add('active-tab');
         }
 
-        // معالجة الضغط على زر الحفظ (إضافة أو تحديث)
         function handleSubmit() {
             const name = document.getElementById('patientName').value.trim();
             const date = document.getElementById('visitDate').value;
@@ -170,18 +210,16 @@
             const notes = document.getElementById('notes').value.trim();
 
             if (!name || !proc) {
-                alert("من فضلك أدخل اسم المريض واختر الإجراء الطبي");
+                triggerAlert("من فضلك أدخل اسم المريض واختر الإجراء الطبي", "error");
                 return;
             }
 
             if (editIndex === null) {
-                // إضافة مريض جديد
                 patients.push({ name, date, type, proc, notes });
-                alert("تم حفظ بيانات المريض بنجاح!");
+                triggerAlert("تم حفظ بيانات المريض بنجاح!", "success");
             } else {
-                // تحديث مريض حالي
                 patients[editIndex] = { name, date, type, proc, notes };
-                alert("تم تحديث بيانات المريض بنجاح!");
+                triggerAlert("تم تحديث بيانات المريض بنجاح!", "success");
                 editIndex = null;
                 document.getElementById('submitBtn').innerText = "حفظ بيانات المريض";
                 document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-user-plus ml-3 text-teal-600"></i> تسجيل مريض جديد`;
@@ -192,13 +230,11 @@
             renderTable();
         }
 
-        // رسم الجدول بناءً على البيانات الموجودة بالمصفوفة
         function renderTable(dataArray = patients) {
             const tbody = document.getElementById('patientsTableBody');
             tbody.innerHTML = '';
 
             dataArray.forEach((patient, index) => {
-                // إيجاد الفهرس الحقيقي في المصفوفة الأصلية
                 const realIndex = patients.indexOf(patient);
                 
                 tbody.innerHTML += `
@@ -212,22 +248,21 @@
                         </td>
                         <td class="p-4 text-sm text-slate-600">${patient.proc}</td>
                         <td class="p-4 text-center flex justify-center gap-3">
-                            <button onclick="editPatient(${realIndex})" class="text-blue-500 hover:text-blue-700 bg-blue-50 p-2 rounded-lg transition" title="تعديل الحقول الأساسية"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deletePatient(${realIndex})" class="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded-lg transition" title="حذف"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="editPatient(${realIndex})" class="text-blue-500 hover:text-blue-700 bg-blue-50 p-2 rounded-lg transition"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deletePatient(${realIndex})" class="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded-lg transition"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>`;
             });
         }
 
-        // حذف مريض
         function deletePatient(index) {
             if (confirm("هل أنت متأكد من حذف هذا المريض نهائياً؟")) {
                 patients.splice(index, 1);
                 renderTable();
+                triggerAlert("تم حذف المريض بنجاح", "success");
             }
         }
 
-        // تعديل مريض وإرجاعه للفورم
         function editPatient(index) {
             editIndex = index;
             const p = patients[index];
@@ -244,14 +279,12 @@
             showTab('add-patient');
         }
 
-        // البحث اللحظي بالاسم
         function searchPatient() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const filtered = patients.filter(p => p.name.toLowerCase().includes(query));
             renderTable(filtered);
         }
 
-        // فتح صفحة المريض المنبثقة
         function openModal(index) {
             currentModalIndex = index;
             const p = patients[index];
@@ -261,17 +294,15 @@
             document.getElementById('patientModal').classList.remove('hidden');
         }
 
-        // إغلاق الصفحة المنبثقة
         function closeModal() {
             document.getElementById('patientModal').classList.add('hidden');
             currentModalIndex = null;
         }
 
-        // حفظ التعديلات من داخل صفحة المريض المنبثقة
         function saveModalChanges() {
             if (currentModalIndex !== null) {
                 patients[currentModalIndex].notes = document.getElementById('modalNotes').value;
-                alert("تم تحديث الملف الطبي للمريض!");
+                triggerAlert("تم تحديث الملف الطبي للمريض!", "success");
                 closeModal();
                 renderTable();
             }
