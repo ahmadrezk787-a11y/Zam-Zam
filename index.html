@@ -1,124 +1,240 @@
-<!DOCTYPE html>
+def generate_html():
+    html_content = """<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عيادة زمزم - نظام الإدارة المالي المتكامل</title>
+    <title>عيادة زمزم - نظام الإدارة المالي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap');
-        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
-        .card { background: #ffffff; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; }
         
+        :root {
+            --brand-blue: #083b8d;
+            --brand-green: #65b32e;
+            --brand-blue-light: #eff4ff;
+            --brand-green-light: #f2fceb;
+        }
+
+        body { font-family: 'Cairo', sans-serif; background-color: #f4f7fb; color: #334155; }
+        
+        /* Smooth transitions */
         .fade-in {
-            animation: fadeIn 0.4s ease-in-out;
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        
-        /* Account section specific styles */
-        .acc-card { background: #fff; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid #e2e8f0; }
-        .acc-icon-wrapper { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 10px;}
-        .table-header { background-color: #f8fafc; color: #64748b; font-weight: 700; font-size: 0.85rem; text-align: right; border-bottom: 2px solid #e2e8f0;}
-        .table-row { border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; font-weight: 600; color: #334155; transition: background 0.2s;}
-        .table-row:hover { background-color: #f8fafc; }
+
+        /* Premium Cards */
+        .premium-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 4px 24px -6px rgba(0,0,0,0.04);
+            border: 1px solid #eef2f6;
+            transition: all 0.3s ease;
+        }
+        .premium-card:hover {
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        /* Account Specific */
+        .acc-stat-box {
+            background: #fff;
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid #eef2f6;
+            position: relative;
+            overflow: hidden;
+        }
+        .acc-icon-wrapper {
+            width: 48px; height: 48px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; margin-bottom: 12px;
+        }
+
+        /* Tables */
+        .data-table th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-align: right;
+            border-bottom: 2px solid #e2e8f0;
+            padding: 1rem;
+        }
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #334155;
+            transition: background 0.2s;
+        }
+        .data-table tr:hover td {
+            background-color: #f8fafc;
+        }
+        .data-table tfoot td {
+            background-color: #f8fafc;
+            font-weight: 800;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        /* Custom Inputs */
+        .input-styled {
+            width: 100%; padding: 0.875rem 1rem; border-radius: 12px;
+            border: 1px solid #e2e8f0; outline: none; background-color: #f8fafc;
+            transition: all 0.2s;
+        }
+        .input-styled:focus {
+            border-color: var(--brand-blue);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px var(--brand-blue-light);
+        }
+
+        /* Sidebar Item */
+        .nav-item {
+            display: flex; align-items: center; width: 100%; padding: 0.875rem 1rem;
+            border-radius: 12px; font-weight: 700; transition: all 0.2s; color: #64748b;
+        }
+        .nav-item:hover {
+            background-color: var(--brand-blue-light);
+            color: var(--brand-blue);
+        }
+        .nav-item.active {
+            background-color: var(--brand-blue);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(8, 59, 141, 0.2);
+        }
+        .nav-item.active i { color: #fff !important; }
+        .nav-item i { width: 24px; color: var(--brand-blue); transition: color 0.2s; }
+
+        /* Mobile Header */
+        .mobile-header { background: linear-gradient(135deg, var(--brand-blue), #1e3a8a); }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden text-slate-700">
+<body class="flex h-screen overflow-hidden">
 
-    <div id="customAlert" class="hidden fixed top-5 left-1/2 transform -translate-x-1/2 z-[100] bg-white border border-slate-100 shadow-xl p-4 rounded-xl flex items-center gap-3 min-w-[320px] transition-all duration-300 opacity-0 -translate-y-4">
+    <div id="customAlert" class="hidden fixed top-5 left-1/2 transform -translate-x-1/2 z-[100] bg-white border border-slate-100 shadow-2xl p-4 rounded-xl flex items-center gap-3 min-w-[320px] transition-all duration-300 opacity-0 -translate-y-4">
         <div id="alertIcon" class="w-10 h-10 rounded-xl flex items-center justify-center text-lg"></div>
         <div>
-            <p id="alertMessage" class="font-semibold text-slate-700 text-sm"></p>
+            <p id="alertMessage" class="font-bold text-slate-700 text-sm"></p>
         </div>
     </div>
 
-    <aside class="w-64 bg-slate-900 text-white p-6 shadow-xl flex flex-col justify-between hidden md:flex z-10">
+    <aside class="w-72 bg-white border-l border-slate-200 p-6 flex flex-col justify-between hidden md:flex z-10 shadow-[4px_0_24px_rgba(0,0,0,0.02)] relative">
         <div>
-            <h1 class="text-2xl font-bold mb-10 text-blue-400 border-b border-slate-700 pb-4 flex items-center">
-                <i class="fa-solid fa-tooth ml-3 text-3xl"></i> عيادة زمزم
-            </h1>
-            <ul class="space-y-3">
+            <div class="text-center mb-10 border-b border-slate-100 pb-6">
+                <img src="logo.jpg" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='block';" alt="Zamzam Clinic Logo" class="w-48 mx-auto object-contain">
+                
+                <div id="fallback-logo" class="hidden">
+                    <h1 class="text-4xl font-extrabold mt-2 tracking-tight">
+                        <span style="color: var(--brand-blue);">ZAM</span><span style="color: var(--brand-green);">ZAM</span>
+                    </h1>
+                    <div class="w-16 h-1 bg-slate-200 mx-auto mt-2 rounded-full"></div>
+                </div>
+                
+                <p class="text-xs text-slate-400 mt-3 font-bold tracking-wide">نظام الإدارة المالي المتكامل</p>
+            </div>
+            
+            <ul class="space-y-3" id="nav-list">
                 <li>
-                    <button onclick="showTab('add-patient')" class="w-full text-right p-3 hover:bg-blue-600/30 rounded-xl transition flex items-center font-semibold text-slate-300 hover:text-white">
-                        <i class="fa-solid fa-user-plus ml-3 text-blue-400 w-5"></i> زيارة جديدة
+                    <button onclick="showTab('add-patient', this)" class="nav-item active">
+                        <i class="fa-solid fa-user-plus ml-3"></i> تسجيل زيارة
                     </button>
                 </li>
                 <li>
-                    <button onclick="showTab('patients-list')" class="w-full text-right p-3 hover:bg-slate-800 rounded-xl transition flex items-center font-semibold text-slate-300 hover:text-white">
-                        <i class="fa-solid fa-users ml-3 text-blue-400 w-5"></i> سجل المرضى
+                    <button onclick="showTab('patients-list', this)" class="nav-item">
+                        <i class="fa-solid fa-folder-open ml-3"></i> سجل المرضى
                     </button>
                 </li>
                 <li>
-                    <button onclick="showTab('accounts-section')" class="w-full text-right p-3 hover:bg-blue-600/30 bg-blue-600/20 rounded-xl transition flex items-center font-semibold border border-transparent hover:border-blue-500/50 text-blue-50">
-                        <i class="fa-solid fa-money-bill-wave ml-3 text-blue-400 w-5"></i> الحسابات
+                    <button onclick="showTab('accounts-section', this)" class="nav-item">
+                        <i class="fa-solid fa-chart-pie ml-3"></i> الحسابات والملخص
                     </button>
                 </li>
             </ul>
         </div>
-        <div class="text-xs text-slate-500 text-center border-t border-slate-800 pt-4">
-            v2.6.0 — Advanced Accounts
+        
+        <div class="text-xs text-slate-400 text-center border-t border-slate-100 pt-5 font-semibold">
+            v3.0.0 — Premium Edition<br>
+            <span class="text-[10px] text-slate-300 mt-1 block">Ready for Cloud Sync</span>
         </div>
     </aside>
 
-    <main class="flex-1 p-4 md:p-6 overflow-y-auto relative bg-[#f4f7fb]">
+    <main class="flex-1 p-4 md:p-8 overflow-y-auto relative w-full">
         
-        <div class="md:hidden flex flex-wrap justify-between items-center mb-6 bg-slate-900 text-white p-4 rounded-xl shadow-lg gap-3">
-            <h1 class="text-lg font-bold text-blue-400 flex items-center"><i class="fa-solid fa-tooth ml-2"></i> عيادة زمزم</h1>
-            <div class="flex gap-2 w-full justify-between">
-                <button onclick="showTab('add-patient')" class="flex-1 text-xs bg-slate-700 py-2.5 rounded-lg font-bold hover:bg-slate-600 transition">زيارة</button>
-                <button onclick="showTab('patients-list')" class="flex-1 text-xs bg-slate-700 py-2.5 rounded-lg font-bold hover:bg-slate-600 transition">الملفات</button>
-                <button onclick="showTab('accounts-section')" class="flex-1 text-xs bg-blue-600 py-2.5 rounded-lg font-bold hover:bg-blue-500 transition">الحسابات</button>
+        <div class="md:hidden flex flex-col mb-6 mobile-header text-white p-5 rounded-2xl shadow-xl gap-4">
+            <div class="flex justify-between items-center w-full">
+                <h1 class="text-2xl font-black tracking-tight"><span class="text-white">ZAM</span><span style="color: var(--brand-green);">ZAM</span></h1>
+                <img src="logo.jpg" onerror="this.style.display='none'" class="h-8 bg-white p-1 rounded-md">
+            </div>
+            <div class="flex gap-2 w-full justify-between bg-white/10 p-1.5 rounded-xl">
+                <button onclick="showTab('add-patient', null)" class="flex-1 text-xs bg-white text-[var(--brand-blue)] py-2.5 rounded-lg font-bold shadow-sm transition text-center">الزيارة</button>
+                <button onclick="showTab('patients-list', null)" class="flex-1 text-xs hover:bg-white/20 py-2.5 rounded-lg font-bold transition text-center">الملفات</button>
+                <button onclick="showTab('accounts-section', null)" class="flex-1 text-xs hover:bg-white/20 py-2.5 rounded-lg font-bold transition text-center">الحسابات</button>
             </div>
         </div>
 
-        <!-- 1. شاشة تسجيل مريض / زيارة -->
-        <div id="add-patient" class="tab-section hidden fade-in max-w-3xl mx-auto card p-6 md:p-8">
-            <h2 id="formTitle" class="text-2xl font-bold text-slate-800 mb-8 flex items-center border-b border-slate-100 pb-4">
-                <i class="fa-solid fa-user-plus ml-3 text-blue-600 text-3xl"></i> تسجيل مريض أو زيارة
-            </h2>
+        <div id="add-patient" class="tab-section fade-in max-w-4xl mx-auto premium-card p-6 md:p-10">
+            <div class="flex items-center gap-4 mb-8 border-b border-slate-100 pb-5">
+                <div class="w-12 h-12 rounded-xl bg-[var(--brand-blue-light)] text-[var(--brand-blue)] flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-file-medical"></i>
+                </div>
+                <div>
+                    <h2 id="formTitle" class="text-2xl font-black text-slate-800">تسجيل مريض أو زيارة</h2>
+                    <p class="text-sm text-slate-500 font-semibold mt-1">أدخل بيانات المريض والتفاصيل المالية للزيارة</p>
+                </div>
+            </div>
+
             <form id="patientForm" class="space-y-6" onsubmit="event.preventDefault();">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                     <div>
-                        <label class="block text-sm font-semibold text-slate-600 mb-2">نوع الزيارة</label>
-                        <select id="visitType" onchange="handleNameInput()" class="w-full p-3.5 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition bg-slate-50">
+                        <label class="block text-sm font-bold text-slate-700 mb-2">نوع الزيارة</label>
+                        <select id="visitType" onchange="handleNameInput()" class="input-styled font-bold text-slate-700 cursor-pointer">
                             <option value="مريض جديد">مريض جديد</option>
-                            <option value="متابعة">متابعة</option>
+                            <option value="متابعة">متابعة (مريض مسجل)</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-600 mb-2">تاريخ الزيارة</label>
-                        <input type="date" id="visitDate" class="w-full p-3.5 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition bg-slate-50">
+                        <label class="block text-sm font-bold text-slate-700 mb-2">تاريخ الزيارة</label>
+                        <input type="date" id="visitDate" class="input-styled font-bold text-slate-700 cursor-pointer">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-600 mb-2">العمر</label>
-                        <input type="number" id="patientAge" placeholder="سنة" class="w-full p-3.5 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition bg-slate-50">
+                        <label class="block text-sm font-bold text-slate-700 mb-2">العمر / السنة</label>
+                        <input type="number" id="patientAge" placeholder="مثال: 35" class="input-styled font-bold text-slate-700">
                     </div>
                 </div>
 
-                <div class="relative bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                <div class="relative bg-slate-50 p-5 rounded-2xl border border-slate-100">
                     <div class="flex justify-between items-center mb-2">
-                        <label class="block text-sm font-semibold text-slate-700">اسم المريض الرباعي</label>
-                        <span id="formPreviousDebt" class="text-xs font-bold text-rose-600 hidden bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-100 animate-pulse"></span>
+                        <label class="block text-sm font-bold text-slate-800">اسم المريض الرباعي</label>
+                        <span id="formPreviousDebt" class="text-xs font-black text-rose-600 hidden bg-rose-100 px-3 py-1 rounded-lg border border-rose-200 animate-pulse"></span>
                     </div>
                     <div class="relative">
                         <i class="fa-solid fa-user absolute right-4 top-4 text-slate-400"></i>
-                        <input type="text" id="patientName" oninput="handleNameInput()" autocomplete="off" placeholder="ابدأ بكتابة الاسم..." class="w-full p-3.5 pr-12 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 font-bold text-slate-700 transition bg-slate-50">
+                        <input type="text" id="patientName" oninput="handleNameInput()" autocomplete="off" placeholder="ابدأ بكتابة اسم المريض للبحث السريع..." class="input-styled pr-12 text-lg !font-black !text-[var(--brand-blue)]">
                     </div>
-                    <div id="suggestionsDropdown" class="hidden absolute right-0 left-0 top-full mt-2 bg-white border border-slate-200 rounded-xl shadow-xl max-h-60 overflow-y-auto z-50"></div>
+                    <div id="suggestionsDropdown" class="hidden absolute right-0 left-0 top-full mt-2 bg-white border border-slate-200 rounded-xl shadow-2xl max-h-64 overflow-y-auto z-50"></div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-slate-600 mb-2">نوع الإجراء الطبي الحالي</label>
-                    <select id="procedureType" class="w-full p-3.5 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition bg-slate-50">
-                        <option disabled selected>اختر الإجراء...</option>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">نوع الإجراء الطبي الحالي</label>
+                    <select id="procedureType" class="input-styled font-bold text-slate-700 cursor-pointer">
+                        <option disabled selected>اختر الإجراء من القائمة...</option>
                         <option>كشف</option>
                         <option>تنظيف وتلميع أسنان</option>
                         <option>حشو عادي</option>
@@ -133,330 +249,310 @@
                     </select>
                 </div>
 
-                <div class="grid grid-cols-2 gap-5 p-5 bg-blue-50/50 rounded-2xl border border-blue-100">
+                <div class="grid grid-cols-2 gap-5 p-6 rounded-2xl border-2" style="background-color: var(--brand-blue-light); border-color: rgba(8, 59, 141, 0.1);">
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">تكلفة اليوم (ج.م)</label>
-                        <input type="number" id="totalCost" placeholder="0" oninput="calculateFormDebt()" class="w-full p-3.5 rounded-xl border border-blue-200 outline-none focus:border-blue-500 font-bold text-slate-800 text-lg">
+                        <label class="block text-sm font-bold text-[var(--brand-blue)] mb-2">تكلفة اليوم (ج.م)</label>
+                        <input type="number" id="totalCost" placeholder="0" oninput="calculateFormDebt()" class="input-styled !text-xl !font-black !text-slate-800">
                     </div>
                     <div>
-                        <label class="block text-sm font-bold text-blue-700 mb-2">المدفوع اليوم (ج.م)</label>
-                        <input type="number" id="paidAmount" placeholder="0" oninput="calculateFormDebt()" class="w-full p-3.5 rounded-xl border border-blue-200 outline-none focus:border-blue-500 font-bold text-blue-700 text-lg bg-white shadow-sm">
+                        <label class="block text-sm font-bold text-[var(--brand-green)] mb-2">المدفوع كاش اليوم (ج.م)</label>
+                        <input type="number" id="paidAmount" placeholder="0" oninput="calculateFormDebt()" class="input-styled !text-xl !font-black !text-[var(--brand-green)] bg-white shadow-sm border-emerald-200">
                     </div>
-                    <div class="col-span-2 text-left pt-3 border-t border-dashed border-blue-200 mt-2 flex justify-between items-center bg-white p-3 rounded-xl border border-blue-50">
-                        <span class="text-sm text-slate-600 font-bold">متبقي من حساب اليوم:</span>
-                        <span id="formDebtBadge" class="text-lg font-black text-rose-500 bg-rose-50 px-3 py-1 rounded-lg">0 ج.م</span>
+                    <div class="col-span-2 text-left pt-4 border-t border-dashed border-[var(--brand-blue)] mt-2 flex justify-between items-center">
+                        <span class="text-sm font-bold text-[var(--brand-blue)]">متبقي من حساب الجلسة الحالية:</span>
+                        <span id="formDebtBadge" class="text-xl font-black text-rose-500 bg-white px-4 py-1.5 rounded-lg shadow-sm border border-rose-100">0 ج.م</span>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-slate-600 mb-2">ملاحظات طبية / روشتة</label>
-                    <textarea id="notes" placeholder="اكتب الأدوية أو الملاحظات لحالة المريض اليوم..." class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 h-28 bg-slate-50 transition"></textarea>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">ملاحظات طبية / روشتة</label>
+                    <textarea id="notes" placeholder="اكتب الأدوية، التعليمات، أو الملاحظات لحالة المريض اليوم..." class="input-styled h-32 leading-relaxed resize-none"></textarea>
                 </div>
 
-                <button type="button" id="submitBtn" onclick="handleSubmit()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-md hover:shadow-lg transform hover:-translate-y-0.5 duration-200">
-                    <i class="fa-solid fa-floppy-disk ml-2"></i> حفظ بيانات الزيارة
+                <button type="button" id="submitBtn" onclick="handleSubmit()" class="w-full text-white py-4 rounded-xl font-bold text-lg transition shadow-lg hover:shadow-xl transform hover:-translate-y-1 duration-200 flex justify-center items-center gap-2" style="background: linear-gradient(135deg, var(--brand-blue), #1e3a8a);">
+                    <i class="fa-solid fa-check-circle text-xl"></i> <span>حفظ بيانات الزيارة وتحديث الملف</span>
                 </button>
             </form>
         </div>
 
-        <!-- 2. شاشة سجل المرضى -->
-        <div id="patients-list" class="tab-section hidden fade-in card p-4 md:p-8">
-            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 border-b border-slate-100 pb-4">
-                <h2 class="text-xl font-bold text-slate-800 flex items-center">
-                    <i class="fa-solid fa-users ml-3 text-blue-600 text-2xl"></i> سجل المرضى
-                </h2>
+        <div id="patients-list" class="tab-section hidden fade-in premium-card p-6 md:p-8 max-w-6xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 border-b border-slate-100 pb-5">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-800">سجل المرضى والملفات</h2>
+                        <p class="text-sm text-slate-500 font-semibold mt-1">إدارة شاملة لجميع الحالات</p>
+                    </div>
+                </div>
                 <div class="relative w-full md:w-80">
                     <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-slate-400"></i>
-                    <input type="text" id="searchInput" onkeyup="searchPatient()" placeholder="ابحث باسم المريض..." class="w-full p-3 pr-11 rounded-xl border border-slate-200 outline-none focus:border-blue-500 bg-slate-50 transition">
+                    <input type="text" id="searchInput" onkeyup="searchPatient()" placeholder="ابحث باسم المريض سريعاً..." class="input-styled pr-11 !rounded-full shadow-inner bg-slate-50">
                 </div>
             </div>
             
             <div class="overflow-x-auto rounded-xl border border-slate-200">
-                <table class="w-full text-right border-collapse whitespace-nowrap">
+                <table class="w-full data-table whitespace-nowrap">
                     <thead>
-                        <tr class="bg-slate-50 text-slate-600 text-sm">
-                            <th class="p-4 font-bold border-b border-slate-200">أول زيارة</th>
-                            <th class="p-4 font-bold border-b border-slate-200">اسم المريض</th>
-                            <th class="p-4 font-bold border-b border-slate-200">العمر</th>
-                            <th class="p-4 font-bold border-b border-slate-200">النوع</th>
-                            <th class="p-4 font-bold border-b border-slate-200">كل الإجراءات</th>
-                            <th class="p-4 font-bold border-b border-slate-200">الإجمالي</th>
-                            <th class="p-4 font-bold border-b border-slate-200">المدفوع</th>
-                            <th class="p-4 font-bold border-b border-slate-200">الباقي (الديون)</th>
-                            <th class="p-4 font-bold border-b border-slate-200 text-center">إدارة</th>
+                        <tr>
+                            <th>أول زيارة</th>
+                            <th>اسم المريض</th>
+                            <th>العمر</th>
+                            <th>النوع</th>
+                            <th>كل الإجراءات</th>
+                            <th>الإجمالي</th>
+                            <th>المدفوع</th>
+                            <th>المتبقي (الديون)</th>
+                            <th class="text-center">إدارة</th>
                         </tr>
                     </thead>
-                    <tbody id="patientsTableBody" class="text-slate-700 text-sm"></tbody>
+                    <tbody id="patientsTableBody"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- 3. شاشة الحسابات الجديدة -->
-        <div id="accounts-section" class="tab-section fade-in space-y-8 max-w-6xl mx-auto">
+        <div id="accounts-section" class="tab-section hidden fade-in space-y-8 max-w-6xl mx-auto">
             
-            <div class="text-center mb-6">
-                <h2 class="text-2xl font-extrabold text-slate-800 flex justify-center items-center gap-3">
-                    <i class="fa-solid fa-sack-dollar text-yellow-500"></i> الحسابات والملخص المالي العام
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-black text-slate-800 flex justify-center items-center gap-3">
+                    <i class="fa-solid fa-sack-dollar text-[var(--brand-green)]"></i> الحسابات والملخص المالي العام
                 </h2>
-                <p class="text-sm text-slate-500 mt-2">متابعة الحسابات والتاريخ والمديونيات الفورية</p>
+                <p class="text-slate-500 mt-2 font-bold">متابعة دقيقة للإيرادات، الحصص، والمديونيات الفورية</p>
             </div>
 
-            <!-- القسم الأول: حسابات ومتحصلات اليوم الفورية -->
-            <div class="bg-white rounded-2xl p-6 border-2 border-emerald-500/20 shadow-sm relative">
-                <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-3">
-                    <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-sun text-yellow-500"></i> حسابات ومتحصلات اليوم الفورية
+            <div class="premium-card p-6 border-t-4" style="border-top-color: var(--brand-green);">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-slate-100 pb-4 gap-4">
+                    <h3 class="font-bold text-slate-800 text-xl flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-[var(--brand-green-light)] text-[var(--brand-green)] flex items-center justify-center text-lg"><i class="fa-solid fa-sun"></i></div>
+                        حسابات ومتحصلات اليوم الفورية
                     </h3>
-                    <div class="flex items-center gap-2">
-                        <label class="text-sm font-semibold text-slate-600">اختر تاريخ اليوم:</label>
-                        <input type="date" id="dailyAccountDate" onchange="renderAllAccounts()" class="p-2 px-3 rounded-lg border border-slate-300 outline-none focus:border-emerald-500 text-sm font-bold text-slate-700 bg-slate-50 shadow-inner">
+                    <div class="flex items-center gap-3 bg-slate-50 p-2 rounded-xl border border-slate-200">
+                        <label class="text-sm font-bold text-slate-600 mr-2">اختر اليوم:</label>
+                        <input type="date" id="dailyAccountDate" onchange="renderAllAccounts()" class="p-2 px-3 rounded-lg border-none outline-none text-sm font-black text-[var(--brand-blue)] bg-transparent cursor-pointer">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Right Col -->
-                    <div class="space-y-4">
-                        <div class="acc-card shadow-sm border border-slate-100">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="space-y-5">
+                        <div class="acc-stat-box">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <h4 class="text-2xl font-black text-slate-800" id="dailyTotalVal">0 <span class="text-sm font-bold text-slate-500">ج</span></h4>
-                                    <p class="text-xs font-bold text-slate-400 mt-2">قيمة كشوفات وحالات اليوم المختار</p>
+                                    <h4 class="text-3xl font-black text-slate-800" id="dailyTotalVal">0 <span class="text-sm font-bold text-slate-500">ج</span></h4>
+                                    <p class="text-sm font-bold text-slate-500 mt-2">قيمة كشوفات وحالات اليوم المختار</p>
                                 </div>
-                                <div class="acc-icon-wrapper bg-rose-50 text-rose-500"><i class="fa-regular fa-calendar-check"></i></div>
+                                <div class="acc-icon-wrapper bg-slate-100 text-slate-500"><i class="fa-regular fa-calendar-check"></i></div>
                             </div>
                         </div>
-                        <div class="acc-card shadow-sm border border-slate-100 bg-emerald-50/30">
+                        <div class="acc-stat-box" style="background-color: var(--brand-green-light); border-color: rgba(101, 179, 46, 0.2);">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <h4 class="text-2xl font-black text-emerald-600" id="dailyDocCashShare">0 <span class="text-sm font-bold text-emerald-600/70">ج</span></h4>
-                                    <p class="text-xs font-bold text-slate-500 mt-2">حصة الدكتور الصافية من الكاش (60%)</p>
+                                    <h4 class="text-3xl font-black" style="color: var(--brand-green);" id="dailyDocCashShare">0 <span class="text-sm font-bold opacity-70">ج</span></h4>
+                                    <p class="text-sm font-bold text-slate-600 mt-2">حصة الدكتور الصافية من الكاش (60%)</p>
                                 </div>
-                                <div class="acc-icon-wrapper bg-emerald-100 text-emerald-600"><i class="fa-solid fa-user-doctor"></i></div>
+                                <div class="acc-icon-wrapper bg-white shadow-sm" style="color: var(--brand-green);"><i class="fa-solid fa-user-doctor"></i></div>
                             </div>
                         </div>
-                        <div class="acc-card shadow-sm border border-slate-100 bg-yellow-50/30">
+                        <div class="acc-stat-box bg-yellow-50/50 border-yellow-100">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <h4 class="text-2xl font-black text-yellow-600" id="dailyDocDebtShare">0 <span class="text-sm font-bold text-yellow-600/70">ج</span></h4>
-                                    <p class="text-xs font-bold text-slate-500 mt-2">نسبة الدكتور من المتبقي اليومي (60%)</p>
+                                    <h4 class="text-3xl font-black text-yellow-600" id="dailyDocDebtShare">0 <span class="text-sm font-bold text-yellow-600/70">ج</span></h4>
+                                    <p class="text-sm font-bold text-yellow-700/80 mt-2">نسبة الدكتور من المتبقي اليومي (60%)</p>
                                 </div>
                                 <div class="acc-icon-wrapper bg-yellow-100 text-yellow-600"><i class="fa-solid fa-scale-balanced"></i></div>
                             </div>
                         </div>
                     </div>
-                    <!-- Left Col -->
-                    <div class="space-y-4">
-                        <div class="acc-card shadow-sm border border-slate-100">
+                    <div class="space-y-5">
+                        <div class="acc-stat-box border-l-4" style="border-left-color: var(--brand-green);">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <h4 class="text-2xl font-black text-emerald-600" id="dailyCashCollected">0 <span class="text-sm font-bold text-emerald-600/70">ج</span></h4>
-                                    <p class="text-xs font-bold text-slate-400 mt-2">المبالغ الكاش المحصلة في الخزينة</p>
+                                    <h4 class="text-3xl font-black text-slate-800" id="dailyCashCollected">0 <span class="text-sm font-bold text-slate-500">ج</span></h4>
+                                    <p class="text-sm font-bold text-slate-500 mt-2">المبالغ الكاش المحصلة في الخزينة</p>
                                 </div>
-                                <div class="acc-icon-wrapper bg-emerald-50 text-emerald-500"><i class="fa-solid fa-money-bills"></i></div>
+                                <div class="acc-icon-wrapper" style="background-color: var(--brand-green-light); color: var(--brand-green);"><i class="fa-solid fa-money-bills text-2xl"></i></div>
                             </div>
                         </div>
-                        <div class="acc-card shadow-sm border border-slate-100 bg-rose-50/30 h-[100px]"> <!-- Adjust height to match layout -->
+                        <div class="acc-stat-box bg-rose-50/50 border-rose-100 h-full"> 
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <h4 class="text-2xl font-black text-rose-500" id="dailyDebtGenerated">0 <span class="text-sm font-bold text-rose-500/70">ج</span></h4>
-                                    <p class="text-xs font-bold text-slate-500 mt-2">الفلوس المتبقية (ديون اليوم الجديد)</p>
+                                    <h4 class="text-4xl font-black text-rose-500" id="dailyDebtGenerated">0 <span class="text-sm font-bold text-rose-500/70">ج</span></h4>
+                                    <p class="text-sm font-bold text-rose-600/80 mt-2">الفلوس المتبقية (ديون اليوم الجديد)</p>
                                 </div>
-                                <div class="acc-icon-wrapper bg-rose-100 text-rose-500"><i class="fa-solid fa-hourglass-half"></i></div>
+                                <div class="acc-icon-wrapper bg-rose-100 text-rose-500 text-2xl"><i class="fa-solid fa-hourglass-half"></i></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- القسم الثاني: جدول المرضى والمدفوعات الكلية -->
-            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-                <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-3 border-b border-slate-100 pb-3">
-                    <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-chart-column text-blue-500"></i> جدول المرضى والمدفوعات الكلية وتوزيع الحصص
+            <div class="premium-card p-6">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-5 gap-4 border-b border-slate-100 pb-4">
+                    <h3 class="font-bold text-slate-800 text-xl flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-[var(--brand-blue-light)] text-[var(--brand-blue)] flex items-center justify-center text-lg"><i class="fa-solid fa-chart-column"></i></div>
+                        جدول المرضى والمدفوعات الكلية
                     </h3>
-                    <div class="relative w-full md:w-64">
-                        <i class="fa-solid fa-magnifying-glass absolute right-3 top-2.5 text-slate-400 text-sm"></i>
-                        <input type="text" id="accSearchInput" onkeyup="renderAccountsTables()" placeholder="بحث سريع عن مريض هنا..." class="w-full p-2 pr-9 rounded-lg border border-slate-300 outline-none focus:border-blue-500 text-sm bg-slate-50">
+                    <div class="relative w-full md:w-72">
+                        <i class="fa-solid fa-search absolute right-4 top-3.5 text-slate-400 text-sm"></i>
+                        <input type="text" id="accSearchInput" onkeyup="renderAccountsTables()" placeholder="بحث سريع عن مريض هنا..." class="input-styled pr-10 !rounded-full bg-slate-50">
                     </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-right border-collapse">
+                <div class="overflow-x-auto rounded-xl border border-slate-200">
+                    <table class="w-full data-table">
                         <thead>
                             <tr>
-                                <th class="p-3 table-header">التاريخ</th>
-                                <th class="p-3 table-header">المريض</th>
-                                <th class="p-3 table-header">الإجراء</th>
-                                <th class="p-3 table-header">الإجمالي</th>
-                                <th class="p-3 table-header">المدفوع الكلي</th>
-                                <th class="p-3 table-header">المتبقي</th>
+                                <th>التاريخ</th>
+                                <th>المريض</th>
+                                <th>الإجراء</th>
+                                <th>الإجمالي</th>
+                                <th>المدفوع الكلي</th>
+                                <th>المتبقي</th>
                             </tr>
                         </thead>
-                        <tbody id="accTableBody">
-                            <!-- Rows injected via JS -->
-                        </tbody>
+                        <tbody id="accTableBody"></tbody>
                         <tfoot>
-                            <tr class="bg-slate-100 font-bold border-t-2 border-slate-300">
-                                <td colspan="3" class="p-3 text-slate-700 text-left">إجمالي المعروض:</td>
-                                <td class="p-3 text-slate-800" id="accTableTotal">0 ج</td>
-                                <td class="p-3 text-emerald-600" id="accTablePaid">0 ج</td>
-                                <td class="p-3 text-rose-600" id="accTableDebt">0 ج</td>
+                            <tr>
+                                <td colspan="3" class="text-left">إجمالي المعروض:</td>
+                                <td id="accTableTotal" class="text-[var(--brand-blue)]">0 ج</td>
+                                <td id="accTablePaid" style="color: var(--brand-green);">0 ج</td>
+                                <td id="accTableDebt" class="text-rose-600">0 ج</td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
             </div>
 
-            <!-- القسم الثالث: جدول الديون والمتأخرات الحالية -->
-            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-                <div class="mb-4 border-b border-slate-100 pb-3">
-                    <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-triangle-exclamation text-yellow-500"></i> جدول الديون والمتأخرات الحالية على المرضى
+            <div class="premium-card p-6 border-t-4 border-rose-400">
+                <div class="mb-5 border-b border-slate-100 pb-4">
+                    <h3 class="font-bold text-slate-800 text-xl flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-rose-50 text-rose-500 flex items-center justify-center text-lg"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        جدول الديون والمتأخرات الحالية
                     </h3>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-right border-collapse">
+                <div class="overflow-x-auto rounded-xl border border-slate-200">
+                    <table class="w-full data-table">
                         <thead>
                             <tr>
-                                <th class="p-3 table-header">التاريخ</th>
-                                <th class="p-3 table-header">المريض</th>
-                                <th class="p-3 table-header">المتبقي المطلوب حالياً</th>
-                                <th class="p-3 table-header">حصة الطبيب من المتبقي</th>
+                                <th>التاريخ (آخر زيارة)</th>
+                                <th>المريض</th>
+                                <th>المتبقي المطلوب حالياً</th>
+                                <th>حصة الطبيب من المتبقي (60%)</th>
                             </tr>
                         </thead>
-                        <tbody id="accDebtTableBody">
-                            <!-- Rows injected via JS -->
-                        </tbody>
+                        <tbody id="accDebtTableBody"></tbody>
                         <tfoot>
-                            <tr class="bg-slate-100 font-bold border-t-2 border-slate-300">
-                                <td colspan="2" class="p-3 text-slate-700 text-left">إجمالي الديون القائمة:</td>
-                                <td class="p-3 text-rose-600" id="accTotalDebts">0 ج</td>
-                                <td class="p-3 text-yellow-600" id="accTotalDocDebts">0 ج</td>
+                            <tr>
+                                <td colspan="2" class="text-left">إجمالي الديون القائمة:</td>
+                                <td id="accTotalDebts" class="text-rose-600 text-lg">0 ج</td>
+                                <td id="accTotalDocDebts" class="text-yellow-600 text-lg">0 ج</td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
             </div>
 
-            <!-- القسم الرابع: الملخص المالي الشهري -->
-            <div class="bg-white rounded-2xl p-6 border-2 border-slate-500/20 shadow-sm relative">
-                <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-3">
-                    <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-calendar-days text-rose-400"></i> الملخص المالي الشهري التفصيلي
+            <div class="premium-card p-6 border-t-4" style="border-top-color: var(--brand-blue);">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-slate-100 pb-4 gap-4">
+                    <h3 class="font-bold text-slate-800 text-xl flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-[var(--brand-blue-light)] text-[var(--brand-blue)] flex items-center justify-center text-lg"><i class="fa-solid fa-calendar-days"></i></div>
+                        الملخص المالي الشهري التفصيلي
                     </h3>
-                    <div class="flex items-center gap-2">
-                        <label class="text-sm font-semibold text-slate-600">اختر الشهر والعام للحساب:</label>
-                        <input type="month" id="monthlyAccountDate" onchange="renderAllAccounts()" class="p-2 px-3 rounded-lg border border-slate-300 outline-none focus:border-slate-500 text-sm font-bold text-slate-700 bg-slate-50 shadow-inner">
+                    <div class="flex items-center gap-3 bg-slate-50 p-2 rounded-xl border border-slate-200">
+                        <label class="text-sm font-bold text-slate-600 mr-2">اختر الشهر:</label>
+                        <input type="month" id="monthlyAccountDate" onchange="renderAllAccounts()" class="p-2 px-3 rounded-lg border-none outline-none text-sm font-black text-[var(--brand-blue)] bg-transparent cursor-pointer">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <!-- Top Row -->
-                    <div class="acc-card shadow-sm border border-slate-100">
-                        <div class="flex justify-center mb-3">
-                            <div class="acc-icon-wrapper bg-blue-50 text-blue-500 mx-auto"><i class="fa-solid fa-chart-line"></i></div>
-                        </div>
-                        <div class="text-center">
-                            <h4 class="text-2xl font-black text-slate-800" id="monthlyTotalVal">0 <span class="text-sm font-bold text-slate-500">ج</span></h4>
-                            <p class="text-xs font-bold text-slate-400 mt-2">إيرادات الكشوفات بالشهر المختار</p>
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <div class="acc-stat-box text-center">
+                        <div class="acc-icon-wrapper bg-[var(--brand-blue-light)] text-[var(--brand-blue)] mx-auto"><i class="fa-solid fa-chart-line"></i></div>
+                        <h4 class="text-3xl font-black text-[var(--brand-blue)] mt-2" id="monthlyTotalVal">0 <span class="text-sm font-bold opacity-70">ج</span></h4>
+                        <p class="text-sm font-bold text-slate-500 mt-2">إيرادات الكشوفات الكلية</p>
                     </div>
-                    <div class="acc-card shadow-sm border border-slate-100">
-                        <div class="flex justify-center mb-3">
-                            <div class="acc-icon-wrapper bg-emerald-50 text-emerald-500 mx-auto"><i class="fa-solid fa-money-bill-wave"></i></div>
-                        </div>
-                        <div class="text-center">
-                            <h4 class="text-2xl font-black text-emerald-600" id="monthlyCashCollected">0 <span class="text-sm font-bold text-emerald-600/70">ج</span></h4>
-                            <p class="text-xs font-bold text-slate-400 mt-2">إجمالي المبلغ المحصل بالشهر</p>
-                        </div>
+                    <div class="acc-stat-box text-center border-b-4" style="border-bottom-color: var(--brand-green);">
+                        <div class="acc-icon-wrapper bg-[var(--brand-green-light)] mx-auto" style="color: var(--brand-green);"><i class="fa-solid fa-money-bill-wave"></i></div>
+                        <h4 class="text-3xl font-black mt-2" style="color: var(--brand-green);" id="monthlyCashCollected">0 <span class="text-sm font-bold opacity-70">ج</span></h4>
+                        <p class="text-sm font-bold text-slate-600 mt-2">الكاش الفعلي المحصل</p>
                     </div>
-                    <div class="acc-card shadow-sm border border-slate-100">
-                        <div class="flex justify-center mb-3">
-                            <div class="acc-icon-wrapper bg-rose-50 text-rose-500 mx-auto"><i class="fa-solid fa-arrow-trend-down"></i></div>
-                        </div>
-                        <div class="text-center">
-                            <h4 class="text-2xl font-black text-rose-500" id="monthlyDebtGenerated">0 <span class="text-sm font-bold text-rose-500/70">ج</span></h4>
-                            <p class="text-xs font-bold text-slate-400 mt-2">الديون المسجلة من حالات هذا الشهر</p>
-                        </div>
+                    <div class="acc-stat-box text-center border-b-4 border-rose-400">
+                        <div class="acc-icon-wrapper bg-rose-50 text-rose-500 mx-auto"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                        <h4 class="text-3xl font-black text-rose-500 mt-2" id="monthlyDebtGenerated">0 <span class="text-sm font-bold opacity-70">ج</span></h4>
+                        <p class="text-sm font-bold text-slate-600 mt-2">الديون المسجلة للشهر</p>
                     </div>
                     
-                    <!-- Bottom Row (Centered two cards) -->
-                    <div class="md:col-span-3 flex flex-col md:flex-row justify-center gap-4">
-                        <div class="acc-card shadow-sm border border-slate-100 md:w-1/3 bg-emerald-50/30">
-                            <div class="flex justify-center mb-3">
-                                <div class="acc-icon-wrapper bg-emerald-100 text-emerald-600 mx-auto"><i class="fa-solid fa-user-doctor"></i></div>
-                            </div>
-                            <div class="text-center">
-                                <h4 class="text-2xl font-black text-slate-800" id="monthlyDocCashShare">0 <span class="text-sm font-bold text-slate-500">ج</span></h4>
-                                <p class="text-xs font-bold text-slate-500 mt-2">حصة الدكتور من المحصل هذا الشهر (60%)</p>
-                            </div>
+                    <div class="md:col-span-3 flex flex-col md:flex-row justify-center gap-5 mt-2">
+                        <div class="acc-stat-box text-center md:w-2/5" style="background-color: var(--brand-green-light); border-color: rgba(101, 179, 46, 0.2);">
+                            <div class="acc-icon-wrapper bg-white shadow-sm mx-auto" style="color: var(--brand-green);"><i class="fa-solid fa-user-doctor"></i></div>
+                            <h4 class="text-3xl font-black text-slate-800 mt-2" id="monthlyDocCashShare">0 <span class="text-sm font-bold text-slate-500">ج</span></h4>
+                            <p class="text-sm font-bold text-[var(--brand-green)] mt-2">حصة الدكتور الصافية (60%)</p>
                         </div>
-                        <div class="acc-card shadow-sm border border-slate-100 md:w-1/3 bg-yellow-50/30">
-                            <div class="flex justify-center mb-3">
-                                <div class="acc-icon-wrapper bg-yellow-100 text-yellow-600 mx-auto"><i class="fa-solid fa-scale-balanced"></i></div>
-                            </div>
-                            <div class="text-center">
-                                <h4 class="text-2xl font-black text-yellow-600" id="monthlyDocDebtShare">0 <span class="text-sm font-bold text-yellow-600/70">ج</span></h4>
-                                <p class="text-xs font-bold text-slate-500 mt-2">حصة الدكتور من ديون هذا الشهر (60%)</p>
-                            </div>
+                        <div class="acc-stat-box text-center md:w-2/5 bg-yellow-50/50 border-yellow-100">
+                            <div class="acc-icon-wrapper bg-white shadow-sm text-yellow-600 mx-auto"><i class="fa-solid fa-scale-balanced"></i></div>
+                            <h4 class="text-3xl font-black text-yellow-600 mt-2" id="monthlyDocDebtShare">0 <span class="text-sm font-bold opacity-70">ج</span></h4>
+                            <p class="text-sm font-bold text-yellow-700 mt-2">نسبة الدكتور من الديون (60%)</p>
                         </div>
                     </div>
                 </div>
             </div>
-
-        </div>
+            
+            <div class="h-10"></div> </div>
     </main>
 
-    <!-- Modal remains the same -->
-    <div id="patientModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
-        <div class="bg-white p-6 md:p-8 rounded-2xl w-full max-w-2xl shadow-2xl animate-[fadeIn_0.3s_ease-out]">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
-                <h3 id="modalPatientName" class="text-2xl font-bold text-slate-800 flex items-center"><i class="fa-solid fa-folder-open ml-3 text-blue-600"></i> </h3>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-rose-500 text-2xl transition bg-slate-50 hover:bg-rose-50 w-10 h-10 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+    <div id="patientModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-[60] p-4 transition-opacity">
+        <div class="bg-white p-6 md:p-8 rounded-3xl w-full max-w-2xl shadow-2xl animate-[fadeIn_0.3s_ease-out] border border-slate-100">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-5 mb-6">
+                <h3 id="modalPatientName" class="text-2xl font-black text-[var(--brand-blue)] flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-[var(--brand-blue-light)] flex items-center justify-center text-lg"><i class="fa-solid fa-folder-open"></i></div>
+                    <span></span>
+                </h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-rose-500 text-xl transition bg-slate-50 hover:bg-rose-50 w-10 h-10 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <div class="mb-6 bg-slate-50 p-4 rounded-xl border border-slate-100 inline-block">
-                <span class="text-slate-500 text-sm">عمر المريض:</span> <strong id="modalAge" class="text-slate-800 ml-2"></strong>
+            <div class="mb-6 bg-slate-50 p-4 rounded-xl border border-slate-100 inline-flex items-center gap-2 shadow-inner">
+                <i class="fa-solid fa-cake-candles text-slate-400"></i>
+                <span class="text-slate-500 text-sm font-bold">عمر المريض:</span> 
+                <strong id="modalAge" class="text-slate-800 text-lg"></strong>
             </div>
 
-            <div class="space-y-5">
+            <div class="space-y-6">
                 <div>
-                    <span class="text-sm font-bold text-slate-700 block mb-3"><i class="fa-solid fa-list-check ml-1 text-blue-500"></i> السجل الطبي والتاريخ المالي (الزيارات):</span>
-                    <div id="modalPatientProc" class="bg-white p-1 rounded-xl max-h-52 overflow-y-auto pr-2"></div>
+                    <span class="text-sm font-bold text-[var(--brand-blue)] flex items-center gap-2 mb-3"><i class="fa-solid fa-list-check"></i> السجل الطبي والتاريخ المالي (الزيارات):</span>
+                    <div id="modalPatientProc" class="bg-slate-50 p-2 rounded-2xl max-h-56 overflow-y-auto pr-2 border border-slate-100 shadow-inner"></div>
                 </div>
                 <div>
-                    <label class="text-sm font-bold text-slate-700 block mb-2"><i class="fa-solid fa-file-prescription ml-1 text-blue-500"></i> الروشتة والملاحظات المستمرة:</label>
-                    <textarea id="modalNotes" class="w-full p-4 border border-slate-200 rounded-xl h-24 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-slate-50 transition leading-relaxed text-slate-700"></textarea>
+                    <label class="text-sm font-bold text-[var(--brand-blue)] flex items-center gap-2 mb-3"><i class="fa-solid fa-file-prescription"></i> الروشتة والملاحظات المستمرة:</label>
+                    <textarea id="modalNotes" class="input-styled h-32 leading-relaxed resize-none"></textarea>
                 </div>
             </div>
-            <div class="flex gap-3 mt-8 justify-end border-t border-slate-100 pt-5">
-                <button onclick="closeModal()" class="bg-white border border-slate-200 text-slate-600 px-6 py-2.5 rounded-xl font-bold hover:bg-slate-50 transition">إلغاء</button>
-                <button onclick="saveModalChanges()" class="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-blue-700 transition shadow-md flex items-center"><i class="fa-solid fa-check ml-2"></i> حفظ التعديلات</button>
+            <div class="flex gap-3 mt-8 justify-end border-t border-slate-100 pt-6">
+                <button onclick="closeModal()" class="bg-white border-2 border-slate-200 text-slate-600 px-8 py-3 rounded-xl font-bold hover:bg-slate-50 transition">إلغاء</button>
+                <button onclick="saveModalChanges()" class="text-white px-8 py-3 rounded-xl font-bold transition shadow-md hover:shadow-lg flex items-center gap-2" style="background-color: var(--brand-blue);">
+                    <i class="fa-solid fa-check"></i> حفظ التعديلات بالملف
+                </button>
             </div>
         </div>
     </div>
 
     <script>
+        // Data Initialization
         let patients = JSON.parse(localStorage.getItem('zamzam_patients_data')) || [];
-        
         patients.forEach(p => {
-            if (!p.visits) {
-                p.visits = [{ date: p.date, proc: p.proc, totalCost: p.totalCost, paidAmount: p.paidAmount }];
-            }
+            if (!p.visits) p.visits = [{ date: p.date, proc: p.proc, totalCost: p.totalCost, paidAmount: p.paidAmount }];
             if(!p.age) p.age = "-";
         });
 
         let editIndex = null;
         let currentModalIndex = null;
 
+        // Set default dates
         document.getElementById('visitDate').valueAsDate = new Date();
         document.getElementById('dailyAccountDate').valueAsDate = new Date();
-        
-        // Format current month for month input YYYY-MM
         const now = new Date();
         const currentMonth = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
         document.getElementById('monthlyAccountDate').value = currentMonth;
 
-        function showTab(tabId) {
+        // UI Logic
+        function showTab(tabId, btnElement) {
             document.querySelectorAll('.tab-section').forEach(section => {
                 section.classList.add('hidden');
                 section.classList.remove('fade-in');
@@ -466,9 +562,13 @@
             void activeTab.offsetWidth;
             activeTab.classList.add('fade-in');
             
-            if(tabId === 'accounts-section') {
-                renderAllAccounts();
+            // Update active state in sidebar
+            if (btnElement && btnElement.classList.contains('nav-item')) {
+                document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+                btnElement.classList.add('active');
             }
+            
+            if(tabId === 'accounts-section') renderAllAccounts();
         }
 
         function triggerAlert(message, type = 'success') {
@@ -478,10 +578,10 @@
             msg.innerText = message;
 
             if (type === 'error') {
-                icon.className = "w-10 h-10 rounded-xl flex items-center justify-center text-lg bg-red-50 text-red-500";
+                icon.className = "w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-rose-100 text-rose-600";
                 icon.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
             } else {
-                icon.className = "w-10 h-10 rounded-xl flex items-center justify-center text-lg bg-blue-50 text-blue-600";
+                icon.className = "w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-[#f2fceb] text-[#65b32e]";
                 icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
             }
 
@@ -498,6 +598,7 @@
             }, 3000);
         }
 
+        // Form Logic
         function calculateFormDebt() {
             const total = parseFloat(document.getElementById('totalCost').value) || 0;
             const paid = parseFloat(document.getElementById('paidAmount').value) || 0;
@@ -517,15 +618,11 @@
             if (visitType !== 'متابعة' || query === '') {
                 dropdown.classList.add('hidden');
                 badge.classList.add('hidden');
-                
-                if(visitType === 'مريض جديد' && !editIndex){
-                     document.getElementById('patientAge').value = '';
-                }
+                if(visitType === 'مريض جديد' && !editIndex) document.getElementById('patientAge').value = '';
                 return;
             }
             
             const matches = patients.filter(p => p.name.toLowerCase().includes(query));
-            
             if (matches.length === 0) {
                 dropdown.classList.add('hidden');
                 badge.classList.add('hidden');
@@ -535,20 +632,19 @@
             dropdown.classList.remove('hidden');
             matches.forEach(p => {
                 const item = document.createElement('div');
-                item.className = "p-3 hover:bg-blue-50 cursor-pointer border-b border-slate-100 last:border-0 flex justify-between items-center text-sm text-slate-700 transition";
+                item.className = "p-4 hover:bg-[var(--brand-blue-light)] cursor-pointer border-b border-slate-100 last:border-0 flex justify-between items-center text-sm text-slate-700 transition";
                 item.innerHTML = `
-                    <div class="flex items-center">
-                        <i class="fa-solid fa-user text-blue-400 ml-2"></i>
-                        <span class="font-bold">${p.name}</span>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm text-[var(--brand-blue)]"><i class="fa-solid fa-user"></i></div>
+                        <span class="font-black text-[var(--brand-blue)]">${p.name}</span>
                     </div>
-                    <span class="text-xs font-bold ${p.debt > 0 ? 'bg-rose-50 text-rose-600 border-rose-200' : 'bg-emerald-50 text-emerald-600 border-emerald-200'} px-2 py-1 rounded-lg border">ديون: ${p.debt} ج.م</span>
+                    <span class="text-xs font-black ${p.debt > 0 ? 'bg-rose-100 text-rose-600 border-rose-200' : 'bg-[#f2fceb] text-[#65b32e] border-emerald-200'} px-3 py-1.5 rounded-lg border shadow-sm">المديونية: ${p.debt} ج.م</span>
                 `;
-                
                 item.onclick = function() {
                     nameInput.value = p.name;
                     document.getElementById('patientAge').value = p.age || '';
                     dropdown.classList.add('hidden');
-                    badge.innerText = `الديون السابقة: ${p.debt} ج.م`;
+                    badge.innerText = `تحذير: مديونية سابقة ${p.debt} ج.م`;
                     badge.classList.remove('hidden');
                 };
                 dropdown.appendChild(item);
@@ -558,9 +654,7 @@
         document.addEventListener('click', function(e) {
             const dropdown = document.getElementById('suggestionsDropdown');
             const nameInput = document.getElementById('patientName');
-            if (dropdown && nameInput && !nameInput.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.classList.add('hidden');
-            }
+            if (dropdown && nameInput && !nameInput.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.add('hidden');
         });
 
         function saveAndSyncSystemData() {
@@ -580,39 +674,29 @@
             const notes = document.getElementById('notes').value.trim();
             const debt = totalCost - paidAmount;
 
-            if (!name || !proc) {
-                triggerAlert("من فضلك أدخل اسم المريض واختر الإجراء الطبي", "error");
-                return;
-            }
+            if (!name || !proc) return triggerAlert("من فضلك أدخل اسم المريض واختر الإجراء الطبي", "error");
 
             const currentVisitObj = { date, proc, totalCost, paidAmount };
 
             if (editIndex === null) {
                 if (type === 'متابعة') {
                     const existingIndex = patients.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
-                    
                     if (existingIndex !== -1) {
                         if(age) patients[existingIndex].age = age;
-                        
                         patients[existingIndex].proc += ` | ${date}: ${proc}`; 
                         patients[existingIndex].totalCost += totalCost;
                         patients[existingIndex].paidAmount += paidAmount;
                         patients[existingIndex].debt = patients[existingIndex].totalCost - patients[existingIndex].paidAmount;
-                        
-                        if (notes) {
-                            patients[existingIndex].notes += `
-[${date}]: ${notes}`;
-                        }
-                        
+                        if (notes) patients[existingIndex].notes += `\n[${date}]: ${notes}`;
                         patients[existingIndex].visits.push(currentVisitObj);
-                        triggerAlert(`تم إضافة المتابعة وتحديث حساب ${name}!`, "success");
+                        triggerAlert(`تم إضافة المتابعة وتحديث حساب ${name}!`);
                     } else {
                         patients.push({ name, age, date, type: 'مريض جديد', proc, totalCost, paidAmount, debt, notes, visits: [currentVisitObj] });
-                        triggerAlert("تم إنشاء ملف جديد لعدم وجود سجل سابق", "success");
+                        triggerAlert("تم إنشاء ملف جديد لعدم وجود سجل سابق");
                     }
                 } else {
                     patients.push({ name, age, date, type, proc, totalCost, paidAmount, debt, notes, visits: [currentVisitObj] });
-                    triggerAlert("تم تسجيل المريض الجديد بنجاح!", "success");
+                    triggerAlert("تم تسجيل المريض الجديد بنجاح!");
                 }
             } else {
                 patients[editIndex].name = name;
@@ -621,14 +705,11 @@
                 patients[editIndex].paidAmount = paidAmount;
                 patients[editIndex].debt = totalCost - paidAmount;
                 patients[editIndex].notes = notes;
-                
-                if(patients[editIndex].visits.length > 0) {
-                    patients[editIndex].visits[patients[editIndex].visits.length - 1] = currentVisitObj;
-                }
-                triggerAlert("تم تعديل بيانات الزيارة بنجاح!", "success");
+                if(patients[editIndex].visits.length > 0) patients[editIndex].visits[patients[editIndex].visits.length - 1] = currentVisitObj;
+                triggerAlert("تم تعديل بيانات الزيارة بنجاح!");
                 editIndex = null;
-                document.getElementById('submitBtn').innerHTML = `<i class="fa-solid fa-floppy-disk ml-2"></i> حفظ بيانات الزيارة`;
-                document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-user-plus ml-3 text-blue-600 text-3xl"></i> تسجيل مريض أو زيارة`;
+                document.getElementById('submitBtn').innerHTML = `<i class="fa-solid fa-check-circle text-xl"></i> <span>حفظ بيانات الزيارة وتحديث الملف</span>`;
+                document.getElementById('formTitle').innerText = `تسجيل مريض أو زيارة`;
             }
 
             document.getElementById('patientForm').reset();
@@ -637,43 +718,42 @@
             document.getElementById('paidAmount').value = "";
             document.getElementById('formDebtBadge').innerText = "0 ج.م";
             document.getElementById('formPreviousDebt').classList.add('hidden');
-            
             saveAndSyncSystemData();
         }
 
+        // Table & Modal Logic
         function renderTable(dataArray = patients) {
             const tbody = document.getElementById('patientsTableBody');
             tbody.innerHTML = '';
-
             dataArray.forEach((patient) => {
                 const realIndex = patients.indexOf(patient);
                 tbody.innerHTML += `
-                    <tr class="border-b border-slate-100 hover:bg-slate-100/50 transition">
-                        <td class="p-4 text-xs text-slate-500 whitespace-nowrap font-bold">${patient.date}</td>
-                        <td class="p-4 font-bold text-blue-600 hover:text-blue-500 cursor-pointer transition" onclick="openModal(${realIndex})">${patient.name}</td>
-                        <td class="p-4 text-xs text-slate-500 font-semibold">${patient.age || '-'}</td>
-                        <td class="p-4 text-xs">
-                            <span class="px-3 py-1.5 rounded-lg font-bold ${patient.type === 'مريض جديد' ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-100 text-slate-600'}">
+                    <tr>
+                        <td class="text-slate-500 font-bold">${patient.date}</td>
+                        <td class="font-black text-[var(--brand-blue)] hover:opacity-80 cursor-pointer transition" onclick="openModal(${realIndex})">${patient.name}</td>
+                        <td class="text-slate-500 font-bold">${patient.age || '-'}</td>
+                        <td>
+                            <span class="px-3 py-1 rounded-lg font-bold text-xs ${patient.type === 'مريض جديد' ? 'bg-[var(--brand-blue-light)] text-[var(--brand-blue)]' : 'bg-slate-100 text-slate-600'}">
                                 ${patient.type}
                             </span>
                         </td>
-                        <td class="p-4 text-xs text-slate-600 max-w-[150px] truncate" title="${patient.proc}">${patient.proc}</td>
-                        <td class="p-4 font-bold text-slate-800">${patient.totalCost} ج.م</td>
-                        <td class="p-4 font-bold text-emerald-600">${patient.paidAmount} ج.م</td>
-                        <td class="p-4 font-black ${patient.debt > 0 ? 'text-rose-600 bg-rose-50/70 rounded-lg' : 'text-slate-400'}">${patient.debt} ج.م</td>
-                        <td class="p-4 text-center flex justify-center gap-2">
-                            <button onclick="editPatient(${realIndex})" class="text-slate-400 hover:text-blue-600 bg-white hover:bg-blue-50 border border-slate-200 p-2.5 rounded-lg transition shadow-sm" title="تعديل"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deletePatient(${realIndex})" class="text-slate-400 hover:text-rose-600 bg-white hover:bg-rose-50 border border-slate-200 p-2.5 rounded-lg transition shadow-sm" title="حذف"><i class="fa-solid fa-trash"></i></button>
+                        <td class="text-slate-600 truncate max-w-[150px]" title="${patient.proc}">${patient.proc}</td>
+                        <td class="font-black text-slate-800">${patient.totalCost} ج</td>
+                        <td class="font-black" style="color: var(--brand-green);">${patient.paidAmount} ج</td>
+                        <td class="font-black ${patient.debt > 0 ? 'text-rose-500 bg-rose-50/50 rounded-lg' : 'text-slate-400'}">${patient.debt} ج</td>
+                        <td class="text-center flex justify-center gap-2">
+                            <button onclick="editPatient(${realIndex})" class="w-9 h-9 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-[var(--brand-blue)] hover:border-[var(--brand-blue)] shadow-sm transition flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deletePatient(${realIndex})" class="w-9 h-9 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-rose-500 hover:border-rose-500 shadow-sm transition flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>`;
             });
         }
 
         function deletePatient(index) {
-            if (confirm("هل أنت متأكد من حذف ملف المريض ده بكل حساباته؟ (الخطوة دي مش بترجع)")) {
+            if (confirm("هل أنت متأكد من حذف ملف المريض ده نهائياً؟")) {
                 patients.splice(index, 1);
                 saveAndSyncSystemData();
-                triggerAlert("تم حذف الملف بنجاح", "success");
+                triggerAlert("تم حذف الملف بنجاح");
             }
         }
 
@@ -687,61 +767,56 @@
             document.getElementById('visitType').value = p.type;
             
             const procParts = p.proc.split(' | ');
-            const lastProcStr = procParts[procParts.length - 1];
-            const lastProc = lastProcStr.includes(':') ? lastProcStr.split(':')[1].trim() : lastProcStr.trim();
-            
+            const lastProc = (procParts[procParts.length - 1].includes(':') ? procParts[procParts.length - 1].split(':')[1] : procParts[procParts.length - 1]).trim();
             const selectObj = document.getElementById('procedureType');
             let found = false;
             for(let i=0; i<selectObj.options.length; i++) {
-                if(selectObj.options[i].text === lastProc) {
-                    selectObj.selectedIndex = i;
-                    found = true;
-                    break;
-                }
+                if(selectObj.options[i].text === lastProc) { selectObj.selectedIndex = i; found = true; break; }
             }
             if(!found) selectObj.selectedIndex = 0;
 
             document.getElementById('totalCost').value = p.totalCost;
             document.getElementById('paidAmount').value = p.paidAmount;
             document.getElementById('notes').value = p.notes;
-
             calculateFormDebt();
-            document.getElementById('submitBtn').innerHTML = `<i class="fa-solid fa-pen-to-square ml-2"></i> تحديث بيانات الزيارة`;
-            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square ml-3 text-blue-600 text-3xl"></i> تعديل زيارة: <span class="text-slate-800 text-xl font-bold ml-2">${p.name}</span>`;
-            showTab('add-patient');
+            
+            document.getElementById('submitBtn').innerHTML = `<i class="fa-solid fa-pen text-xl"></i> <span>تحديث بيانات الزيارة</span>`;
+            document.getElementById('formTitle').innerText = `تعديل ملف: ${p.name}`;
+            
+            // Activate Registration Tab
+            showTab('add-patient', document.querySelector('.nav-item')); 
         }
 
         function searchPatient() {
             const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = patients.filter(p => p.name.toLowerCase().includes(query));
-            renderTable(filtered);
+            renderTable(patients.filter(p => p.name.toLowerCase().includes(query)));
         }
 
         function openModal(index) {
             currentModalIndex = index;
             const p = patients[index];
-            document.getElementById('modalPatientName').innerHTML = `<i class="fa-solid fa-folder-open ml-3 text-blue-600"></i> ${p.name}`;
+            document.getElementById('modalPatientName').innerHTML = `<div class="w-10 h-10 rounded-full bg-[var(--brand-blue-light)] flex items-center justify-center text-lg"><i class="fa-solid fa-folder-open"></i></div> <span>${p.name}</span>`;
             document.getElementById('modalAge').innerText = p.age ? p.age + ' سنة' : 'غير مسجل';
             
-            let visitsHtml = '<div class="space-y-2">';
+            let visitsHtml = '<div class="space-y-3">';
             if(p.visits && p.visits.length > 0) {
                 p.visits.forEach((v, idx) => {
                     let visitLabel = idx === 0 ? 'زيارة أولى' : `متابعة ${idx}`;
                     visitsHtml += `
-                    <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100 flex flex-col md:flex-row md:justify-between md:items-center text-sm gap-2">
-                        <div>
-                            <span class="text-blue-600 font-bold bg-blue-50/50 px-2.5 py-1 rounded-md text-xs">${v.date} (${visitLabel})</span>
-                            <span class="ml-2 font-semibold text-slate-700">${v.proc}</span>
+                    <div class="bg-white p-4 rounded-xl border border-slate-100 flex flex-col md:flex-row md:justify-between md:items-center gap-3 shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <span class="text-[var(--brand-blue)] font-black bg-[var(--brand-blue-light)] px-3 py-1 rounded-lg text-xs">${v.date} (${visitLabel})</span>
+                            <span class="font-bold text-slate-700">${v.proc}</span>
                         </div>
-                        <div class="text-xs flex items-center gap-3">
-                            <span class="text-slate-500">التكلفة: <strong class="text-slate-800 text-sm">${v.totalCost} ج.م</strong></span>
-                            <span class="text-slate-300">|</span>
-                            <span class="text-slate-500">المدفوع: <strong class="text-emerald-600 text-sm">${v.paidAmount} ج.م</strong></span>
+                        <div class="text-xs flex items-center gap-4 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">
+                            <span class="text-slate-500 font-bold">التكلفة: <strong class="text-slate-800 text-sm mx-1">${v.totalCost}</strong> ج</span>
+                            <span class="w-px h-4 bg-slate-200"></span>
+                            <span class="text-slate-500 font-bold">المدفوع: <strong class="text-sm mx-1" style="color: var(--brand-green);">${v.paidAmount}</strong> ج</span>
                         </div>
                     </div>`;
                 });
             } else {
-                visitsHtml += '<p class="text-slate-500 text-xs">لا يوجد تفاصيل للزيارات القديمة.</p>';
+                visitsHtml += '<p class="text-slate-400 text-sm font-bold text-center py-4">لا يوجد تفاصيل للزيارات القديمة.</p>';
             }
             visitsHtml += '</div>';
             
@@ -758,13 +833,13 @@
         function saveModalChanges() {
             if (currentModalIndex !== null) {
                 patients[currentModalIndex].notes = document.getElementById('modalNotes').value;
-                triggerAlert("تم تحديث الملاحظات الطبية بنجاح!", "success");
+                triggerAlert("تم حفظ التعديلات بالملف بنجاح!");
                 closeModal();
                 saveAndSyncSystemData();
             }
         }
 
-        // --- ACCOUNT SECTION LOGIC ---
+        // Accounts Logic
         function renderAllAccounts() {
             renderDailyAccounts();
             renderAccountsTables();
@@ -774,133 +849,101 @@
         function renderDailyAccounts() {
             const filterDate = document.getElementById('dailyAccountDate').value;
             let totalVal = 0, cashCollected = 0;
-
             patients.forEach(p => {
                 if (p.visits) {
                     p.visits.forEach(v => {
-                        if (v.date === filterDate) {
-                            totalVal += v.totalCost;
-                            cashCollected += v.paidAmount;
-                        }
+                        if (v.date === filterDate) { totalVal += v.totalCost; cashCollected += v.paidAmount; }
                     });
                 }
             });
 
             const debtGen = totalVal - cashCollected;
-            const docCashShare = cashCollected * 0.60;
-            const docDebtShare = debtGen * 0.60;
-
             document.getElementById('dailyTotalVal').innerHTML = `${totalVal} <span class="text-sm font-bold text-slate-500">ج</span>`;
-            document.getElementById('dailyCashCollected').innerHTML = `${cashCollected} <span class="text-sm font-bold text-emerald-600/70">ج</span>`;
-            document.getElementById('dailyDocCashShare').innerHTML = `${docCashShare.toFixed(1)} <span class="text-sm font-bold text-emerald-600/70">ج</span>`;
+            document.getElementById('dailyCashCollected').innerHTML = `${cashCollected} <span class="text-sm font-bold text-slate-500">ج</span>`;
+            document.getElementById('dailyDocCashShare').innerHTML = `${(cashCollected * 0.60).toFixed(1)} <span class="text-sm font-bold opacity-70">ج</span>`;
             document.getElementById('dailyDebtGenerated').innerHTML = `${debtGen} <span class="text-sm font-bold text-rose-500/70">ج</span>`;
-            document.getElementById('dailyDocDebtShare').innerHTML = `${docDebtShare.toFixed(1)} <span class="text-sm font-bold text-yellow-600/70">ج</span>`;
+            document.getElementById('dailyDocDebtShare').innerHTML = `${(debtGen * 0.60).toFixed(1)} <span class="text-sm font-bold text-yellow-600/70">ج</span>`;
         }
 
         function renderAccountsTables() {
             const query = document.getElementById('accSearchInput').value.toLowerCase();
             const tbody1 = document.getElementById('accTableBody');
             const tbody2 = document.getElementById('accDebtTableBody');
-            
-            tbody1.innerHTML = '';
-            tbody2.innerHTML = '';
-
-            let sumTotal = 0, sumPaid = 0, sumDebt = 0;
-            let sumGlobalDebt = 0, sumGlobalDocDebt = 0;
-
-            // Flatten visits for Table 1
+            tbody1.innerHTML = ''; tbody2.innerHTML = '';
+            let sumTotal = 0, sumPaid = 0, sumDebt = 0, sumGlobalDebt = 0, sumGlobalDocDebt = 0;
             let allVisits = [];
+
             patients.forEach(p => {
                 if(p.name.toLowerCase().includes(query)) {
-                    if (p.visits) {
-                        p.visits.forEach(v => {
-                            allVisits.push({ name: p.name, ...v });
-                        });
-                    }
-                    
-                    // Table 2 Logic (Current overall patient debt)
+                    if (p.visits) p.visits.forEach(v => allVisits.push({ name: p.name, ...v }));
                     if(p.debt > 0) {
                         const docDebt = p.debt * 0.60;
                         sumGlobalDebt += p.debt;
                         sumGlobalDocDebt += docDebt;
-                        
-                        // Use last visit date as proxy for debt date
                         const lastDate = p.visits && p.visits.length > 0 ? p.visits[p.visits.length - 1].date : p.date;
-
                         tbody2.innerHTML += `
-                            <tr class="table-row">
-                                <td class="p-3 text-slate-500">${lastDate}</td>
-                                <td class="p-3 font-bold">${p.name}</td>
-                                <td class="p-3 text-rose-600 font-bold">${p.debt} ج</td>
-                                <td class="p-3 text-yellow-600 font-bold">${docDebt.toFixed(1)} ج</td>
+                            <tr>
+                                <td class="text-slate-500 font-bold">${lastDate}</td>
+                                <td class="font-black text-[var(--brand-blue)]">${p.name}</td>
+                                <td class="text-rose-500 font-black">${p.debt} ج</td>
+                                <td class="text-yellow-600 font-black">${docDebt.toFixed(1)} ج</td>
                             </tr>
                         `;
                     }
                 }
             });
 
-            // Sort visits by date descending
             allVisits.sort((a, b) => new Date(b.date) - new Date(a.date));
-
             allVisits.forEach(v => {
                 const rem = v.totalCost - v.paidAmount;
-                sumTotal += v.totalCost;
-                sumPaid += v.paidAmount;
-                sumDebt += rem;
-
+                sumTotal += v.totalCost; sumPaid += v.paidAmount; sumDebt += rem;
                 tbody1.innerHTML += `
-                    <tr class="table-row">
-                        <td class="p-3 text-slate-500">${v.date}</td>
-                        <td class="p-3 font-bold">${v.name}</td>
-                        <td class="p-3 text-slate-600 truncate max-w-[150px]">${v.proc}</td>
-                        <td class="p-3 text-slate-800">${v.totalCost} ج</td>
-                        <td class="p-3 text-emerald-600">${v.paidAmount} ج</td>
-                        <td class="p-3 font-bold ${rem > 0 ? 'text-rose-600' : 'text-slate-400'}">${rem} ج</td>
+                    <tr>
+                        <td class="text-slate-500 font-bold">${v.date}</td>
+                        <td class="font-black text-[var(--brand-blue)]">${v.name}</td>
+                        <td class="text-slate-600 truncate max-w-[150px] font-bold">${v.proc}</td>
+                        <td class="text-slate-800 font-black">${v.totalCost} ج</td>
+                        <td class="font-black" style="color: var(--brand-green);">${v.paidAmount} ج</td>
+                        <td class="font-black ${rem > 0 ? 'text-rose-500' : 'text-slate-400'}">${rem} ج</td>
                     </tr>
                 `;
             });
 
-            // Update footer totals
             document.getElementById('accTableTotal').innerText = `${sumTotal} ج`;
             document.getElementById('accTablePaid').innerText = `${sumPaid} ج`;
             document.getElementById('accTableDebt').innerText = `${sumDebt} ج`;
-            
             document.getElementById('accTotalDebts').innerText = `${sumGlobalDebt} ج`;
             document.getElementById('accTotalDocDebts').innerText = `${sumGlobalDocDebt.toFixed(1)} ج`;
         }
 
         function renderMonthlyAccounts() {
-            const filterMonth = document.getElementById('monthlyAccountDate').value; // YYYY-MM
-            let totalVal = 0, cashCollected = 0;
-
+            const filterMonth = document.getElementById('monthlyAccountDate').value;
             if(!filterMonth) return;
-
+            let totalVal = 0, cashCollected = 0;
             patients.forEach(p => {
                 if (p.visits) {
                     p.visits.forEach(v => {
-                        // v.date format is YYYY-MM-DD
-                        if (v.date && v.date.startsWith(filterMonth)) {
-                            totalVal += v.totalCost;
-                            cashCollected += v.paidAmount;
-                        }
+                        if (v.date && v.date.startsWith(filterMonth)) { totalVal += v.totalCost; cashCollected += v.paidAmount; }
                     });
                 }
             });
-
             const debtGen = totalVal - cashCollected;
-            const docCashShare = cashCollected * 0.60;
-            const docDebtShare = debtGen * 0.60;
-
-            document.getElementById('monthlyTotalVal').innerHTML = `${totalVal} <span class="text-sm font-bold text-slate-500">ج</span>`;
-            document.getElementById('monthlyCashCollected').innerHTML = `${cashCollected} <span class="text-sm font-bold text-emerald-600/70">ج</span>`;
-            document.getElementById('monthlyDebtGenerated').innerHTML = `${debtGen} <span class="text-sm font-bold text-rose-500/70">ج</span>`;
-            document.getElementById('monthlyDocCashShare').innerHTML = `${docCashShare.toFixed(1)} <span class="text-sm font-bold text-slate-500">ج</span>`;
-            document.getElementById('monthlyDocDebtShare').innerHTML = `${docDebtShare.toFixed(1)} <span class="text-sm font-bold text-yellow-600/70">ج</span>`;
+            document.getElementById('monthlyTotalVal').innerHTML = `${totalVal} <span class="text-sm font-bold opacity-70">ج</span>`;
+            document.getElementById('monthlyCashCollected').innerHTML = `${cashCollected} <span class="text-sm font-bold opacity-70">ج</span>`;
+            document.getElementById('monthlyDebtGenerated').innerHTML = `${debtGen} <span class="text-sm font-bold opacity-70">ج</span>`;
+            document.getElementById('monthlyDocCashShare').innerHTML = `${(cashCollected * 0.60).toFixed(1)} <span class="text-sm font-bold text-slate-500">ج</span>`;
+            document.getElementById('monthlyDocDebtShare').innerHTML = `${(debtGen * 0.60).toFixed(1)} <span class="text-sm font-bold opacity-70">ج</span>`;
         }
 
-        // Start
         saveAndSyncSystemData();
-        showTab('add-patient'); 
+        showTab('add-patient', document.querySelector('.nav-item')); 
     </script>
 </body>
-</html>
+</html>"""
+    
+    file_path = "/mnt/data/zamzam_clinic_v3_branded.html"
+    with open(file_path, "w", encoding="utf-8") as f:
+        f.write(html_content)
+    return file_path
+
+generate_html()
