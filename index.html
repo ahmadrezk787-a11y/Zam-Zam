@@ -3,72 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عيادة زمزم — تسجيل مريض جديد</title>
+    <title>عيادة زمزم - نظام الإدارة</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600&display=swap');
         body { font-family: 'Cairo', sans-serif; background-color: #f4f7f6; }
-        .card { background: #ffffff; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .tab-content { display: none; }
+        .active-tab { display: block; }
     </style>
 </head>
-<body class="p-4 md:p-10 flex justify-center">
+<body class="flex h-screen">
 
-    <div class="max-w-xl w-full card p-8">
-        <h2 class="text-2xl font-bold text-slate-800 mb-8 flex items-center">
-            <i class="fa-solid fa-user-plus ml-3 text-teal-600"></i> تسجيل مريض جديد
-        </h2>
+    <aside class="w-64 bg-slate-800 text-white p-6">
+        <h1 class="text-2xl font-bold mb-10 text-teal-400"><i class="fa-solid fa-tooth"></i> عيادة زمزم</h1>
+        <ul class="space-y-4">
+            <li><button onclick="showTab('add-patient')" class="w-full text-right p-3 hover:bg-teal-700 rounded transition"><i class="fa-solid fa-user-plus ml-2"></i> إضافة مريض</button></li>
+            <li><button onclick="showTab('patients-list')" class="w-full text-right p-3 hover:bg-teal-700 rounded transition"><i class="fa-solid fa-users ml-2"></i> سجل المرضى</button></li>
+        </ul>
+    </aside>
 
-        <form class="space-y-6">
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-slate-600 mb-2">نوع الزيارة</label>
-                    <select class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 outline-none">
-                        <option>مريض جديد</option>
-                        <option>متابعة</option>
-                    </select>
+    <main class="flex-1 p-8 overflow-y-auto">
+        
+        <div id="add-patient" class="tab-content active-tab max-w-xl mx-auto bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+            <h2 class="text-2xl font-bold text-slate-800 mb-8"><i class="fa-solid fa-user-plus ml-3 text-teal-600"></i> تسجيل مريض جديد</h2>
+            <form class="space-y-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <select class="w-full p-3 rounded-xl border border-slate-200"><option>مريض جديد</option><option>متابعة</option></select>
+                    <input type="date" id="visitDate" class="w-full p-3 rounded-xl border border-slate-200">
                 </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-600 mb-2">تاريخ الزيارة</label>
-                    <input type="date" id="visitDate" class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 outline-none">
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-sm font-semibold text-slate-600 mb-2">اسم المريض</label>
-                <input type="text" placeholder="اكتب اسم المريض هنا" class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 outline-none">
-            </div>
-
-            <div>
-                <label class="block text-sm font-semibold text-slate-600 mb-2">نوع الإجراء الطبي</label>
-                <select class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 outline-none">
-                    <option disabled selected>اختر الإجراء...</option>
-                    <option>كشف</option>
-                    <option>تنظيف وتلميع أسنان</option>
-                    <option>حشو عادي</option>
-                    <option>حشو عصب</option>
-                    <option>خلع عادي</option>
-                    <option>خلع جراحي</option>
-                    <option>خلع ضرس عقل</option>
-                    <option>تركيبات / تيجان</option>
-                    <option>تبييض أسنان</option>
-                    <option>تقويم</option>
+                <input type="text" placeholder="اسم المريض" class="w-full p-3 rounded-xl border border-slate-200">
+                <select class="w-full p-3 rounded-xl border border-slate-200">
+                    <option>كشف</option><option>حشو عادي</option><option>حشو عصب</option><option>خلع عادي</option>
                 </select>
-            </div>
+                <textarea placeholder="ملاحظات..." class="w-full p-3 rounded-xl border border-slate-200 h-24"></textarea>
+                <button type="button" class="w-full bg-teal-600 text-white py-4 rounded-xl font-bold hover:bg-teal-700">حفظ البيانات</button>
+            </form>
+        </div>
 
-            <div>
-                <label class="block text-sm font-semibold text-slate-600 mb-2">ملاحظات إضافية</label>
-                <textarea placeholder="اكتب أي ملاحظات طبية أو توصيات للمريض هنا..." class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 outline-none h-24"></textarea>
-            </div>
-
-            <button type="button" class="w-full bg-teal-600 text-white py-4 rounded-xl font-bold hover:bg-teal-700 transition duration-300 shadow-md">
-                حفظ البيانات
-            </button>
-        </form>
-    </div>
+        <div id="patients-list" class="tab-content bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+            <h2 class="text-xl font-bold text-slate-800 mb-6">سجل ملفات المرضى</h2>
+            <table class="w-full text-right border-collapse">
+                <thead><tr class="border-b text-slate-500"><th class="py-3">الاسم</th><th class="py-3">الإجراء</th><th class="py-3">التاريخ</th></tr></thead>
+                <tbody>
+                    <tr class="border-b"><td class="py-4">أحمد محمد</td><td class="py-4">حشو عصب</td><td class="py-4">2026-05-25</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
 
     <script>
         document.getElementById('visitDate').valueAsDate = new Date();
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
+            document.getElementById(tabId).classList.add('active-tab');
+        }
     </script>
 </body>
 </html>
