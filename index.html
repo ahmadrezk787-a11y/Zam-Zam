@@ -3,42 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة عيادة زمزم</title>
+    <title>عيادة زمزم — إدارة المرضى</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap');
+        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
     </style>
 </head>
-<body class="h-screen flex">
+<body class="flex min-h-screen">
 
-    <nav class="w-64 bg-slate-900 text-white p-5">
-        <h1 class="text-2xl font-bold mb-10 text-blue-400"><i class="fa-solid fa-stethoscope"></i> عيادة زمزم</h1>
-        <ul class="space-y-4">
-            <li><button onclick="showTab('dashboard')" class="w-full text-right p-3 hover:bg-slate-800 rounded"><i class="fa-solid fa-house"></i> الرئيسية</button></li>
-            <li><button onclick="showTab('patients')" class="w-full text-right p-3 hover:bg-slate-800 rounded"><i class="fa-solid fa-user-injured"></i> المرضى</button></li>
-            <li><button onclick="showTab('appointments')" class="w-full text-right p-3 hover:bg-slate-800 rounded"><i class="fa-solid fa-calendar-check"></i> المواعيد</button></li>
-            <li><button onclick="showTab('finance')" class="w-full text-right p-3 hover:bg-slate-800 rounded"><i class="fa-solid fa-money-bill-wave"></i> الحسابات</button></li>
+    <nav class="w-64 bg-slate-800 text-white p-6 shadow-xl">
+        <h1 class="text-xl font-bold mb-10 text-blue-300 border-b border-slate-700 pb-4"><i class="fa-solid fa-clinic-medical"></i> عيادة زمزم</h1>
+        <ul class="space-y-2">
+            <li><button onclick="showTab('add-patient')" class="w-full text-right p-3 hover:bg-blue-600 rounded transition"><i class="fa-solid fa-user-plus ml-2"></i> إضافة مريض</button></li>
         </ul>
     </nav>
 
-    <main class="flex-1 p-8 overflow-y-auto">
-        <div id="dashboard" class="tab-content">
-            <h2 class="text-2xl font-bold mb-6">لوحة التحكم</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-lg shadow">إجمالي المرضى: 0</div>
-                <div class="bg-white p-6 rounded-lg shadow">مواعيد اليوم: 0</div>
-                <div class="bg-white p-6 rounded-lg shadow">الدخل اليومي: 0</div>
-            </div>
+    <main class="flex-1 p-10">
+        <div id="add-patient" class="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center"><i class="fa-solid fa-user-plus ml-3 text-blue-600"></i> تسجيل مريض جديد</h2>
+            
+            <form class="space-y-5">
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="text" placeholder="اسم المريض" class="col-span-2 p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none">
+                    <input type="number" placeholder="العمر" class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none">
+                    <input type="text" placeholder="رقم الهاتف" class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none">
+                </div>
+
+                <div class="p-4 bg-slate-50 rounded-lg">
+                    <label class="block text-sm font-semibold mb-2">نوع الزيارة:</label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center"><input type="radio" name="visitType" value="new" class="ml-2"> مريض جديد</label>
+                        <label class="flex items-center"><input type="radio" name="visitType" value="follow" class="ml-2"> متابعة</label>
+                    </div>
+                </div>
+
+                <textarea placeholder="ملاحظات طبية..." class="w-full p-3 border rounded-lg h-24 focus:ring-2 focus:ring-blue-400 outline-none"></textarea>
+                
+                <button type="button" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition shadow-lg">حفظ بيانات المريض</button>
+            </form>
         </div>
-        </main>
+    </main>
 
     <script>
         function showTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-            document.getElementById(tabId).classList.remove('hidden');
+            console.log("عرض تبويب: " + tabId);
         }
-        showTab('dashboard');
     </script>
 </body>
 </html>
