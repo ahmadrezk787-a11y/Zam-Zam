@@ -47,7 +47,7 @@
             </ul>
         </div>
         <div class="text-xs text-slate-500 text-center border-t border-slate-700 pt-4">
-            v2.0.0 — نظام المتابعات الذكي والمستحقات
+            v2.1.0 — حفظ تلقائي مستمر للملفات
         </div>
     </aside>
 
@@ -166,7 +166,7 @@
                     <h3 class="text-xl font-bold text-teal-400 flex items-center">
                         <i class="fa-solid fa-user-doctor ml-3 text-2xl"></i> لوحة مستحقات وأرباح الطبيب الحالية والآجلة (60%)
                     </h3>
-                    <span class="bg-teal-500/20 text-teal-300 text-xs px-3 py-1 rounded-full font-semibold border border-teal-500/30">حسابات دقيقة</span>
+                    <span class="bg-teal-500/20 text-teal-300 text-xs px-3 py-1 rounded-full font-semibold border border-teal-500/30">حسابات دقيقة مؤمنة</span>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -226,7 +226,7 @@
                     <p id="modalPatientProc" class="bg-slate-50 p-3 rounded-xl text-slate-700 border border-slate-100 text-xs font-mono"></p>
                 </div>
                 <div>
-                    <label class="text-sm font-bold text-slate-500 block mb-1">الملف الطبي والملاحظات المستمرة المستمرة:</label>
+                    <label class="text-sm font-bold text-slate-500 block mb-1">الملف الطبي والملاحظات المستمرة:</label>
                     <textarea id="modalNotes" class="w-full p-3 border border-slate-200 rounded-xl h-32 outline-none focus:border-teal-500"></textarea>
                 </div>
                 <div>
@@ -242,7 +242,8 @@
     </div>
 
     <script>
-        let patients = [];
+        // 💾 استدعاء البيانات تلقائياً من ذاكرة المتصفح فور فتح الصفحة لمنع ضياعها
+        let patients = JSON.parse(localStorage.getItem('zamzam_patients_data')) || [];
         let editIndex = null;
         let currentModalIndex = null;
 
@@ -287,7 +288,6 @@
             document.getElementById('formDebtBadge').innerText = `${debt} ج.م`;
         }
 
-        // 🧠 فحص حالة المريض الذكية وإظهار مديونيته فوراً أثناء الحجز والمتابعة
         function checkPatientStatus() {
             const name = document.getElementById('patientName').value.trim();
             const visitType = document.getElementById('visitType').value;
@@ -304,7 +304,7 @@
             badge.classList.add('hidden');
         }
 
-        // تحديث قوائم ترشيح الأسماء تلقائياً في الخلفية
+        // تحديث قوائم ترشيح الأسماء بناءً على الملفات المخزنة
         function updatePatientsDatalist() {
             const datalist = document.getElementById('existingPatientsList');
             datalist.innerHTML = '';
@@ -313,7 +313,14 @@
             });
         }
 
-        // حفظ / تعديل وتحديث حساب المريض والمتابعات تلقائياً
+        // الدالة المحورية لحفظ وتأمين البيانات وتحديث الواجهة بالكامل
+        function saveAndSyncSystemData() {
+            localStorage.setItem('zamzam_patients_data', JSON.stringify(patients));
+            updatePatientsDatalist();
+            renderTable();
+            renderAccounts();
+        }
+
         function handleSubmit() {
             const name = document.getElementById('patientName').value.trim();
             const date = document.getElementById('visitDate').value;
@@ -331,7 +338,6 @@
 
             if (editIndex === null) {
                 if (type === 'متابعة') {
-                    // فحص إذا كان المريض مسجل بالفعل لتحديث حسابه بدلاً من التكرار
                     const existingIndex = patients.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
                     
                     if (existingIndex !== -1) {
@@ -344,35 +350,29 @@
                         if (notes) {
                             patients[existingIndex].notes += ` | [تاريخ ${date}]: ${notes}`;
                         }
-                        triggerAlert(`تم رصد المتابعة وتحديث الحساب المالي لملف المريض ${name}!`, "success");
+                        triggerAlert(`تم رصد المتابعة وتحديث حساب المريض ${name} تلقائياً!`, "success");
                     } else {
-                        // إذا اختار متابعة والاسم غير مسجل مسبقاً، يفتح له ملف جديد تلقائياً
                         patients.push({ name, date, type, proc, totalCost, paidAmount, debt, notes });
                         triggerAlert("تم إنشاء ملف جديد للمريض لعدم وجود سجل سابق له", "success");
                     }
                 } else {
-                    // مريض جديد أصلي
                     patients.push({ name, date, type, proc, totalCost, paidAmount, debt, notes });
-                    triggerAlert("تم تسجيل المريض الجديد وحفظ ملفه المالي!", "success");
+                    triggerAlert("تم تسجيل المريض الجديد وحفظ ملفه المالي بالتخزين!", "success");
                 }
             } else {
-                // تعديل البيانات من الجدول مباشرة
                 patients[editIndex] = { name, date, type, proc, totalCost, paidAmount, debt, notes };
-                triggerAlert("تم تعديل ملف المريض بنجاح!", "success");
+                triggerAlert("تم تعديل وحفظ ملف المريض بنجاح!", "success");
                 editIndex = null;
                 document.getElementById('submitBtn').innerText = "حفظ البيانات وتحديث الحساب المالي للمريض";
                 document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-user-plus ml-3 text-teal-600"></i> تسجيل مريض / زيارة جديدة`;
             }
 
-            // إعادة تصفير الفورم
             document.getElementById('patientForm').reset();
             document.getElementById('visitDate').valueAsDate = new Date();
             document.getElementById('formDebtBadge').innerText = "0 ج.م";
             document.getElementById('formPreviousDebt').classList.add('hidden');
             
-            updatePatientsDatalist();
-            renderTable();
-            renderAccounts();
+            saveAndSyncSystemData();
         }
 
         function renderTable(dataArray = patients) {
@@ -393,7 +393,7 @@
                         <td class="p-4 text-xs text-slate-600 max-w-[150px] truncate" title="${patient.proc}">${patient.proc}</td>
                         <td class="p-4 font-semibold">${patient.totalCost} ج.م</td>
                         <td class="p-4 font-semibold text-emerald-600">${patient.paidAmount} ج.م</td>
-                        <td class="p-4 font-bold ${patient.debt > 0 ? 'text-rose-600 bg-rose-50/70 rounded-lg px-2' : 'text-slate-400'}">${patient.debt} ج.m</td>
+                        <td class="p-4 font-bold ${patient.debt > 0 ? 'text-rose-600 bg-rose-50/70 rounded-lg px-2' : 'text-slate-400'}">${patient.debt} ج.م</td>
                         <td class="p-4 text-center flex justify-center gap-2">
                             <button onclick="editPatient(${realIndex})" class="text-blue-500 hover:text-blue-700 bg-blue-50 p-2 rounded-lg transition text-xs"><i class="fa-solid fa-pen"></i></button>
                             <button onclick="deletePatient(${realIndex})" class="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded-lg transition text-xs"><i class="fa-solid fa-trash"></i></button>
@@ -405,9 +405,7 @@
         function deletePatient(index) {
             if (confirm("هل أنت متأكد من حذف ملف هذا المريض وكل تعاملاته نهائياً من السيستم؟")) {
                 patients.splice(index, 1);
-                updatePatientsDatalist();
-                renderTable();
-                renderAccounts();
+                saveAndSyncSystemData();
                 triggerAlert("تم حذف الملف بنجاح", "success");
             }
         }
@@ -418,7 +416,7 @@
             document.getElementById('patientName').value = p.name;
             document.getElementById('visitDate').value = p.date;
             document.getElementById('visitType').value = p.type;
-            document.getElementById('procedureType').value = p.proc.split(' + ').pop(); // يعطي آخر إجراء تم إضافته للتعديل
+            document.getElementById('procedureType').value = p.proc.split(' + ').pop(); 
             document.getElementById('totalCost').value = p.totalCost;
             document.getElementById('paidAmount').value = p.paidAmount;
             document.getElementById('notes').value = p.notes;
@@ -454,39 +452,36 @@
                 patients[currentModalIndex].notes = document.getElementById('modalNotes').value;
                 triggerAlert("تم تحديث الملف الطبي للمريض!", "success");
                 closeModal();
-                renderTable();
+                saveAndSyncSystemData();
             }
         }
-
-        // ================= العمليات الحسابية المحدثة المبنية على المرضى ونسبة 60% =================
 
         function renderAccounts() {
             let clinicTotalCostSum = 0;
             let clinicPaidAmountSum = 0;
             let clinicDebtSum = 0;
 
-            // حساب الإيرادات والديون الإجمالية من مصفوفة المرضى مباشرة
             patients.forEach(p => {
                 clinicTotalCostSum += p.totalCost;
                 clinicPaidAmountSum += p.paidAmount;
                 clinicDebtSum += p.debt;
             });
 
-            // حساب مستحقات الطبيب الدقيقة بنسبة 60%
             const docTotalShare = clinicTotalCostSum * 0.60;
             const docPaidShare = clinicPaidAmountSum * 0.60;
             const docDebtShare = clinicDebtSum * 0.60;
 
-            // تحديث لوحة الطبيب (60%)
             document.getElementById('docTotalShare').innerText = `${docTotalShare.toFixed(1)} ج.م`;
             document.getElementById('docPaidShare').innerText = `${docPaidShare.toFixed(1)} ج.م`;
             document.getElementById('docDebtShare').innerText = `${docDebtShare.toFixed(1)} ج.م`;
 
-            // تحديث كروت إيرادات العيادة التراكمية العامة أسفل اللوحة
-            document.getElementById('totalIncome').innerText = `${clinicPaidAmountSum} ج.م`; // الكاش الفعلي للمرضى
-            document.getElementById('totalExpenses').innerText = `${clinicDebtSum} ج.م`; // الديون المتبقية بالخارج
-            document.getElementById('netProfit').innerText = `${clinicTotalCostSum} ج.م`; // القيمة الكلية للشغل
+            document.getElementById('totalIncome').innerText = `${clinicPaidAmountSum} ج.م`; 
+            document.getElementById('totalExpenses').innerText = `${clinicDebtSum} ج.م`; 
+            document.getElementById('netProfit').innerText = `${clinicTotalCostSum} ج.م`; 
         }
+
+        // 🚀 تشغيل السيستم على البيانات المحفوظة بمجرد فتح المتصفح
+        saveAndSyncSystemData();
     </script>
 </body>
 </html>
