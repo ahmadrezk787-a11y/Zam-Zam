@@ -6,6 +6,10 @@
     <title>عيادة زمزم - نظام الإدارة المالي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap');
         
@@ -395,12 +399,22 @@
     </div>
 
     <script>
-        let patients = JSON.parse(localStorage.getItem('zamzam_patients_data')) || [];
-        patients.forEach(p => {
-            if (!p.visits) p.visits = [{ date: p.date, proc: p.proc, totalCost: p.totalCost, paidAmount: p.paidAmount }];
-            if(!p.age) p.age = "-";
-        });
+        // إعدادات فايربيز الخاصة بيك
+        const firebaseConfig = {
+            apiKey: "AIzaSyBVhS98mRV5anAqbF-knYeG0FcFNXa8T_c",
+            authDomain: "zamzam-clinic-a7e58.firebaseapp.com",
+            projectId: "zamzam-clinic-a7e58",
+            storageBucket: "zamzam-clinic-a7e58.firebasestorage.app",
+            messagingSenderId: "779096121394",
+            appId: "1:779096121394:web:968ba20a6a925f7e0b1c2b",
+            measurementId: "G-80WR0VF2KF"
+        };
 
+        // تهيئة فايربيز
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        let patients = [];
         let editIndex = null;
         let currentModalIndex = null;
 
@@ -440,7 +454,6 @@
             setTimeout(() => { toast.classList.remove('opacity-100', 'translate-y-0'); toast.classList.add('opacity-0', '-translate-y-4'); setTimeout(() => { toast.classList.add('hidden'); }, 300); }, 3000);
         }
 
-        // التعديل 1: معالجة سداد الديون بالشاشة الرئيسية
         function calculateFormDebt() {
             const total = parseFloat(document.getElementById('totalCost').value) || 0;
             const paid = parseFloat(document.getElementById('paidAmount').value) || 0;
@@ -496,9 +509,19 @@
             if (drop && inp && !inp.contains(e.target) && !drop.contains(e.target)) drop.classList.add('hidden');
         });
 
-        function saveAndSyncSystemData() {
-            localStorage.setItem('zamzam_patients_data', JSON.stringify(patients));
-            renderTable(); renderAllAccounts();
+        // رفع البيانات للفايربيز
+        async function saveAndSyncSystemData() {
+            renderTable(); 
+            renderAllAccounts();
+            
+            try {
+                await db.collection("clinic").doc("patients_data").set({
+                    patientsList: patients
+                });
+            } catch (error) {
+                console.error("Error saving data:", error);
+                triggerAlert("حدث خطأ أثناء حفظ البيانات على السيرفر", "error");
+            }
         }
 
         function handleSubmit() {
@@ -524,7 +547,7 @@
                         patients[idx].proc += ` | ${date}: ${proc}`; 
                         patients[idx].totalCost += totalCost;
                         patients[idx].paidAmount += paidAmount;
-                        patients[idx].debt = patients[idx].totalCost - patients[idx].paidAmount; // الديون الكلية تقل هنا تلقائياً
+                        patients[idx].debt = patients[idx].totalCost - patients[idx].paidAmount;
                         if (notes) patients[idx].notes += `\n[${date}]: ${notes}`;
                         patients[idx].visits.push(vObj);
                         triggerAlert(`تم إضافة المتابعة لـ ${name}!`);
@@ -542,7 +565,7 @@
                 if(patients[editIndex].visits.length > 0) patients[editIndex].visits[patients[editIndex].visits.length - 1] = vObj;
                 triggerAlert("تم تعديل بيانات الزيارة بنجاح!");
                 editIndex = null;
-                document.getElementById('submitBtn').innerHTML = `<i class="fa-solid fa-check-circle text-xl"></i> <span>حفظ بيانات الزيارة</span>`;
+                document.getElementById('submitBtn').innerHTML = `<i class="fa-solid fa-check-circle text-xl"></i> <span>حفظ بيانات الزيارة وتحديث الملف</span>`;
             }
 
             document.getElementById('patientForm').reset();
@@ -624,9 +647,7 @@
             if (currentModalIndex !== null) { patients[currentModalIndex].notes = document.getElementById('modalNotes').value; triggerAlert("تم حفظ الملاحظات!"); closeModal(); saveAndSyncSystemData(); }
         }
 
-        // التعديل 2: معالجة ديون اليوم والشهر (منع ظهور الديون بالسالب)
         function renderAllAccounts() {
-            // يومي
             const dDate = document.getElementById('dailyAccountDate').value;
             let dTot = 0, dCash = 0, dNewDebt = 0;
             patients.forEach(p => { 
@@ -635,7 +656,7 @@
                         dTot += v.totalCost; 
                         dCash += v.paidAmount; 
                         if (v.totalCost > v.paidAmount) {
-                            dNewDebt += (v.totalCost - v.paidAmount); // يحسب ديون جديدة فقط لو التكلفة أكبر من الكاش
+                            dNewDebt += (v.totalCost - v.paidAmount);
                         }
                     } 
                 }); 
@@ -646,7 +667,6 @@
             document.getElementById('dailyDocCashShare').innerText = (dCash * 0.60).toFixed(1) + ' ج'; 
             document.getElementById('dailyDebtGenerated').innerText = dNewDebt + ' ج';
 
-            // جداول
             const q = document.getElementById('accSearchInput').value.toLowerCase();
             const tb1 = document.getElementById('accTableBody'), tb2 = document.getElementById('accDebtTableBody');
             tb1.innerHTML = ''; tb2.innerHTML = '';
@@ -668,7 +688,6 @@
                 const rem = v.totalCost - v.paidAmount; 
                 sTot += v.totalCost; sPaid += v.paidAmount; sDebt += rem; 
                 
-                // التعديل 3: تغيير لون واسم الدين في الجدول
                 let remHtml = '';
                 if (rem > 0) remHtml = `<span class="text-rose-500">${rem} ج (دين)</span>`;
                 else if (rem < 0) remHtml = `<span style="color: #65b32e;">${Math.abs(rem)} ج (سداد)</span>`;
@@ -683,7 +702,6 @@
             document.getElementById('accTotalDebts').innerText = sgDebt + ' ج'; 
             document.getElementById('accTotalDocDebts').innerText = sgDocDebt.toFixed(1) + ' ج';
 
-            // شهري
             const mDate = document.getElementById('monthlyAccountDate').value;
             let mTot = 0, mCash = 0, mNewDebt = 0;
             if(mDate) {
@@ -706,7 +724,32 @@
             document.getElementById('monthlyDocCashShare').innerText = (mCash * 0.60).toFixed(1) + ' ج';
         }
 
-        saveAndSyncSystemData(); showTab('add-patient', document.querySelector('.nav-item')); 
+        // دالة تحميل البيانات عند فتح الموقع
+        async function loadDataFromFirebase() {
+            try {
+                const docRef = db.collection("clinic").doc("patients_data");
+                const docSnap = await docRef.get();
+                
+                if (docSnap.exists) {
+                    patients = docSnap.data().patientsList || [];
+                    patients.forEach(p => {
+                        if (!p.visits) p.visits = [{ date: p.date, proc: p.proc, totalCost: p.totalCost, paidAmount: p.paidAmount }];
+                        if(!p.age) p.age = "-";
+                    });
+                }
+                
+                renderTable(); 
+                renderAllAccounts();
+                showTab('add-patient', document.querySelector('.nav-item'));
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                triggerAlert("حدث خطأ في جلب بيانات المرضى من السيرفر", "error");
+            }
+        }
+
+        // تشغيل الدالة لجلب البيانات عند بدء الموقع
+        loadDataFromFirebase();
+
     </script>
 </body>
 </html>
