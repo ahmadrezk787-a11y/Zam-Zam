@@ -9,8 +9,6 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600&display=swap');
         body { font-family: 'Cairo', sans-serif; background-color: #f4f7f6; }
-        .tab-content { display: none; }
-        .active-tab { display: block; }
         .card { background: #ffffff; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
     </style>
 </head>
@@ -47,7 +45,7 @@
             </ul>
         </div>
         <div class="text-xs text-slate-500 text-center border-t border-slate-700 pt-4">
-            v1.1.0 — نظام الحسابات جاهز
+            v1.2.0 — نسخة مستقرة ومصلحة
         </div>
     </aside>
 
@@ -62,7 +60,7 @@
             </div>
         </div>
 
-        <div id="add-patient" class="tab-content active-tab max-w-2xl mx-auto card p-6 md:p-8">
+        <div id="add-patient" class="tab-section max-w-2xl mx-auto card p-6 md:p-8">
             <h2 id="formTitle" class="text-2xl font-bold text-slate-700 mb-8 flex items-center">
                 <i class="fa-solid fa-user-plus ml-3 text-teal-600"></i> تسجيل مريض جديد
             </h2>
@@ -105,7 +103,7 @@
 
                 <div>
                     <label class="block text-sm font-semibold text-slate-600 mb-2">ملاحظات إضافية</label>
-                    <textarea id="notes" placeholder="اكتب أي ملاحظات طبية أو توصيات هنا..." class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-teal-500 h-24"></textarea>
+                    <textarea id="notes" placeholder="اكتب أي ملاحظات طبية هنا..." class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-teal-500 h-24"></textarea>
                 </div>
 
                 <button type="button" id="submitBtn" onclick="handleSubmit()" class="w-full bg-teal-600 text-white py-4 rounded-xl font-bold hover:bg-teal-700 transition shadow-md">
@@ -114,7 +112,7 @@
             </form>
         </div>
 
-        <div id="patients-list" class="tab-content card p-6 md:p-8">
+        <div id="patients-list" class="tab-section hidden card p-6 md:p-8">
             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                 <h2 class="text-xl font-bold text-slate-700 flex items-center">
                     <i class="fa-solid fa-users ml-3 text-teal-600"></i> سجل ملفات المرضى
@@ -133,12 +131,13 @@
                             <th class="p-4 font-semibold text-center">التحكم</th>
                         </tr>
                     </thead>
-                    <tbody id="patientsTableBody" class="text-slate-700 divider-y"></tbody>
+                    <tbody id="patientsTableBody" class="text-slate-700">
+                        </tbody>
                 </table>
             </div>
         </div>
 
-        <div id="accounts-section" class="tab-content space-y-8">
+        <div id="accounts-section" class="tab-section hidden space-y-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="card p-6 border-r-4 border-emerald-500 flex justify-between items-center">
                     <div>
@@ -184,7 +183,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-500 mb-1">البيان / الوصف</label>
-                            <input type="text" id="txDesc" placeholder="مثال: ثمن خامات حشو، كشف مريض..." class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-teal-500">
+                            <input type="text" id="txDesc" placeholder="مثال: كشف مريض، خامات..." class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-teal-500">
                         </div>
                         <button type="button" onclick="addTransaction()" class="w-full bg-slate-800 text-white py-3 rounded-xl font-bold hover:bg-slate-700 transition shadow-md">تسجيل بالخزينة</button>
                     </form>
@@ -203,8 +202,7 @@
                                     <th class="p-3 font-semibold text-center">حذف</th>
                                 </tr>
                             </thead>
-                            <tbody id="transactionsTableBody" class="text-slate-700 text-sm">
-                                </tbody>
+                            <tbody id="transactionsTableBody" class="text-slate-700 text-sm"></tbody>
                         </table>
                     </div>
                 </div>
@@ -245,10 +243,19 @@
         let editIndex = null;
         let currentModalIndex = null;
 
-        // ضبط تواريخ اليوم تلقائياً
+        // وضع تواريخ اليوم الافتراضية عند التشغيل
         document.getElementById('visitDate').valueAsDate = new Date();
         document.getElementById('txDate').valueAsDate = new Date();
 
+        // دالة التنقل الآمنة بين التبويبات بالاعتماد المباشر على Tailwind hidden
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+        }
+
+        // دالة التنبيه الاحترافية العائمة من الأعلى بـ Cairo font
         function triggerAlert(message, type = 'success') {
             const toast = document.getElementById('customAlert');
             const icon = document.getElementById('alertIcon');
@@ -276,12 +283,7 @@
             }, 3000);
         }
 
-        function showTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
-            document.getElementById(tabId).classList.add('active-tab');
-        }
-
-        // إرسال وحفظ بيانات المريض الأساسية
+        // حفظ وتحديث بيانات المرضى
         function handleSubmit() {
             const name = document.getElementById('patientName').value.trim();
             const date = document.getElementById('visitDate').value;
@@ -314,7 +316,7 @@
             const tbody = document.getElementById('patientsTableBody');
             tbody.innerHTML = '';
 
-            dataArray.forEach((patient, index) => {
+            dataArray.forEach((patient) => {
                 const realIndex = patients.indexOf(patient);
                 tbody.innerHTML += `
                     <tr class="border-b hover:bg-slate-50 transition">
@@ -328,4 +330,140 @@
                         <td class="p-4 text-sm text-slate-600">${patient.proc}</td>
                         <td class="p-4 text-center flex justify-center gap-3">
                             <button onclick="editPatient(${realIndex})" class="text-blue-500 hover:text-blue-700 bg-blue-50 p-2 rounded-lg transition"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deletePatient(${realIndex})" class="text-red-50
+                            <button onclick="deletePatient(${realIndex})" class="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded-lg transition"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        function deletePatient(index) {
+            if (confirm("هل أنت متأكد من حذف هذا المريض نهائياً؟")) {
+                patients.splice(index, 1);
+                renderTable();
+                triggerAlert("تم حذف المريض بنجاح", "success");
+            }
+        }
+
+        function editPatient(index) {
+            editIndex = index;
+            const p = patients[index];
+            document.getElementById('patientName').value = p.name;
+            document.getElementById('visitDate').value = p.date;
+            document.getElementById('visitType').value = p.type;
+            document.getElementById('procedureType').value = p.proc;
+            document.getElementById('notes').value = p.notes;
+
+            document.getElementById('submitBtn').innerText = "تحديث بيانات المريض";
+            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen ml-3 text-blue-600"></i> تعديل بيانات: ${p.name}`;
+            showTab('add-patient');
+        }
+
+        function searchPatient() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = patients.filter(p => p.name.toLowerCase().includes(query));
+            renderTable(filtered);
+        }
+
+        function openModal(index) {
+            currentModalIndex = index;
+            const p = patients[index];
+            document.getElementById('modalPatientName').innerText = `ملف المريض: ${p.name}`;
+            document.getElementById('modalPatientProc').innerText = p.proc;
+            document.getElementById('modalNotes').value = p.notes;
+            document.getElementById('patientModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('patientModal').classList.add('hidden');
+            currentModalIndex = null;
+        }
+
+        function saveModalChanges() {
+            if (currentModalIndex !== null) {
+                patients[currentModalIndex].notes = document.getElementById('modalNotes').value;
+                triggerAlert("تم تحديث الملف الطبي للمريض!", "success");
+                closeModal();
+                renderTable();
+            }
+        }
+
+        // ================= الأكواد البرمجية الخاصة بالحسابات والمصروفات =================
+
+        function addTransaction() {
+            const amount = parseFloat(document.getElementById('txAmount').value);
+            const type = document.getElementById('txType').value;
+            const date = document.getElementById('txDate').value;
+            const desc = document.getElementById('txDesc').value.trim();
+
+            if (!amount || amount <= 0 || !desc) {
+                triggerAlert("من فضلك أدخل مبلغاً صحيحاً واكتب البيان", "error");
+                return;
+            }
+
+            transactions.push({ amount, type, date, desc });
+            triggerAlert("تم تسجيل المعاملة في الخزينة بنجاح", "success");
+            
+            document.getElementById('transactionForm').reset();
+            document.getElementById('txDate').valueAsDate = new Date();
+            renderAccounts();
+        }
+
+        function deleteTransaction(index) {
+            if (confirm("هل تريد حذف هذه المعاملة المالية؟")) {
+                transactions.splice(index, 1);
+                renderAccounts();
+                triggerAlert("تم حذف المعاملة المالية", "success");
+            }
+        }
+
+        function renderAccounts() {
+            const tbody = document.getElementById('transactionsTableBody');
+            tbody.innerHTML = '';
+
+            let totalIncome = 0;
+            let totalExpenses = 0;
+
+            transactions.forEach((tx, index) => {
+                const isIncome = tx.type.startsWith('إيراد');
+                if (isIncome) {
+                    totalIncome += tx.amount;
+                } else {
+                    totalExpenses += tx.amount;
+                }
+
+                tbody.innerHTML += `
+                    <tr class="border-b hover:bg-slate-50 transition">
+                        <td class="p-3 text-xs text-slate-500">${tx.date}</td>
+                        <td class="p-3 font-semibold text-slate-700">${tx.desc}</td>
+                        <td class="p-3">
+                            <span class="text-xs font-bold ${isIncome ? 'text-emerald-600' : 'text-rose-600'}">
+                                ${isIncome ? 'إيراد' : 'مصروف'}
+                            </span>
+                        </td>
+                        <td class="p-3 font-bold ${isIncome ? 'text-emerald-600' : 'text-rose-600'}">
+                            ${isIncome ? '+' : '-'}${tx.amount} ج.م
+                        </td>
+                        <td class="p-3 text-center">
+                            <button onclick="deleteTransaction(${index})" class="text-red-400 hover:text-red-600 transition"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+            });
+
+            const netProfit = totalIncome - totalExpenses;
+
+            document.getElementById('totalIncome').innerText = `${totalIncome} ج.م`;
+            document.getElementById('totalExpenses').innerText = `${totalExpenses} ج.م`;
+            document.getElementById('netProfit').innerText = `${netProfit} ج.م`;
+            
+            const profitCard = document.getElementById('netProfit');
+            if (netProfit < 0) {
+                profitCard.className = "text-2xl font-bold text-rose-600";
+            } else if (netProfit > 0) {
+                profitCard.className = "text-2xl font-bold text-emerald-600";
+            } else {
+                profitCard.className = "text-2xl font-bold text-slate-800";
+            }
+        }
+    </script>
+</body>
+</html>
