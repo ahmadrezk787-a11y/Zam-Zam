@@ -315,7 +315,6 @@
                                 <th class="pb-3 font-bold text-center">المدفوع الكلي</th>
                                 <th class="pb-3 font-bold text-center">المتبقي</th>
                                 <th class="pb-3 font-bold text-center" style="color: #083b8d;">حصة الطبيب (كاش 60%)</th>
-                                <th class="pb-3 font-bold text-center text-amber-600">حصة الطبيب (آجل 60%)</th>
                             </tr>
                         </thead>
                         <tbody id="accTableBody" class="text-slate-600 font-bold"></tbody>
@@ -325,8 +324,7 @@
                                 <td id="accTableTotal" class="py-4 text-slate-800">0 ج</td>
                                 <td id="accTablePaid" style="color: #65b32e;">0 ج</td>
                                 <td id="accTableDebt" class="text-rose-500">0 ج</td>
-                                <td id="accTableDocPaid" class="font-black text-xl bg-blue-100 text-blue-800 border-r-4 border-white">0 ج</td>
-                                <td id="accTableDocDebt" class="font-black text-xl bg-amber-100 text-amber-700 rounded-l-xl border-r-4 border-white">0 ج</td>
+                                <td id="accTableDocPaid" class="font-black text-xl bg-blue-100 text-blue-800 rounded-l-xl border-r-4 border-white">0 ج</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -762,17 +760,24 @@
             document.getElementById('monthlyDocDebtShare').innerText = fmt((mNewDebt * 0.60).toFixed(0)) + ' ج';
         }
 
-        // الدالة اللي تم تصليح الحسابات المجمعة فيها للطبيب
         function renderAccountsTables() {
             const q = document.getElementById('accSearchInput').value.toLowerCase();
             const tb1 = document.getElementById('accTableBody'), tb2 = document.getElementById('accDebtTableBody');
             tb1.innerHTML = ''; tb2.innerHTML = '';
             
-            let sTot=0, sPaid=0, sDebt=0, sDocPaid=0, sDocDebt=0, sgDebt=0, sgDocDebt=0, allV=[];
+            let sTot=0, sPaid=0, sDebt=0, sDocPaid=0, sgDebt=0, sgDocDebt=0, allV=[];
 
             patients.forEach(p => {
                 if(p.name.toLowerCase().includes(q)) {
-                    if (p.visits) p.visits.forEach(v => allV.push({ name: p.name, ...v }));
+                    // حساب الرصيد التراكمي الفعلي لكل مريض
+                    let runningDebt = 0;
+                    if (p.visits) {
+                        p.visits.forEach(v => {
+                            runningDebt += (v.totalCost - v.paidAmount);
+                            allV.push({ name: p.name, runningDebt: runningDebt, ...v });
+                        });
+                    }
+
                     if(p.debt > 0) {
                         sgDebt += p.debt; sgDocDebt += p.debt * 0.60;
                         const ld = p.visits && p.visits.length > 0 ? p.visits[p.visits.length - 1].date.replace(/-/g, '/') : p.date.replace(/-/g, '/');
@@ -793,25 +798,13 @@
                 sTot += v.totalCost; sPaid += v.paidAmount; sDebt += rem; 
                 
                 let docPaid = v.paidAmount * 0.60;
-                // تعديل اللوجيك هنا: حصة الديون هتقبل السالب عشان تخصم السداد من إجمالي ديون الدكتور في الجدول
-                let docDebt = rem * 0.60; 
-                
                 sDocPaid += docPaid;
-                sDocDebt += docDebt;
                 
-                let remHtml = '';
-                if (rem > 0) remHtml = `<span class="text-rose-500">${fmt(rem)} ج</span>`;
-                else if (rem < 0) remHtml = `<span class="text-emerald-600">${fmt(Math.abs(rem))} ج (سداد)</span>`;
-                else remHtml = `<span class="text-slate-400">0 ج</span>`;
-
-                let docDebtHtml = '';
-                if (docDebt > 0) {
-                    docDebtHtml = `<span class="text-amber-600">${fmt(docDebt.toFixed(0))} ج</span>`;
-                } else if (docDebt < 0) {
-                    docDebtHtml = `<span class="text-emerald-600">${fmt(Math.abs(docDebt).toFixed(0))} ج (سداد)</span>`;
-                } else {
-                    docDebtHtml = `<span class="text-slate-400">0 ج</span>`;
-                }
+                // استخدام الرصيد التراكمي الفعلي للمريض بدل السداد
+                let currentDebtDisplay = '';
+                if (v.runningDebt > 0) currentDebtDisplay = `<span class="text-rose-500">${fmt(v.runningDebt)} ج</span>`;
+                else if (v.runningDebt < 0) currentDebtDisplay = `<span class="text-emerald-600">رصيد للمريض: ${fmt(Math.abs(v.runningDebt))} ج</span>`;
+                else currentDebtDisplay = `<span class="text-slate-400">0 ج (خالص)</span>`;
 
                 tb1.innerHTML += `
                     <tr class="hover:bg-slate-50 transition border-b border-slate-50">
@@ -820,9 +813,8 @@
                         <td class="py-4">${v.proc}</td>
                         <td class="py-4 text-slate-800">${fmt(v.totalCost)} ج</td>
                         <td class="py-4" style="color: #65b32e;">${fmt(v.paidAmount)} ج</td>
-                        <td class="py-4 font-black">${remHtml}</td>
-                        <td class="py-4 font-black text-lg bg-blue-50 text-blue-700 border-r-4 border-white">${fmt(docPaid.toFixed(0))} ج</td>
-                        <td class="py-4 font-black text-lg bg-amber-50 text-amber-600 rounded-l-xl border-r-4 border-white">${docDebtHtml}</td>
+                        <td class="py-4 font-black">${currentDebtDisplay}</td>
+                        <td class="py-4 font-black text-lg bg-blue-50 text-blue-700 rounded-l-xl border-r-4 border-white">${fmt(docPaid.toFixed(0))} ج</td>
                     </tr>`;
             });
 
@@ -830,9 +822,6 @@
             document.getElementById('accTablePaid').innerText = fmt(sPaid) + ' ج'; 
             document.getElementById('accTableDebt').innerText = fmt(Math.abs(sDebt)) + ' ج';
             document.getElementById('accTableDocPaid').innerText = fmt(sDocPaid.toFixed(0)) + ' ج';
-            
-            // مجموع الديون دلوقتي هيحسب الصافي صح 100%
-            document.getElementById('accTableDocDebt').innerText = fmt(sDocDebt.toFixed(0)) + ' ج';
             
             document.getElementById('accTotalDebts').innerText = fmt(sgDebt) + ' ج'; 
             document.getElementById('accTotalDocDebts').innerText = fmt(sgDocDebt.toFixed(0)) + ' ج';
