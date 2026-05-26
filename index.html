@@ -67,7 +67,6 @@
         .data-table tr:hover td { background-color: #f8fafc; }
         
         .doc-col-cash { background-color: #eff6ff !important; color: #1e40af; border-left: 1px dashed #bfdbfe; border-right: 1px dashed #bfdbfe; }
-        /* عمود الديون باللون النبيتي الفاتح المريح */
         .doc-col-debt { background-color: #fff1f2 !important; color: #be123c; border-left: 1px dashed #fecdd3; border-right: 1px dashed #fecdd3; }
 
         .input-styled {
@@ -406,7 +405,7 @@
             </div>
         </div>
 
-        <div id="debts-section" class="tab-section hidden fade-in max-w-5xl mx-auto">
+        <div id="debts-section" class="tab-section hidden fade-in max-w-6xl mx-auto">
             <div class="flex items-center gap-4 mb-6">
                 <div class="w-14 h-14 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-2xl shadow-inner"><i class="fa-solid fa-scale-balanced"></i></div>
                 <div>
@@ -415,23 +414,23 @@
                 </div>
             </div>
 
-            <div class="premium-card p-6 md:p-8">
-                <div class="overflow-x-auto rounded-3xl border border-rose-200">
-                    <table class="data-table">
-                        <thead>
-                            <tr class="bg-rose-50">
-                                <th>آخر زيارة</th>
-                                <th>المريض</th>
-                                <th>إجمالي الدين المطلوب</th>
-                                <th class="doc-col-debt text-lg"><i class="fa-solid fa-sack-dollar ml-1"></i> حصة آجل (60%)</th>
+            <div class="premium-card p-6 md:p-8 border-t-4 border-t-rose-600">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-center" style="border-spacing: 0 12px; border-collapse: separate;">
+                        <thead class="bg-gradient-to-l from-rose-800 to-rose-900 shadow-md">
+                            <tr>
+                                <th class="!bg-transparent !text-rose-50 !py-6 !text-base rounded-tr-2xl">آخر زيارة</th>
+                                <th class="!bg-transparent !text-rose-50 !py-6 !text-base">المريض</th>
+                                <th class="!bg-transparent !text-rose-50 !py-6 !text-base">إجمالي الدين المطلوب</th>
+                                <th class="!bg-transparent !text-white !py-6 !text-xl rounded-tl-2xl bg-rose-950/40"><i class="fa-solid fa-sack-dollar ml-1"></i> حصة آجل (60%)</th>
                             </tr>
                         </thead>
                         <tbody id="accDebtTableBody"></tbody>
                         <tfoot>
-                            <tr class="bg-slate-100">
-                                <td colspan="2" class="text-left font-black text-slate-800 pr-6">إجمالي الديون القائمة:</td>
-                                <td id="accTotalDebts" class="font-black text-rose-600 text-xl">0 ج</td>
-                                <td id="accTotalDocDebts" class="font-black text-2xl text-rose-700 bg-rose-100">0 ج</td>
+                            <tr class="bg-slate-100 shadow-sm rounded-2xl">
+                                <td colspan="2" class="text-left font-black text-slate-800 pr-6 !py-6 !text-lg rounded-br-2xl border-y border-slate-200">إجمالي الديون القائمة:</td>
+                                <td id="accTotalDebts" class="font-black text-rose-600 !text-2xl !py-6 border-y border-slate-200">0 ج</td>
+                                <td id="accTotalDocDebts" class="font-black !text-3xl text-rose-700 bg-rose-200 !py-6 rounded-bl-2xl border-y border-rose-300">0 ج</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -528,7 +527,7 @@
             <div class="premium-card p-6">
                 <h3 class="text-lg font-black text-slate-700 mb-4 border-b border-slate-100 pb-3">قائمة المطلوب شراؤه:</h3>
                 <div id="shortagesListContainer" class="space-y-3">
-                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -680,9 +679,7 @@
             renderTable(); 
             renderAllAccounts();
             try {
-                // حفظ بيانات المرضى
                 await db.collection("clinic").doc("patients_data").set({ patientsList: patients });
-                // حفظ بيانات المخزون والمشتريات
                 await db.collection("clinic").doc("inventory_data").set({ purchasesList: purchases, shortagesList: shortages });
             } catch (error) {
                 console.error("Error saving data:", error);
@@ -897,12 +894,14 @@
                     if(p.debt > 0) {
                         sgDebt += p.debt; sgDocDebt += p.debt * 0.60;
                         const ld = p.visits && p.visits.length > 0 ? p.visits[p.visits.length - 1].date.replace(/-/g, '/') : p.date.replace(/-/g, '/');
+                        
+                        /* تم تعديل ستايل الديون هنا ليكون بحجم كبير وألوان مميزة (Cards Style) */
                         tb2.innerHTML += `
-                            <tr>
-                                <td class="text-slate-500">${ld}</td>
-                                <td class="font-black text-slate-800">${p.name}</td>
-                                <td><span class="badge badge-rose text-base px-4 py-2">${fmt(p.debt)} ج</span></td>
-                                <td class="doc-col-debt font-black text-xl rounded-l-2xl border-l-4 border-white">${fmt((p.debt*0.60).toFixed(0))} ج</td>
+                            <tr class="bg-white hover:bg-rose-50 transition-all shadow-[0_4px_15px_rgba(0,0,0,0.02)] group">
+                                <td class="text-rose-500 font-bold !py-6 !text-lg border-y border-rose-100 rounded-r-2xl group-hover:border-rose-200">${ld}</td>
+                                <td class="font-black text-slate-800 !py-6 !text-xl border-y border-rose-100 group-hover:border-rose-200"><i class="fa-solid fa-user-injured text-rose-300 ml-2"></i>${p.name}</td>
+                                <td class="!py-6 border-y border-rose-100 group-hover:border-rose-200"><span class="bg-gradient-to-r from-rose-100 to-rose-50 text-rose-700 px-6 py-3 rounded-2xl text-xl font-black border border-rose-100 shadow-sm">${fmt(p.debt)} ج</span></td>
+                                <td class="font-black !text-3xl !py-6 rounded-l-2xl border-y border-l-4 border-l-white border-y-rose-100 bg-rose-50 text-rose-800 group-hover:border-y-rose-200 group-hover:bg-rose-100">${fmt((p.debt*0.60).toFixed(0))} ج</td>
                             </tr>`;
                     }
                 }
@@ -1040,16 +1039,8 @@
             });
         }
 
-        function deleteShortage(i) {
-            shortages.splice(i, 1);
-            saveAndSyncSystemData();
-            renderShortages();
-            triggerAlert("تم الشراء ومسح العنصر من النواقص");
-        }
-
         async function loadDataFromFirebase() {
             try {
-                // جلب بيانات المرضى
                 const docRef = db.collection("clinic").doc("patients_data");
                 const docSnap = await docRef.get();
                 
@@ -1061,7 +1052,6 @@
                     });
                 }
                 
-                // جلب بيانات المشتريات والنواقص
                 const invRef = db.collection("clinic").doc("inventory_data");
                 const invSnap = await invRef.get();
                 
@@ -1074,7 +1064,9 @@
                 renderAllAccounts();
                 renderPurchases();
                 renderShortages();
-                showTab('accounts-section', document.querySelectorAll('.nav-item')[2]);
+                
+                // هنا التعديل: جعل الصفحة الافتراضية عند الفتح هي "تسجيل مريض" بدلاً من الحسابات
+                showTab('add-patient', document.querySelectorAll('.nav-item')[0]);
             } catch (error) {
                 console.error("Error fetching data:", error);
                 triggerAlert("حدث خطأ في جلب بيانات السيرفر", "error");
