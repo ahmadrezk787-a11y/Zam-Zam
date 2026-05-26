@@ -285,7 +285,7 @@
                     <div class="p-6 rounded-2xl border bg-rose-50/30 shadow-sm flex flex-col items-center justify-between text-center" style="border-color: rgba(244, 63, 94, 0.2);">
                         <div class="w-full flex justify-end mb-2"><i class="fa-solid fa-hourglass-half text-3xl text-rose-400 opacity-80"></i></div>
                         <h4 class="text-4xl font-black text-rose-500 mb-4 mt-2" id="dailyDebtGenerated">0 ج</h4>
-                        <p class="text-xs font-bold text-slate-400">الفلوس المتبقية (ديون اليوم الجديد)</p>
+                        <p class="text-xs font-bold text-slate-400">الديون المسجلة / السدادات (اليوم)</p>
                     </div>
 
                     <div class="p-6 rounded-2xl border-2 border-amber-200 bg-amber-50 shadow-sm flex flex-col items-center justify-between transition hover:shadow-md text-center transform hover:-translate-y-1 md:col-start-2">
@@ -325,7 +325,7 @@
                     <div class="p-6 rounded-2xl border border-rose-100 bg-rose-50/10 shadow-sm flex flex-col items-center justify-between text-center">
                         <div class="w-full flex justify-end mb-2"><i class="fa-solid fa-arrow-trend-down text-3xl text-rose-400 opacity-80"></i></div>
                         <h4 class="text-4xl font-black text-rose-500 mb-4 mt-2" id="monthlyDebtGenerated">0 ج</h4>
-                        <p class="text-xs font-bold text-slate-400">الديون المسجلة من حالات هذا الشهر</p>
+                        <p class="text-xs font-bold text-slate-400">الديون المسجلة / السدادات بالشهر</p>
                     </div>
 
                     <div class="p-6 rounded-2xl border-2 border-blue-200 bg-blue-50 shadow-sm flex flex-col items-center justify-between transition hover:shadow-md text-center transform hover:-translate-y-1 col-start-1 md:col-start-auto">
@@ -742,9 +742,8 @@
                     if (v.date === dDate) { 
                         dTot += v.totalCost; 
                         dCash += v.paidAmount; 
-                        if (v.totalCost > v.paidAmount) {
-                            dNewDebt += (v.totalCost - v.paidAmount);
-                        }
+                        // حساب صافي الديون لليوم (سواء دين جديد أو سداد)
+                        dNewDebt += (v.totalCost - v.paidAmount);
                     } 
                 }); 
             });
@@ -765,9 +764,8 @@
                         if (v.date && v.date.startsWith(mDate)) { 
                             mTot += v.totalCost; 
                             mCash += v.paidAmount; 
-                            if (v.totalCost > v.paidAmount) {
-                                mNewDebt += (v.totalCost - v.paidAmount);
-                            }
+                            // حساب صافي الديون للشهر
+                            mNewDebt += (v.totalCost - v.paidAmount);
                         } 
                     }); 
                 });
