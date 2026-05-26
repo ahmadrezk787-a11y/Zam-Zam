@@ -41,13 +41,11 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         }
 
-        /* كروت حصة الدكتور المميزة */
         .doctor-cash-card {
             background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
             color: white;
             box-shadow: 0 10px 25px rgba(30, 58, 138, 0.3);
         }
-        /* اللون النبيتي الفخم للديون */
         .doctor-debt-card {
             background: linear-gradient(135deg, #4c0519 0%, #9f1239 100%);
             color: white;
@@ -75,9 +73,10 @@
             box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
         }
 
+        /* تصغير التبويبات الجانبية */
         .nav-item {
-            display: flex; align-items: center; width: 100%; padding: 1rem 1.25rem;
-            border-radius: 16px; font-weight: 800; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: #64748b;
+            display: flex; align-items: center; width: 100%; padding: 0.75rem 1rem;
+            border-radius: 12px; font-weight: 800; font-size: 0.95rem; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: #64748b;
         }
         .nav-item:hover { background-color: #f1f5f9; color: #0f172a; transform: translateX(-4px); }
         .nav-item.active {
@@ -86,7 +85,7 @@
             box-shadow: 0 8px 20px rgba(15, 23, 42, 0.2);
         }
         .nav-item.active i { color: #3b82f6 !important; }
-        .nav-item i { width: 24px; color: #94a3b8; transition: color 0.3s; font-size: 1.1rem; }
+        .nav-item i { width: 22px; color: #94a3b8; transition: color 0.3s; font-size: 1rem; }
 
         .badge { display: inline-flex; align-items: center; justify-content: center; padding: 0.35rem 1rem; border-radius: 9999px; font-weight: 800; font-size: 0.85rem; }
         .badge-blue { background: #eff6ff; color: #1d4ed8; }
@@ -106,26 +105,26 @@
         <div><p id="alertMessage" class="font-bold text-slate-800 text-sm"></p></div>
     </div>
 
-    <aside class="w-[280px] bg-white border-l border-slate-200 p-6 hidden md:flex flex-col z-10 shadow-sm relative overflow-y-auto">
-        <div class="text-center mb-10 pb-6 border-b border-slate-100">
-            <h1 class="text-4xl font-black tracking-tight flex justify-center items-center gap-1">
+    <aside class="w-[220px] bg-white border-l border-slate-200 p-4 hidden md:flex flex-col z-10 shadow-sm relative overflow-y-auto">
+        <div class="text-center mb-8 pb-5 border-b border-slate-100">
+            <h1 class="text-3xl font-black tracking-tight flex justify-center items-center gap-1">
                 <span class="text-slate-800">ZAM</span><span class="text-blue-600">ZAM</span>
             </h1>
-            <p class="text-[0.65rem] tracking-[0.3em] font-black text-slate-400 mt-2 uppercase">Clinic Management</p>
+            <p class="text-[0.6rem] tracking-[0.3em] font-black text-slate-400 mt-2 uppercase">Clinic</p>
         </div>
         
         <ul class="space-y-2 flex-1">
-            <li><button onclick="showTab('add-patient', this)" class="nav-item active"><i class="fa-solid fa-notes-medical ml-3"></i> تسجيل زيارة</button></li>
-            <li><button onclick="showTab('patients-list', this)" class="nav-item"><i class="fa-solid fa-users-rectangle ml-3"></i> سجل المرضى</button></li>
-            <li><button onclick="showTab('accounts-section', this)" class="nav-item"><i class="fa-solid fa-chart-pie ml-3"></i> الملخص المالي</button></li>
-            <li><button onclick="showTab('payments-section', this)" class="nav-item"><i class="fa-solid fa-money-check-dollar ml-3"></i> حركة الخزينة</button></li>
-            <li><button onclick="showTab('debts-section', this)" class="nav-item"><i class="fa-solid fa-hand-holding-dollar ml-3"></i> سجل الديون</button></li>
-            <li><button onclick="showTab('purchases-section', this)" class="nav-item"><i class="fa-solid fa-cart-shopping ml-3"></i> المشتريات</button></li>
-            <li><button onclick="showTab('shortages-section', this)" class="nav-item"><i class="fa-solid fa-clipboard-list ml-3"></i> النواقص</button></li>
+            <li><button onclick="showTab('add-patient', this)" class="nav-item active"><i class="fa-solid fa-notes-medical ml-2"></i> تسجيل زيارة</button></li>
+            <li><button onclick="showTab('patients-list', this)" class="nav-item"><i class="fa-solid fa-users-rectangle ml-2"></i> سجل المرضى</button></li>
+            <li><button onclick="showTab('accounts-section', this)" class="nav-item"><i class="fa-solid fa-chart-pie ml-2"></i> الملخص المالي</button></li>
+            <li><button onclick="showTab('payments-section', this)" class="nav-item"><i class="fa-solid fa-money-check-dollar ml-2"></i> حركة الخزينة</button></li>
+            <li><button onclick="showTab('debts-section', this)" class="nav-item"><i class="fa-solid fa-hand-holding-dollar ml-2"></i> سجل الديون</button></li>
+            <li><button onclick="showTab('purchases-section', this)" class="nav-item"><i class="fa-solid fa-cart-shopping ml-2"></i> المشتريات</button></li>
+            <li><button onclick="showTab('shortages-section', this)" class="nav-item"><i class="fa-solid fa-clipboard-list ml-2"></i> النواقص</button></li>
         </ul>
     </aside>
 
-    <main class="flex-1 p-4 md:p-8 overflow-y-auto">
+    <main class="flex-1 p-4 md:p-8 overflow-y-auto w-full">
         
         <div class="md:hidden flex flex-col mb-6 p-6 rounded-[2rem] shadow-lg gap-4 bg-slate-800 text-white">
             <div class="flex justify-center items-center w-full">
@@ -227,7 +226,7 @@
             </form>
         </div>
 
-        <div id="patients-list" class="tab-section hidden fade-in premium-card p-6 md:p-8 max-w-7xl mx-auto">
+        <div id="patients-list" class="tab-section hidden fade-in premium-card p-6 md:p-8 w-full">
             <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b border-slate-100 pb-6">
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center text-2xl"><i class="fa-solid fa-users"></i></div>
@@ -243,7 +242,7 @@
             </div>
             
             <div class="overflow-x-auto rounded-3xl border border-slate-100">
-                <table class="data-table whitespace-nowrap">
+                <table class="data-table whitespace-nowrap w-full">
                     <thead>
                         <tr>
                             <th>التاريخ</th>
@@ -262,7 +261,7 @@
             </div>
         </div>
 
-        <div id="accounts-section" class="tab-section hidden fade-in space-y-8 max-w-7xl mx-auto">
+        <div id="accounts-section" class="tab-section hidden fade-in space-y-8 w-full">
             
             <div class="flex items-center gap-4 mb-2">
                 <div class="w-14 h-14 rounded-2xl bg-slate-800 text-white flex items-center justify-center text-2xl"><i class="fa-solid fa-chart-line"></i></div>
@@ -357,7 +356,7 @@
             </div>
         </div>
 
-        <div id="payments-section" class="tab-section hidden fade-in max-w-7xl mx-auto">
+        <div id="payments-section" class="tab-section hidden fade-in w-full">
             <div class="flex items-center gap-4 mb-6">
                 <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl shadow-inner"><i class="fa-solid fa-money-check-dollar"></i></div>
                 <div>
@@ -366,7 +365,7 @@
                 </div>
             </div>
             
-            <div class="premium-card p-6 md:p-8 border-t-4 border-t-blue-600">
+            <div class="premium-card p-6 md:p-8 border-t-4 border-t-blue-600 w-full">
                 <div class="flex justify-end mb-6">
                     <div class="relative w-full md:w-96">
                         <i class="fa-solid fa-magnifying-glass absolute right-5 top-4 text-slate-400"></i>
@@ -374,7 +373,7 @@
                     </div>
                 </div>
                 
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto w-full">
                     <table class="w-full text-center whitespace-nowrap md:min-w-[800px] min-w-[500px]" style="border-spacing: 0 12px; border-collapse: separate;">
                         <thead class="bg-gradient-to-l from-blue-800 to-blue-900 shadow-md">
                             <tr>
@@ -402,7 +401,7 @@
             </div>
         </div>
 
-        <div id="debts-section" class="tab-section hidden fade-in max-w-6xl mx-auto">
+        <div id="debts-section" class="tab-section hidden fade-in w-full">
             <div class="flex items-center gap-4 mb-6">
                 <div class="w-14 h-14 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-2xl shadow-inner"><i class="fa-solid fa-scale-balanced"></i></div>
                 <div>
@@ -411,8 +410,8 @@
                 </div>
             </div>
 
-            <div class="premium-card p-6 md:p-8 border-t-4 border-t-rose-600">
-                <div class="overflow-x-auto">
+            <div class="premium-card p-6 md:p-8 border-t-4 border-t-rose-600 w-full">
+                <div class="overflow-x-auto w-full">
                     <table class="w-full text-center whitespace-nowrap md:min-w-[700px] min-w-[500px]" style="border-spacing: 0 12px; border-collapse: separate;">
                         <thead class="bg-gradient-to-l from-rose-800 to-rose-900 shadow-md">
                             <tr>
@@ -435,7 +434,7 @@
             </div>
         </div>
 
-        <div id="purchases-section" class="tab-section hidden fade-in max-w-5xl mx-auto">
+        <div id="purchases-section" class="tab-section hidden fade-in max-w-6xl mx-auto w-full">
             <div class="flex items-center gap-4 mb-6">
                 <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl shadow-inner"><i class="fa-solid fa-cart-shopping"></i></div>
                 <div>
@@ -476,8 +475,8 @@
                 </form>
             </div>
 
-            <div class="premium-card p-6 md:p-8">
-                <div class="overflow-x-auto rounded-3xl border border-slate-200">
+            <div class="premium-card p-6 md:p-8 w-full">
+                <div class="overflow-x-auto rounded-3xl border border-slate-200 w-full">
                     <table class="data-table whitespace-nowrap min-w-[500px] w-full">
                         <thead>
                             <tr>
@@ -501,7 +500,7 @@
             </div>
         </div>
 
-        <div id="shortages-section" class="tab-section hidden fade-in max-w-4xl mx-auto">
+        <div id="shortages-section" class="tab-section hidden fade-in max-w-5xl mx-auto w-full">
             <div class="flex items-center gap-4 mb-6">
                 <div class="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl shadow-inner"><i class="fa-solid fa-clipboard-list"></i></div>
                 <div>
