@@ -97,7 +97,9 @@
             <ul class="space-y-3" id="nav-list">
                 <li><button onclick="showTab('add-patient', this)" class="nav-item"><i class="fa-solid fa-user-plus ml-3"></i> تسجيل زيارة</button></li>
                 <li><button onclick="showTab('patients-list', this)" class="nav-item"><i class="fa-solid fa-folder-open ml-3"></i> سجل المرضى</button></li>
-                <li><button onclick="showTab('accounts-section', this)" class="nav-item active"><i class="fa-solid fa-chart-pie ml-3"></i> الحسابات والملخص</button></li>
+                <li><button onclick="showTab('accounts-section', this)" class="nav-item active"><i class="fa-solid fa-chart-pie ml-3"></i> الملخص المالي</button></li>
+                <li><button onclick="showTab('payments-section', this)" class="nav-item"><i class="fa-solid fa-money-check-dollar ml-3"></i> جدول المدفوعات</button></li>
+                <li><button onclick="showTab('debts-section', this)" class="nav-item"><i class="fa-solid fa-hand-holding-dollar ml-3"></i> سجل الديون</button></li>
             </ul>
         </div>
         <div class="text-xs text-slate-400 text-center border-t border-slate-100 pt-5 font-bold">
@@ -111,10 +113,12 @@
             <div class="flex justify-between items-center w-full">
                 <h1 class="text-3xl font-black tracking-tight"><span class="text-white">ZAM</span><span style="color: #65b32e;">ZAM</span></h1>
             </div>
-            <div class="flex gap-2 w-full justify-between bg-white/10 p-1.5 rounded-xl">
-                <button onclick="showTab('add-patient', null)" class="flex-1 text-xs text-white hover:bg-white/20 py-2.5 rounded-lg font-bold transition text-center">الزيارة</button>
-                <button onclick="showTab('patients-list', null)" class="flex-1 text-xs text-white hover:bg-white/20 py-2.5 rounded-lg font-bold transition text-center">الملفات</button>
-                <button onclick="showTab('accounts-section', null)" class="flex-1 text-xs bg-white py-2.5 rounded-lg font-bold shadow-sm transition text-center" style="color: #083b8d;">الحسابات</button>
+            <div class="flex flex-wrap gap-2 w-full bg-white/10 p-1.5 rounded-xl">
+                <button onclick="showTab('add-patient', null)" class="flex-1 min-w-[30%] text-xs text-white hover:bg-white/20 py-2.5 rounded-lg font-bold transition text-center">الزيارة</button>
+                <button onclick="showTab('patients-list', null)" class="flex-1 min-w-[30%] text-xs text-white hover:bg-white/20 py-2.5 rounded-lg font-bold transition text-center">الملفات</button>
+                <button onclick="showTab('accounts-section', null)" class="flex-1 min-w-[30%] text-xs text-white hover:bg-white/20 py-2.5 rounded-lg font-bold transition text-center">الملخص</button>
+                <button onclick="showTab('payments-section', null)" class="flex-1 min-w-[45%] text-xs text-white hover:bg-white/20 py-2.5 rounded-lg font-bold transition text-center">المدفوعات</button>
+                <button onclick="showTab('debts-section', null)" class="flex-1 min-w-[45%] text-xs text-white hover:bg-white/20 py-2.5 rounded-lg font-bold transition text-center">الديون</button>
             </div>
         </div>
 
@@ -239,11 +243,10 @@
         </div>
 
         <div id="accounts-section" class="tab-section fade-in space-y-6 max-w-6xl mx-auto pb-10">
-            
             <div class="text-right mb-6 flex justify-between items-center">
                 <p class="text-xs text-slate-400 font-bold mt-2 pr-2">متابعة الحسابات والتاريخ والمديونيات الفورية</p>
                 <h2 class="text-3xl font-black text-slate-800 flex justify-end items-center gap-3">
-                    الحسابات والملخص المالي العام <i class="fa-solid fa-sack-dollar text-amber-500"></i> 
+                    الملخص المالي العام <i class="fa-solid fa-sack-dollar text-amber-500"></i> 
                 </h2>
             </div>
 
@@ -293,70 +296,6 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
-                <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-slate-50 pb-4 gap-4">
-                    <div class="relative w-full md:w-72">
-                        <i class="fa-solid fa-magnifying-glass absolute right-4 top-3 text-slate-300"></i>
-                        <input type="text" id="accSearchInput" onkeyup="renderAccountsTables()" placeholder="بحث سريع عن مريض هنا..." class="w-full pl-4 pr-11 py-2 rounded-xl border border-slate-200 bg-slate-50 text-sm font-bold text-slate-600 outline-none focus:border-blue-400 transition">
-                    </div>
-                    <h3 class="font-black text-slate-800 text-xl flex items-center gap-2">
-                        <i class="fa-solid fa-chart-bar text-slate-400"></i> جدول المرضى والمدفوعات الكلية وتوزيع الحصص
-                    </h3>
-                </div>
-                
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-center">
-                        <thead>
-                            <tr class="text-slate-400 border-b border-slate-100">
-                                <th class="pb-3 font-bold text-center">التاريخ</th>
-                                <th class="pb-3 font-bold text-center">المريض</th>
-                                <th class="pb-3 font-bold text-center">الإجراء</th>
-                                <th class="pb-3 font-bold text-center">الإجمالي</th>
-                                <th class="pb-3 font-bold text-center">المدفوع الكلي</th>
-                                <th class="pb-3 font-bold text-center">المتبقي</th>
-                                <th class="pb-3 font-bold text-center" style="color: #083b8d;">حصة الطبيب (كاش 60%)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="accTableBody" class="text-slate-600 font-bold"></tbody>
-                        <tfoot>
-                            <tr class="bg-slate-50 border-t-2 border-slate-200 font-black">
-                                <td colspan="3" class="py-4 text-left pr-4 text-slate-800">إجمالي المعروض:</td>
-                                <td id="accTableTotal" class="py-4 text-slate-800">0 ج</td>
-                                <td id="accTablePaid" style="color: #65b32e;">0 ج</td>
-                                <td id="accTableDebt" class="text-rose-500">0 ج</td>
-                                <td id="accTableDocPaid" class="font-black text-xl bg-blue-100 text-blue-800 rounded-l-xl border-r-4 border-white">0 ج</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
-                <h3 class="font-black text-slate-800 text-xl flex items-center gap-2 mb-6 border-b border-slate-50 pb-4 justify-end">
-                    <span class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[10px] border-amber-400"></span> جدول الديون والمتأخرات الحالية على المرضى
-                </h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-center">
-                        <thead>
-                            <tr class="text-slate-400 border-b border-slate-100">
-                                <th class="pb-3 font-bold text-center">التاريخ</th>
-                                <th class="pb-3 font-bold text-center">المريض</th>
-                                <th class="pb-3 font-bold text-center">المتبقي المطلوب حالياً</th>
-                                <th class="pb-3 font-bold text-center">حصة الطبيب من المتبقي</th>
-                            </tr>
-                        </thead>
-                        <tbody id="accDebtTableBody" class="text-slate-600 font-bold"></tbody>
-                        <tfoot>
-                            <tr class="bg-rose-50/30 border-t-2 border-slate-200 font-black">
-                                <td colspan="2" class="py-4 text-left pr-4 text-slate-800">إجمالي الديون القائمة:</td>
-                                <td id="accTotalDebts" class="py-4 text-rose-500 text-lg">0 ج</td>
-                                <td id="accTotalDocDebts" class="text-amber-700 text-xl bg-amber-100 rounded-l-xl py-4">0 ج</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-
             <div class="bg-white rounded-3xl border-2 border-slate-600/20 p-6 shadow-sm relative overflow-hidden">
                 <div class="absolute right-0 top-0 w-2 h-full bg-slate-600"></div>
                 
@@ -400,6 +339,88 @@
                         <h4 class="text-5xl font-black text-amber-600 mb-4 mt-2" id="monthlyDocDebtShare">0 ج</h4>
                         <p class="text-sm font-black text-amber-600">حصة الدكتور من ديون هذا الشهر (60%)</p>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="payments-section" class="tab-section hidden fade-in space-y-6 max-w-6xl mx-auto pb-10">
+            <div class="text-right mb-6 flex justify-between items-center">
+                <p class="text-xs text-slate-400 font-bold mt-2 pr-2">سجل الحركات المالية والمتحصلات لكل المرضى</p>
+                <h2 class="text-3xl font-black text-slate-800 flex justify-end items-center gap-3">
+                    جدول المدفوعات الكلية <i class="fa-solid fa-money-check-dollar text-blue-500"></i>
+                </h2>
+            </div>
+            
+            <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-slate-50 pb-4 gap-4">
+                    <div class="relative w-full md:w-72">
+                        <i class="fa-solid fa-magnifying-glass absolute right-4 top-3 text-slate-300"></i>
+                        <input type="text" id="accSearchInput" onkeyup="renderAccountsTables()" placeholder="بحث سريع عن مريض هنا..." class="w-full pl-4 pr-11 py-2 rounded-xl border border-slate-200 bg-slate-50 text-sm font-bold text-slate-600 outline-none focus:border-blue-400 transition">
+                    </div>
+                    <h3 class="font-black text-slate-800 text-xl flex items-center gap-2">
+                        <i class="fa-solid fa-chart-bar text-slate-400"></i> جدول المرضى والمدفوعات وتوزيع الحصص
+                    </h3>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-center">
+                        <thead>
+                            <tr class="text-slate-400 border-b border-slate-100">
+                                <th class="pb-3 font-bold text-center">التاريخ</th>
+                                <th class="pb-3 font-bold text-center">المريض</th>
+                                <th class="pb-3 font-bold text-center">الإجراء</th>
+                                <th class="pb-3 font-bold text-center">الإجمالي</th>
+                                <th class="pb-3 font-bold text-center">المدفوع الكلي</th>
+                                <th class="pb-3 font-bold text-center">المتبقي</th>
+                                <th class="pb-3 font-bold text-center" style="color: #083b8d;">حصة الطبيب (كاش 60%)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="accTableBody" class="text-slate-600 font-bold"></tbody>
+                        <tfoot>
+                            <tr class="bg-slate-50 border-t-2 border-slate-200 font-black">
+                                <td colspan="3" class="py-4 text-left pr-4 text-slate-800">إجمالي المعروض:</td>
+                                <td id="accTableTotal" class="py-4 text-slate-800">0 ج</td>
+                                <td id="accTablePaid" style="color: #65b32e;">0 ج</td>
+                                <td id="accTableDebt" class="text-rose-500">0 ج</td>
+                                <td id="accTableDocPaid" class="font-black text-xl bg-blue-100 text-blue-800 rounded-l-xl border-r-4 border-white">0 ج</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="debts-section" class="tab-section hidden fade-in space-y-6 max-w-6xl mx-auto pb-10">
+            <div class="text-right mb-6 flex justify-between items-center">
+                <p class="text-xs text-slate-400 font-bold mt-2 pr-2">متابعة المتأخرات والديون القائمة على المرضى</p>
+                <h2 class="text-3xl font-black text-slate-800 flex justify-end items-center gap-3">
+                    سجل الديون <i class="fa-solid fa-hand-holding-dollar text-rose-500"></i>
+                </h2>
+            </div>
+
+            <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+                <h3 class="font-black text-slate-800 text-xl flex items-center gap-2 mb-6 border-b border-slate-50 pb-4 justify-end">
+                    <span class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[10px] border-amber-400"></span> جدول الديون والمتأخرات الحالية على المرضى
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-center">
+                        <thead>
+                            <tr class="text-slate-400 border-b border-slate-100">
+                                <th class="pb-3 font-bold text-center">التاريخ</th>
+                                <th class="pb-3 font-bold text-center">المريض</th>
+                                <th class="pb-3 font-bold text-center">المتبقي المطلوب حالياً</th>
+                                <th class="pb-3 font-bold text-center">حصة الطبيب من المتبقي</th>
+                            </tr>
+                        </thead>
+                        <tbody id="accDebtTableBody" class="text-slate-600 font-bold"></tbody>
+                        <tfoot>
+                            <tr class="bg-rose-50/30 border-t-2 border-slate-200 font-black">
+                                <td colspan="2" class="py-4 text-left pr-4 text-slate-800">إجمالي الديون القائمة:</td>
+                                <td id="accTotalDebts" class="py-4 text-rose-500 text-lg">0 ج</td>
+                                <td id="accTotalDocDebts" class="text-amber-700 text-xl bg-amber-100 rounded-l-xl py-4">0 ج</td>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
         </div>
@@ -456,7 +477,6 @@
 
         function fmt(num) { return Number(num).toLocaleString('en-US'); }
 
-        // تهيئة التواريخ لليوم الحالي
         const today = new Date();
         document.getElementById('visitDate').valueAsDate = today;
         document.getElementById('dailyAccountDate').valueAsDate = today;
@@ -472,7 +492,7 @@
                 document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
                 btnElement.classList.add('active');
             }
-            if(tabId === 'accounts-section') renderAllAccounts();
+            if(tabId === 'accounts-section' || tabId === 'payments-section' || tabId === 'debts-section') renderAllAccounts();
         }
 
         function triggerAlert(msgText, type = 'success') {
@@ -845,6 +865,7 @@
                 
                 renderTable(); 
                 renderAllAccounts();
+                // فتح التبويبة الأساسية
                 showTab('accounts-section', document.querySelectorAll('.nav-item')[2]);
             } catch (error) {
                 console.error("Error fetching data:", error);
