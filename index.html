@@ -65,9 +65,6 @@
             font-weight: 700; color: #334155; text-align: center; vertical-align: middle;
         }
         .data-table tr:hover td { background-color: #f8fafc; }
-        
-        .doc-col-cash { background-color: #eff6ff !important; color: #1e40af; border-left: 1px dashed #bfdbfe; border-right: 1px dashed #bfdbfe; }
-        .doc-col-debt { background-color: #fff1f2 !important; color: #be123c; border-left: 1px dashed #fecdd3; border-right: 1px dashed #fecdd3; }
 
         .input-styled {
             width: 100%; padding: 1rem 1.25rem; border-radius: 16px; border: 1.5px solid #e2e8f0;
@@ -121,7 +118,7 @@
             <li><button onclick="showTab('add-patient', this)" class="nav-item active"><i class="fa-solid fa-notes-medical ml-3"></i> تسجيل زيارة</button></li>
             <li><button onclick="showTab('patients-list', this)" class="nav-item"><i class="fa-solid fa-users-rectangle ml-3"></i> سجل المرضى</button></li>
             <li><button onclick="showTab('accounts-section', this)" class="nav-item"><i class="fa-solid fa-chart-pie ml-3"></i> الملخص المالي</button></li>
-            <li><button onclick="showTab('payments-section', this)" class="nav-item"><i class="fa-solid fa-money-check-dollar ml-3"></i> جدول المدفوعات</button></li>
+            <li><button onclick="showTab('payments-section', this)" class="nav-item"><i class="fa-solid fa-money-check-dollar ml-3"></i> حركة الخزينة</button></li>
             <li><button onclick="showTab('debts-section', this)" class="nav-item"><i class="fa-solid fa-hand-holding-dollar ml-3"></i> سجل الديون</button></li>
             <li><button onclick="showTab('purchases-section', this)" class="nav-item"><i class="fa-solid fa-cart-shopping ml-3"></i> المشتريات</button></li>
             <li><button onclick="showTab('shortages-section', this)" class="nav-item"><i class="fa-solid fa-clipboard-list ml-3"></i> النواقص</button></li>
@@ -138,7 +135,7 @@
                 <button onclick="showTab('add-patient', null)" class="flex-1 min-w-[22%] bg-slate-700 hover:bg-slate-600 py-3 rounded-xl text-[10px] font-bold transition">زيارة</button>
                 <button onclick="showTab('patients-list', null)" class="flex-1 min-w-[22%] bg-slate-700 hover:bg-slate-600 py-3 rounded-xl text-[10px] font-bold transition">المرضى</button>
                 <button onclick="showTab('accounts-section', null)" class="flex-1 min-w-[22%] bg-blue-600 hover:bg-blue-500 py-3 rounded-xl text-[10px] font-bold transition">ملخص</button>
-                <button onclick="showTab('payments-section', null)" class="flex-1 min-w-[22%] bg-slate-700 hover:bg-slate-600 py-3 rounded-xl text-[10px] font-bold transition">مدفوعات</button>
+                <button onclick="showTab('payments-section', null)" class="flex-1 min-w-[22%] bg-slate-700 hover:bg-slate-600 py-3 rounded-xl text-[10px] font-bold transition">الخزينة</button>
                 <button onclick="showTab('debts-section', null)" class="flex-1 min-w-[22%] bg-slate-700 hover:bg-slate-600 py-3 rounded-xl text-[10px] font-bold transition">ديون</button>
                 <button onclick="showTab('purchases-section', null)" class="flex-1 min-w-[22%] bg-slate-700 hover:bg-slate-600 py-3 rounded-xl text-[10px] font-bold transition">مشتريات</button>
                 <button onclick="showTab('shortages-section', null)" class="flex-1 min-w-[22%] bg-slate-700 hover:bg-slate-600 py-3 rounded-xl text-[10px] font-bold transition">نواقص</button>
@@ -246,7 +243,7 @@
             </div>
             
             <div class="overflow-x-auto rounded-3xl border border-slate-100">
-                <table class="data-table">
+                <table class="data-table whitespace-nowrap">
                     <thead>
                         <tr>
                             <th>التاريخ</th>
@@ -364,12 +361,12 @@
             <div class="flex items-center gap-4 mb-6">
                 <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl shadow-inner"><i class="fa-solid fa-money-check-dollar"></i></div>
                 <div>
-                    <h2 class="text-3xl font-black text-slate-800">سجل المعاملات والمدفوعات</h2>
+                    <h2 class="text-3xl font-black text-slate-800">تفاصيل حركة الخزينة</h2>
                     <p class="text-slate-500 font-bold mt-1 text-sm">تتبع كل عمليات الدفع وحصص الطبيب بالتفصيل</p>
                 </div>
             </div>
             
-            <div class="premium-card p-6 md:p-8">
+            <div class="premium-card p-6 md:p-8 border-t-4 border-t-blue-600">
                 <div class="flex justify-end mb-6">
                     <div class="relative w-full md:w-96">
                         <i class="fa-solid fa-magnifying-glass absolute right-5 top-4 text-slate-400"></i>
@@ -377,27 +374,27 @@
                     </div>
                 </div>
                 
-                <div class="overflow-x-auto rounded-3xl border border-slate-200">
-                    <table class="data-table">
-                        <thead>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-center whitespace-nowrap" style="border-spacing: 0 12px; border-collapse: separate; min-width: 900px;">
+                        <thead class="bg-gradient-to-l from-blue-800 to-blue-900 shadow-md">
                             <tr>
-                                <th>التاريخ</th>
-                                <th>المريض</th>
-                                <th>الإجراء</th>
-                                <th>التكلفة</th>
-                                <th>المدفوع</th>
-                                <th>رصيد الحالة</th>
-                                <th class="doc-col-cash text-lg"><i class="fa-solid fa-hand-holding-dollar ml-1"></i> حصة كاش (60%)</th>
+                                <th class="!bg-transparent !text-blue-50 !py-5 !text-sm rounded-tr-2xl">التاريخ</th>
+                                <th class="!bg-transparent !text-blue-50 !py-5 !text-sm">المريض</th>
+                                <th class="!bg-transparent !text-blue-50 !py-5 !text-sm">الإجراء</th>
+                                <th class="!bg-transparent !text-blue-50 !py-5 !text-sm">التكلفة</th>
+                                <th class="!bg-transparent !text-blue-50 !py-5 !text-sm">المدفوع</th>
+                                <th class="!bg-transparent !text-blue-50 !py-5 !text-sm">رصيد الحالة</th>
+                                <th class="!bg-transparent !text-white !py-5 !text-lg rounded-tl-2xl bg-blue-950/40"><i class="fa-solid fa-hand-holding-dollar ml-1"></i> حصة كاش (60%)</th>
                             </tr>
                         </thead>
                         <tbody id="accTableBody"></tbody>
                         <tfoot>
-                            <tr class="bg-slate-100">
-                                <td colspan="3" class="text-left font-black text-slate-800 pr-6">الإجمالي:</td>
-                                <td id="accTableTotal" class="font-black text-slate-800">0 ج</td>
-                                <td id="accTablePaid" class="font-black text-green-600">0 ج</td>
-                                <td id="accTableDebt" class="font-black text-rose-600">0 ج</td>
-                                <td id="accTableDocPaid" class="font-black text-2xl text-blue-700 bg-blue-100">0 ج</td>
+                            <tr class="bg-slate-100 shadow-sm rounded-2xl">
+                                <td colspan="3" class="text-left font-black text-slate-800 pr-6 !py-5 !text-lg rounded-br-2xl border-y border-slate-200">الإجمالي:</td>
+                                <td id="accTableTotal" class="font-black text-slate-700 !text-xl !py-5 border-y border-slate-200">0 ج</td>
+                                <td id="accTablePaid" class="font-black text-green-600 !text-xl !py-5 border-y border-slate-200">0 ج</td>
+                                <td id="accTableDebt" class="font-black text-rose-600 !text-xl !py-5 border-y border-slate-200">0 ج</td>
+                                <td id="accTableDocPaid" class="font-black !text-2xl text-blue-700 bg-blue-200 !py-5 rounded-bl-2xl border-y border-blue-300">0 ج</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -416,7 +413,7 @@
 
             <div class="premium-card p-6 md:p-8 border-t-4 border-t-rose-600">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-center" style="border-spacing: 0 12px; border-collapse: separate;">
+                    <table class="w-full text-center whitespace-nowrap" style="border-spacing: 0 12px; border-collapse: separate; min-width: 700px;">
                         <thead class="bg-gradient-to-l from-rose-800 to-rose-900 shadow-md">
                             <tr>
                                 <th class="!bg-transparent !text-rose-50 !py-6 !text-base rounded-tr-2xl">آخر زيارة</th>
@@ -481,7 +478,7 @@
 
             <div class="premium-card p-6 md:p-8">
                 <div class="overflow-x-auto rounded-3xl border border-slate-200">
-                    <table class="data-table">
+                    <table class="data-table whitespace-nowrap">
                         <thead>
                             <tr>
                                 <th>التاريخ</th>
@@ -895,7 +892,6 @@
                         sgDebt += p.debt; sgDocDebt += p.debt * 0.60;
                         const ld = p.visits && p.visits.length > 0 ? p.visits[p.visits.length - 1].date.replace(/-/g, '/') : p.date.replace(/-/g, '/');
                         
-                        /* تم تعديل ستايل الديون هنا ليكون بحجم كبير وألوان مميزة (Cards Style) */
                         tb2.innerHTML += `
                             <tr class="bg-white hover:bg-rose-50 transition-all shadow-[0_4px_15px_rgba(0,0,0,0.02)] group">
                                 <td class="text-rose-500 font-bold !py-6 !text-lg border-y border-rose-100 rounded-r-2xl group-hover:border-rose-200">${ld}</td>
@@ -925,15 +921,16 @@
                 else if (v.runningDebt < 0) currentDebtDisplay = `<span class="badge badge-green">سداد ${fmt(Math.abs(v.runningDebt))}</span>`;
                 else currentDebtDisplay = `<span class="badge badge-gray">خالص</span>`;
 
+                /* تطبيق الستايل الاحترافي الجديد الخاص بحركة الخزينة */
                 tb1.innerHTML += `
-                    <tr>
-                        <td class="text-slate-500">${v.date.replace(/-/g, '/')}</td>
-                        <td class="font-black text-slate-800">${v.name}</td>
-                        <td>${v.proc}</td>
-                        <td class="font-black text-slate-700">${fmt(v.totalCost)} ج</td>
-                        <td class="font-black text-green-600">${fmt(v.paidAmount)} ج</td>
-                        <td>${currentDebtDisplay}</td>
-                        <td class="doc-col-cash font-black text-xl">${fmt(docPaid.toFixed(0))} ج</td>
+                    <tr class="bg-white hover:bg-blue-50 transition-all shadow-[0_4px_15px_rgba(0,0,0,0.02)] group">
+                        <td class="text-slate-500 font-bold !py-5 border-y border-blue-100 rounded-r-2xl group-hover:border-blue-200">${v.date.replace(/-/g, '/')}</td>
+                        <td class="font-black text-slate-800 !py-5 border-y border-blue-100 group-hover:border-blue-200">${v.name}</td>
+                        <td class="text-slate-600 font-bold !py-5 border-y border-blue-100 group-hover:border-blue-200 max-w-[150px] truncate" title="${v.proc}">${v.proc}</td>
+                        <td class="font-black text-slate-700 !py-5 border-y border-blue-100 group-hover:border-blue-200">${fmt(v.totalCost)} ج</td>
+                        <td class="font-black text-green-600 !py-5 border-y border-blue-100 group-hover:border-blue-200">${fmt(v.paidAmount)} ج</td>
+                        <td class="!py-5 border-y border-blue-100 group-hover:border-blue-200">${currentDebtDisplay}</td>
+                        <td class="font-black !text-xl !py-5 rounded-l-2xl border-y border-l-4 border-l-white border-y-blue-100 bg-blue-50 text-blue-800 group-hover:border-y-blue-200 group-hover:bg-blue-100">${fmt(docPaid.toFixed(0))} ج</td>
                     </tr>`;
             });
 
@@ -1065,7 +1062,6 @@
                 renderPurchases();
                 renderShortages();
                 
-                // هنا التعديل: جعل الصفحة الافتراضية عند الفتح هي "تسجيل مريض" بدلاً من الحسابات
                 showTab('add-patient', document.querySelectorAll('.nav-item')[0]);
             } catch (error) {
                 console.error("Error fetching data:", error);
