@@ -359,7 +359,7 @@
                 <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl shadow-inner"><i class="fa-solid fa-money-check-dollar"></i></div>
                 <div>
                     <h2 class="text-3xl font-black text-slate-800">تفاصيل حركة الخزينة</h2>
-                    <p class="text-slate-500 font-bold mt-1 text-sm">تتبع كل عمليات الدفع وحصص الطبيب بالتفصيل</p>
+                    <p class="text-slate-500 font-bold mt-1 text-sm">تتبع ملخص الدفعيات لكل مريض بشكل منفصل</p>
                 </div>
             </div>
             
@@ -390,7 +390,7 @@
             </div>
             
             <div id="accPaymentsCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                </div>
+            </div>
         </div>
 
         <div id="debts-section" class="tab-section hidden fade-in w-full">
@@ -414,7 +414,7 @@
             </div>
 
             <div id="accDebtCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                </div>
+            </div>
         </div>
 
         <div id="purchases-section" class="tab-section hidden fade-in max-w-6xl mx-auto w-full">
@@ -856,94 +856,79 @@
         function renderAccountsTables() {
             const q = document.getElementById('accSearchInput').value.toLowerCase();
             
-            // جلب الحاويات الجديدة للكروت بدلاً من الجداول
             const payContainer = document.getElementById('accPaymentsCardsContainer');
             const debtContainer = document.getElementById('accDebtCardsContainer');
             
             if (payContainer) payContainer.innerHTML = ''; 
             if (debtContainer) debtContainer.innerHTML = '';
             
-            let sTot = 0, sPaid = 0, sDebt = 0, sDocPaid = 0, sgDebt = 0, sgDocDebt = 0, allV = [];
+            let sTot = 0, sPaid = 0, sDebt = 0, sDocPaid = 0, sgDebt = 0, sgDocDebt = 0;
+            let aggregatedCards = [];
+            let aggregatedDebtCards = [];
 
-            // تجميع وتصفية بيانات الديون
             patients.forEach(p => {
                 if(p.name.toLowerCase().includes(q)) {
-                    let runningDebt = 0;
-                    if (p.visits) {
-                        p.visits.forEach((v, index) => {
-                            runningDebt += (v.totalCost - v.paidAmount);
-                            allV.push({ name: p.name, runningDebt: runningDebt, visitOrder: index, ...v });
-                        });
-                    }
-
+                    
+                    let lastDate = p.visits && p.visits.length > 0 ? p.visits[p.visits.length - 1].date : p.date;
+                    
                     if(p.debt > 0) {
                         sgDebt += p.debt; 
                         sgDocDebt += p.debt * 0.60;
-                        const ld = p.visits && p.visits.length > 0 ? p.visits[p.visits.length - 1].date.replace(/-/g, '/') : p.date.replace(/-/g, '/');
                         
-                        // تصميم كارت الدين الجديد
-                        if (debtContainer) {
-                            debtContainer.innerHTML += `
-                                <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-lg transition-all relative overflow-hidden group">
-                                    <div class="absolute top-0 right-0 w-2 h-full bg-rose-500 group-hover:bg-rose-600 transition-colors"></div>
-                                    <div class="flex justify-between items-start mb-4 pr-3">
-                                        <div>
-                                            <h3 class="text-xl font-black text-slate-800 mb-1 line-clamp-1" title="${p.name}">${p.name}</h3>
-                                            <p class="text-[11px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-md inline-block"><i class="fa-regular fa-clock ml-1"></i>آخر زيارة: ${ld}</p>
-                                        </div>
+                        let debtHtml = `
+                            <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-lg transition-all relative overflow-hidden group">
+                                <div class="absolute top-0 right-0 w-2 h-full bg-rose-500 group-hover:bg-rose-600 transition-colors"></div>
+                                <div class="flex justify-between items-start mb-4 pr-3">
+                                    <div>
+                                        <h3 class="text-xl font-black text-slate-800 mb-1 line-clamp-1" title="${p.name}">${p.name}</h3>
+                                        <p class="text-[11px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-md inline-block"><i class="fa-regular fa-clock ml-1"></i>آخر زيارة: ${lastDate.replace(/-/g, '/')}</p>
                                     </div>
-                                    <div class="bg-rose-50 rounded-2xl p-4 mb-3 flex flex-col justify-center items-center text-center">
-                                        <span class="text-xs font-bold text-rose-600 mb-1">إجمالي المطلوب من المريض</span>
-                                        <span class="text-3xl font-black text-rose-700">${fmt(p.debt)} ج</span>
-                                    </div>
-                                    <div class="bg-slate-50 rounded-2xl p-4 flex justify-between items-center border border-slate-100">
-                                        <span class="text-xs font-bold text-slate-600"><i class="fa-solid fa-sack-dollar text-slate-400 ml-1"></i> حصة آجل (60%):</span>
-                                        <span class="text-xl font-black text-slate-800">${fmt((p.debt*0.60).toFixed(0))} ج</span>
-                                    </div>
-                                </div>`;
-                        }
+                                </div>
+                                <div class="bg-rose-50 rounded-2xl p-4 mb-3 flex flex-col justify-center items-center text-center">
+                                    <span class="text-xs font-bold text-rose-600 mb-1">إجمالي المطلوب من المريض</span>
+                                    <span class="text-3xl font-black text-rose-700">${fmt(p.debt)} ج</span>
+                                </div>
+                                <div class="bg-slate-50 rounded-2xl p-4 flex justify-between items-center border border-slate-100">
+                                    <span class="text-xs font-bold text-slate-600"><i class="fa-solid fa-sack-dollar text-slate-400 ml-1"></i> حصة آجل (60%):</span>
+                                    <span class="text-xl font-black text-slate-800">${fmt((p.debt*0.60).toFixed(0))} ج</span>
+                                </div>
+                            </div>`;
+                        
+                        aggregatedDebtCards.push({ dateObj: new Date(lastDate), html: debtHtml });
                     }
-                }
-            });
 
-            // ترتيب الزيارات وبناء كروت الخزينة
-            allV.sort((a, b) => {
-                const dateDiff = new Date(b.date) - new Date(a.date);
-                if (dateDiff !== 0) return dateDiff; 
-                return b.visitOrder - a.visitOrder; 
-            });
+                    sTot += p.totalCost;
+                    sPaid += p.paidAmount;
+                    sDebt += p.debt;
+                    let docPaid = p.paidAmount * 0.60;
+                    sDocPaid += docPaid;
 
-            allV.forEach(v => {
-                const rem = v.totalCost - v.paidAmount; 
-                sTot += v.totalCost; sPaid += v.paidAmount; sDebt += rem; 
-                
-                let docPaid = v.paidAmount * 0.60;
-                sDocPaid += docPaid;
-                
-                let currentDebtDisplaySmall = '';
-                if (v.runningDebt > 0) currentDebtDisplaySmall = `<p class="font-black text-sm text-rose-600">${fmt(v.runningDebt)} ج</p>`;
-                else if (v.runningDebt < 0) currentDebtDisplaySmall = `<p class="font-black text-sm text-green-600">+${fmt(Math.abs(v.runningDebt))}</p>`;
-                else currentDebtDisplaySmall = `<p class="font-black text-sm text-slate-400">خالص</p>`;
+                    let visitCount = p.visits ? p.visits.length : 1;
+                    let lastProc = p.visits && p.visits.length > 0 ? p.visits[p.visits.length - 1].proc : p.proc;
+                    let procText = visitCount > 1 ? `آخر إجراء: ${lastProc} (${visitCount} زيارات)` : lastProc;
 
-                // تصميم كارت الخزينة الجديد
-                if (payContainer) {
-                    payContainer.innerHTML += `
+                    let currentDebtDisplaySmall = '';
+                    if (p.debt > 0) currentDebtDisplaySmall = `<p class="font-black text-sm text-rose-600">${fmt(p.debt)} ج</p>`;
+                    else if (p.debt < 0) currentDebtDisplaySmall = `<p class="font-black text-sm text-green-600">+${fmt(Math.abs(p.debt))}</p>`;
+                    else currentDebtDisplaySmall = `<p class="font-black text-sm text-slate-400">خالص</p>`;
+
+                    let payHtml = `
                         <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-lg transition-all relative">
                             <div class="flex justify-between items-center mb-3 border-b border-slate-50 pb-3">
-                                <span class="font-black text-lg text-slate-800 line-clamp-1" title="${v.name}">${v.name}</span>
-                                <span class="text-[10px] font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-md">${v.date.replace(/-/g, '/')}</span>
+                                <span class="font-black text-lg text-slate-800 line-clamp-1" title="${p.name}">${p.name}</span>
+                                <span class="text-[10px] font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-md">${lastDate.replace(/-/g, '/')}</span>
                             </div>
                             <div class="mb-4 text-center">
-                                <span class="inline-block bg-blue-50 text-blue-600 text-[11px] font-bold px-3 py-1.5 rounded-lg max-w-full truncate" title="${v.proc}">${v.proc}</span>
+                                <span class="inline-block bg-blue-50 text-blue-600 text-[11px] font-bold px-3 py-1.5 rounded-lg max-w-full truncate" title="${procText}">${procText}</span>
                             </div>
                             <div class="flex justify-between items-center bg-slate-50 rounded-2xl p-3 mb-4">
                                 <div class="text-center w-1/3 border-l border-slate-200">
-                                    <p class="text-[10px] font-bold text-slate-400 mb-1">التكلفة</p>
-                                    <p class="font-black text-sm text-slate-700">${fmt(v.totalCost)}</p>
+                                    <p class="text-[10px] font-bold text-slate-400 mb-1">إجمالي التكلفة</p>
+                                    <p class="font-black text-sm text-slate-700">${fmt(p.totalCost)}</p>
                                 </div>
                                 <div class="text-center w-1/3 border-l border-slate-200">
-                                    <p class="text-[10px] font-bold text-slate-400 mb-1">المدفوع</p>
-                                    <p class="font-black text-sm text-green-600">${fmt(v.paidAmount)}</p>
+                                    <p class="text-[10px] font-bold text-slate-400 mb-1">المدفوع كلياً</p>
+                                    <p class="font-black text-sm text-green-600">${fmt(p.paidAmount)}</p>
                                 </div>
                                 <div class="text-center w-1/3">
                                     <p class="text-[10px] font-bold text-slate-400 mb-1">الرصيد</p>
@@ -951,14 +936,29 @@
                                 </div>
                             </div>
                             <div class="bg-blue-600 rounded-2xl p-3.5 flex justify-between items-center text-white shadow-md">
-                                <span class="text-xs font-bold text-blue-100">حصة كاش (60%)</span>
+                                <span class="text-xs font-bold text-blue-100">إجمالي حصة كاش (60%)</span>
                                 <span class="font-black text-xl">${fmt(docPaid.toFixed(0))} ج</span>
                             </div>
                         </div>`;
+
+                    aggregatedCards.push({ dateObj: new Date(lastDate), html: payHtml });
                 }
             });
 
-            // تحديث الأرقام في الملخصات
+            aggregatedCards.sort((a, b) => b.dateObj - a.dateObj);
+            if (payContainer) {
+                aggregatedCards.forEach(card => {
+                    payContainer.innerHTML += card.html;
+                });
+            }
+
+            aggregatedDebtCards.sort((a, b) => b.dateObj - a.dateObj);
+            if (debtContainer) {
+                aggregatedDebtCards.forEach(card => {
+                    debtContainer.innerHTML += card.html;
+                });
+            }
+
             if(document.getElementById('accTableTotal')) document.getElementById('accTableTotal').innerText = fmt(sTot) + ' ج'; 
             if(document.getElementById('accTablePaid')) document.getElementById('accTablePaid').innerText = fmt(sPaid) + ' ج'; 
             if(document.getElementById('accTableDebt')) document.getElementById('accTableDebt').innerText = fmt(Math.abs(sDebt)) + ' ج';
