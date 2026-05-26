@@ -769,12 +769,11 @@
 
             patients.forEach(p => {
                 if(p.name.toLowerCase().includes(q)) {
-                    // حساب الرصيد التراكمي الفعلي لكل مريض
                     let runningDebt = 0;
                     if (p.visits) {
-                        p.visits.forEach(v => {
+                        p.visits.forEach((v, index) => {
                             runningDebt += (v.totalCost - v.paidAmount);
-                            allV.push({ name: p.name, runningDebt: runningDebt, ...v });
+                            allV.push({ name: p.name, runningDebt: runningDebt, visitOrder: index, ...v });
                         });
                     }
 
@@ -792,7 +791,12 @@
                 }
             });
 
-            allV.sort((a, b) => new Date(b.date) - new Date(a.date));
+            allV.sort((a, b) => {
+                const dateDiff = new Date(b.date) - new Date(a.date);
+                if (dateDiff !== 0) return dateDiff; 
+                return b.visitOrder - a.visitOrder; 
+            });
+
             allV.forEach(v => {
                 const rem = v.totalCost - v.paidAmount; 
                 sTot += v.totalCost; sPaid += v.paidAmount; sDebt += rem; 
@@ -800,7 +804,6 @@
                 let docPaid = v.paidAmount * 0.60;
                 sDocPaid += docPaid;
                 
-                // استخدام الرصيد التراكمي الفعلي للمريض بدل السداد
                 let currentDebtDisplay = '';
                 if (v.runningDebt > 0) currentDebtDisplay = `<span class="text-rose-500">${fmt(v.runningDebt)} ج</span>`;
                 else if (v.runningDebt < 0) currentDebtDisplay = `<span class="text-emerald-600">رصيد للمريض: ${fmt(Math.abs(v.runningDebt))} ج</span>`;
