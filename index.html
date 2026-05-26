@@ -375,7 +375,7 @@
                 </div>
                 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-center whitespace-nowrap" style="border-spacing: 0 12px; border-collapse: separate; min-width: 900px;">
+                    <table class="w-full text-center whitespace-nowrap md:min-w-[800px] min-w-[500px]" style="border-spacing: 0 12px; border-collapse: separate;">
                         <thead class="bg-gradient-to-l from-blue-800 to-blue-900 shadow-md">
                             <tr>
                                 <th class="!bg-transparent !text-blue-50 !py-5 !text-sm rounded-tr-2xl">التاريخ</th>
@@ -390,7 +390,7 @@
                         <tbody id="accTableBody"></tbody>
                         <tfoot>
                             <tr class="bg-slate-100 shadow-sm rounded-2xl">
-                                <td colspan="3" class="text-left font-black text-slate-800 pr-6 !py-5 !text-lg rounded-br-2xl border-y border-slate-200">الإجمالي:</td>
+                                <td colspan="3" class="text-right font-black text-slate-800 pr-6 !py-5 !text-lg rounded-br-2xl border-y border-slate-200">الإجمالي:</td>
                                 <td id="accTableTotal" class="font-black text-slate-700 !text-xl !py-5 border-y border-slate-200">0 ج</td>
                                 <td id="accTablePaid" class="font-black text-green-600 !text-xl !py-5 border-y border-slate-200">0 ج</td>
                                 <td id="accTableDebt" class="font-black text-rose-600 !text-xl !py-5 border-y border-slate-200">0 ج</td>
@@ -413,7 +413,7 @@
 
             <div class="premium-card p-6 md:p-8 border-t-4 border-t-rose-600">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-center whitespace-nowrap" style="border-spacing: 0 12px; border-collapse: separate; min-width: 700px;">
+                    <table class="w-full text-center whitespace-nowrap md:min-w-[700px] min-w-[500px]" style="border-spacing: 0 12px; border-collapse: separate;">
                         <thead class="bg-gradient-to-l from-rose-800 to-rose-900 shadow-md">
                             <tr>
                                 <th class="!bg-transparent !text-rose-50 !py-6 !text-base rounded-tr-2xl">آخر زيارة</th>
@@ -425,7 +425,7 @@
                         <tbody id="accDebtTableBody"></tbody>
                         <tfoot>
                             <tr class="bg-slate-100 shadow-sm rounded-2xl">
-                                <td colspan="2" class="text-left font-black text-slate-800 pr-6 !py-6 !text-lg rounded-br-2xl border-y border-slate-200">إجمالي الديون القائمة:</td>
+                                <td colspan="2" class="text-right font-black text-slate-800 pr-6 !py-6 !text-lg rounded-br-2xl border-y border-slate-200">إجمالي الديون القائمة:</td>
                                 <td id="accTotalDebts" class="font-black text-rose-600 !text-2xl !py-6 border-y border-slate-200">0 ج</td>
                                 <td id="accTotalDocDebts" class="font-black !text-3xl text-rose-700 bg-rose-200 !py-6 rounded-bl-2xl border-y border-rose-300">0 ج</td>
                             </tr>
@@ -478,7 +478,7 @@
 
             <div class="premium-card p-6 md:p-8">
                 <div class="overflow-x-auto rounded-3xl border border-slate-200">
-                    <table class="data-table whitespace-nowrap">
+                    <table class="data-table whitespace-nowrap min-w-[500px] w-full">
                         <thead>
                             <tr>
                                 <th>التاريخ</th>
@@ -492,7 +492,7 @@
                         <tbody id="purchasesTableBody"></tbody>
                         <tfoot>
                             <tr class="bg-slate-100">
-                                <td colspan="4" class="text-left font-black text-slate-800 pr-6">إجمالي مصاريف المشتريات:</td>
+                                <td colspan="4" class="text-right font-black text-slate-800 pr-6">إجمالي مصاريف المشتريات:</td>
                                 <td id="purGrandTotal" colspan="2" class="font-black text-rose-600 text-xl text-right pr-4">0 ج</td>
                             </tr>
                         </tfoot>
@@ -921,7 +921,6 @@
                 else if (v.runningDebt < 0) currentDebtDisplay = `<span class="badge badge-green">سداد ${fmt(Math.abs(v.runningDebt))}</span>`;
                 else currentDebtDisplay = `<span class="badge badge-gray">خالص</span>`;
 
-                /* تطبيق الستايل الاحترافي الجديد الخاص بحركة الخزينة */
                 tb1.innerHTML += `
                     <tr class="bg-white hover:bg-blue-50 transition-all shadow-[0_4px_15px_rgba(0,0,0,0.02)] group">
                         <td class="text-slate-500 font-bold !py-5 border-y border-blue-100 rounded-r-2xl group-hover:border-blue-200">${v.date.replace(/-/g, '/')}</td>
