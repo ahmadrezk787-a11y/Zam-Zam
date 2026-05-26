@@ -73,7 +73,6 @@
             box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
         }
 
-        /* تصغير التبويبات الجانبية */
         .nav-item {
             display: flex; align-items: center; width: 100%; padding: 0.75rem 1rem;
             border-radius: 12px; font-weight: 800; font-size: 0.95rem; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: #64748b;
@@ -92,7 +91,6 @@
         .badge-green { background: #f0fdf4; color: #15803d; }
         .badge-rose { background: #fff1f2; color: #e11d48; }
         .badge-gray { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; }
-        .badge-amber { background: #fffbeb; color: #d97706; }
 
         .tab-section { display: none; }
         .tab-section.active { display: block; }
@@ -365,40 +363,34 @@
                 </div>
             </div>
             
-            <div class="premium-card p-6 md:p-8 border-t-4 border-t-blue-600 w-full">
-                <div class="flex justify-end mb-6">
-                    <div class="relative w-full md:w-96">
-                        <i class="fa-solid fa-magnifying-glass absolute right-5 top-4 text-slate-400"></i>
-                        <input type="text" id="accSearchInput" onkeyup="renderAccountsTables()" placeholder="بحث باسم المريض..." class="input-styled pr-12 rounded-full">
-                    </div>
-                </div>
-                
-                <div class="overflow-x-auto w-full">
-                    <table class="w-full text-center whitespace-nowrap md:min-w-[800px] min-w-[500px]" style="border-spacing: 0 12px; border-collapse: separate;">
-                        <thead class="bg-gradient-to-l from-blue-800 to-blue-900 shadow-md">
-                            <tr>
-                                <th class="!bg-transparent !text-blue-50 !py-5 !text-sm rounded-tr-2xl">التاريخ</th>
-                                <th class="!bg-transparent !text-blue-50 !py-5 !text-sm">المريض</th>
-                                <th class="!bg-transparent !text-blue-50 !py-5 !text-sm">الإجراء</th>
-                                <th class="!bg-transparent !text-blue-50 !py-5 !text-sm">التكلفة</th>
-                                <th class="!bg-transparent !text-blue-50 !py-5 !text-sm">المدفوع</th>
-                                <th class="!bg-transparent !text-blue-50 !py-5 !text-sm">رصيد الحالة</th>
-                                <th class="!bg-transparent !text-white !py-5 !text-lg rounded-tl-2xl bg-blue-950/40"><i class="fa-solid fa-hand-holding-dollar ml-1"></i> حصة كاش (60%)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="accTableBody"></tbody>
-                        <tfoot>
-                            <tr class="bg-slate-100 shadow-sm rounded-2xl">
-                                <td colspan="3" class="text-right font-black text-slate-800 pr-6 !py-5 !text-lg rounded-br-2xl border-y border-slate-200">الإجمالي:</td>
-                                <td id="accTableTotal" class="font-black text-slate-700 !text-xl !py-5 border-y border-slate-200">0 ج</td>
-                                <td id="accTablePaid" class="font-black text-green-600 !text-xl !py-5 border-y border-slate-200">0 ج</td>
-                                <td id="accTableDebt" class="font-black text-rose-600 !text-xl !py-5 border-y border-slate-200">0 ج</td>
-                                <td id="accTableDocPaid" class="font-black !text-2xl text-blue-700 bg-blue-200 !py-5 rounded-bl-2xl border-y border-blue-300">0 ج</td>
-                            </tr>
-                        </tfoot>
-                    </table>
+            <div class="flex justify-end mb-4">
+                <div class="relative w-full md:w-96">
+                    <i class="fa-solid fa-magnifying-glass absolute right-5 top-4 text-slate-400"></i>
+                    <input type="text" id="accSearchInput" onkeyup="renderAccountsTables()" placeholder="بحث باسم المريض..." class="input-styled pr-12 rounded-full shadow-sm bg-white">
                 </div>
             </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 text-center shadow-sm">
+                    <p class="text-xs font-bold text-slate-500 mb-1">إجمالي التكلفة</p>
+                    <p id="accTableTotal" class="font-black text-xl text-slate-800">0 ج</p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-2xl border border-green-100 text-center shadow-sm">
+                    <p class="text-xs font-bold text-green-700 mb-1">المدفوع الكلي</p>
+                    <p id="accTablePaid" class="font-black text-xl text-green-700">0 ج</p>
+                </div>
+                <div class="bg-rose-50 p-4 rounded-2xl border border-rose-100 text-center shadow-sm">
+                    <p class="text-xs font-bold text-rose-700 mb-1">متبقي / ديون</p>
+                    <p id="accTableDebt" class="font-black text-xl text-rose-700">0 ج</p>
+                </div>
+                <div class="bg-blue-600 p-4 rounded-2xl border border-blue-700 text-center shadow-md">
+                    <p class="text-xs font-bold text-blue-100 mb-1">حصة الطبيب كاش</p>
+                    <p id="accTableDocPaid" class="font-black text-2xl text-white">0 ج</p>
+                </div>
+            </div>
+            
+            <div id="accPaymentsCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                </div>
         </div>
 
         <div id="debts-section" class="tab-section hidden fade-in w-full">
@@ -410,28 +402,19 @@
                 </div>
             </div>
 
-            <div class="premium-card p-6 md:p-8 border-t-4 border-t-rose-600 w-full">
-                <div class="overflow-x-auto w-full">
-                    <table class="w-full text-center whitespace-nowrap md:min-w-[700px] min-w-[500px]" style="border-spacing: 0 12px; border-collapse: separate;">
-                        <thead class="bg-gradient-to-l from-rose-800 to-rose-900 shadow-md">
-                            <tr>
-                                <th class="!bg-transparent !text-rose-50 !py-6 !text-base rounded-tr-2xl">آخر زيارة</th>
-                                <th class="!bg-transparent !text-rose-50 !py-6 !text-base">المريض</th>
-                                <th class="!bg-transparent !text-rose-50 !py-6 !text-base">إجمالي الدين المطلوب</th>
-                                <th class="!bg-transparent !text-white !py-6 !text-xl rounded-tl-2xl bg-rose-950/40"><i class="fa-solid fa-sack-dollar ml-1"></i> حصة آجل (60%)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="accDebtTableBody"></tbody>
-                        <tfoot>
-                            <tr class="bg-slate-100 shadow-sm rounded-2xl">
-                                <td colspan="2" class="text-right font-black text-slate-800 pr-6 !py-6 !text-lg rounded-br-2xl border-y border-slate-200">إجمالي الديون القائمة:</td>
-                                <td id="accTotalDebts" class="font-black text-rose-600 !text-2xl !py-6 border-y border-slate-200">0 ج</td>
-                                <td id="accTotalDocDebts" class="font-black !text-3xl text-rose-700 bg-rose-200 !py-6 rounded-bl-2xl border-y border-rose-300">0 ج</td>
-                            </tr>
-                        </tfoot>
-                    </table>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <div class="bg-white p-6 rounded-3xl border border-rose-100 border-r-4 border-r-rose-500 shadow-sm flex flex-col md:flex-row justify-between md:items-center">
+                    <span class="font-bold text-slate-500 text-lg mb-2 md:mb-0">إجمالي الديون القائمة:</span>
+                    <span id="accTotalDebts" class="font-black text-4xl text-rose-600">0 ج</span>
+                </div>
+                <div class="bg-gradient-to-l from-rose-800 to-rose-900 p-6 rounded-3xl shadow-md flex flex-col md:flex-row justify-between md:items-center">
+                    <span class="font-bold text-rose-200 text-lg mb-2 md:mb-0"><i class="fa-solid fa-sack-dollar ml-2"></i>إجمالي حصة الطبيب (الآجلة):</span>
+                    <span id="accTotalDocDebts" class="font-black text-4xl text-white">0 ج</span>
                 </div>
             </div>
+
+            <div id="accDebtCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                </div>
         </div>
 
         <div id="purchases-section" class="tab-section hidden fade-in max-w-6xl mx-auto w-full">
@@ -872,11 +855,17 @@
 
         function renderAccountsTables() {
             const q = document.getElementById('accSearchInput').value.toLowerCase();
-            const tb1 = document.getElementById('accTableBody'), tb2 = document.getElementById('accDebtTableBody');
-            tb1.innerHTML = ''; tb2.innerHTML = '';
             
-            let sTot=0, sPaid=0, sDebt=0, sDocPaid=0, sgDebt=0, sgDocDebt=0, allV=[];
+            // جلب الحاويات الجديدة للكروت بدلاً من الجداول
+            const payContainer = document.getElementById('accPaymentsCardsContainer');
+            const debtContainer = document.getElementById('accDebtCardsContainer');
+            
+            if (payContainer) payContainer.innerHTML = ''; 
+            if (debtContainer) debtContainer.innerHTML = '';
+            
+            let sTot = 0, sPaid = 0, sDebt = 0, sDocPaid = 0, sgDebt = 0, sgDocDebt = 0, allV = [];
 
+            // تجميع وتصفية بيانات الديون
             patients.forEach(p => {
                 if(p.name.toLowerCase().includes(q)) {
                     let runningDebt = 0;
@@ -888,20 +877,36 @@
                     }
 
                     if(p.debt > 0) {
-                        sgDebt += p.debt; sgDocDebt += p.debt * 0.60;
+                        sgDebt += p.debt; 
+                        sgDocDebt += p.debt * 0.60;
                         const ld = p.visits && p.visits.length > 0 ? p.visits[p.visits.length - 1].date.replace(/-/g, '/') : p.date.replace(/-/g, '/');
                         
-                        tb2.innerHTML += `
-                            <tr class="bg-white hover:bg-rose-50 transition-all shadow-[0_4px_15px_rgba(0,0,0,0.02)] group">
-                                <td class="text-rose-500 font-bold !py-6 !text-lg border-y border-rose-100 rounded-r-2xl group-hover:border-rose-200">${ld}</td>
-                                <td class="font-black text-slate-800 !py-6 !text-xl border-y border-rose-100 group-hover:border-rose-200"><i class="fa-solid fa-user-injured text-rose-300 ml-2"></i>${p.name}</td>
-                                <td class="!py-6 border-y border-rose-100 group-hover:border-rose-200"><span class="bg-gradient-to-r from-rose-100 to-rose-50 text-rose-700 px-6 py-3 rounded-2xl text-xl font-black border border-rose-100 shadow-sm">${fmt(p.debt)} ج</span></td>
-                                <td class="font-black !text-3xl !py-6 rounded-l-2xl border-y border-l-4 border-l-white border-y-rose-100 bg-rose-50 text-rose-800 group-hover:border-y-rose-200 group-hover:bg-rose-100">${fmt((p.debt*0.60).toFixed(0))} ج</td>
-                            </tr>`;
+                        // تصميم كارت الدين الجديد
+                        if (debtContainer) {
+                            debtContainer.innerHTML += `
+                                <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-lg transition-all relative overflow-hidden group">
+                                    <div class="absolute top-0 right-0 w-2 h-full bg-rose-500 group-hover:bg-rose-600 transition-colors"></div>
+                                    <div class="flex justify-between items-start mb-4 pr-3">
+                                        <div>
+                                            <h3 class="text-xl font-black text-slate-800 mb-1 line-clamp-1" title="${p.name}">${p.name}</h3>
+                                            <p class="text-[11px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-md inline-block"><i class="fa-regular fa-clock ml-1"></i>آخر زيارة: ${ld}</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-rose-50 rounded-2xl p-4 mb-3 flex flex-col justify-center items-center text-center">
+                                        <span class="text-xs font-bold text-rose-600 mb-1">إجمالي المطلوب من المريض</span>
+                                        <span class="text-3xl font-black text-rose-700">${fmt(p.debt)} ج</span>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-2xl p-4 flex justify-between items-center border border-slate-100">
+                                        <span class="text-xs font-bold text-slate-600"><i class="fa-solid fa-sack-dollar text-slate-400 ml-1"></i> حصة آجل (60%):</span>
+                                        <span class="text-xl font-black text-slate-800">${fmt((p.debt*0.60).toFixed(0))} ج</span>
+                                    </div>
+                                </div>`;
+                        }
                     }
                 }
             });
 
+            // ترتيب الزيارات وبناء كروت الخزينة
             allV.sort((a, b) => {
                 const dateDiff = new Date(b.date) - new Date(a.date);
                 if (dateDiff !== 0) return dateDiff; 
@@ -915,30 +920,52 @@
                 let docPaid = v.paidAmount * 0.60;
                 sDocPaid += docPaid;
                 
-                let currentDebtDisplay = '';
-                if (v.runningDebt > 0) currentDebtDisplay = `<span class="badge badge-rose">${fmt(v.runningDebt)} ج</span>`;
-                else if (v.runningDebt < 0) currentDebtDisplay = `<span class="badge badge-green">سداد ${fmt(Math.abs(v.runningDebt))}</span>`;
-                else currentDebtDisplay = `<span class="badge badge-gray">خالص</span>`;
+                let currentDebtDisplaySmall = '';
+                if (v.runningDebt > 0) currentDebtDisplaySmall = `<p class="font-black text-sm text-rose-600">${fmt(v.runningDebt)} ج</p>`;
+                else if (v.runningDebt < 0) currentDebtDisplaySmall = `<p class="font-black text-sm text-green-600">+${fmt(Math.abs(v.runningDebt))}</p>`;
+                else currentDebtDisplaySmall = `<p class="font-black text-sm text-slate-400">خالص</p>`;
 
-                tb1.innerHTML += `
-                    <tr class="bg-white hover:bg-blue-50 transition-all shadow-[0_4px_15px_rgba(0,0,0,0.02)] group">
-                        <td class="text-slate-500 font-bold !py-5 border-y border-blue-100 rounded-r-2xl group-hover:border-blue-200">${v.date.replace(/-/g, '/')}</td>
-                        <td class="font-black text-slate-800 !py-5 border-y border-blue-100 group-hover:border-blue-200">${v.name}</td>
-                        <td class="text-slate-600 font-bold !py-5 border-y border-blue-100 group-hover:border-blue-200 max-w-[150px] truncate" title="${v.proc}">${v.proc}</td>
-                        <td class="font-black text-slate-700 !py-5 border-y border-blue-100 group-hover:border-blue-200">${fmt(v.totalCost)} ج</td>
-                        <td class="font-black text-green-600 !py-5 border-y border-blue-100 group-hover:border-blue-200">${fmt(v.paidAmount)} ج</td>
-                        <td class="!py-5 border-y border-blue-100 group-hover:border-blue-200">${currentDebtDisplay}</td>
-                        <td class="font-black !text-xl !py-5 rounded-l-2xl border-y border-l-4 border-l-white border-y-blue-100 bg-blue-50 text-blue-800 group-hover:border-y-blue-200 group-hover:bg-blue-100">${fmt(docPaid.toFixed(0))} ج</td>
-                    </tr>`;
+                // تصميم كارت الخزينة الجديد
+                if (payContainer) {
+                    payContainer.innerHTML += `
+                        <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-lg transition-all relative">
+                            <div class="flex justify-between items-center mb-3 border-b border-slate-50 pb-3">
+                                <span class="font-black text-lg text-slate-800 line-clamp-1" title="${v.name}">${v.name}</span>
+                                <span class="text-[10px] font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-md">${v.date.replace(/-/g, '/')}</span>
+                            </div>
+                            <div class="mb-4 text-center">
+                                <span class="inline-block bg-blue-50 text-blue-600 text-[11px] font-bold px-3 py-1.5 rounded-lg max-w-full truncate" title="${v.proc}">${v.proc}</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-slate-50 rounded-2xl p-3 mb-4">
+                                <div class="text-center w-1/3 border-l border-slate-200">
+                                    <p class="text-[10px] font-bold text-slate-400 mb-1">التكلفة</p>
+                                    <p class="font-black text-sm text-slate-700">${fmt(v.totalCost)}</p>
+                                </div>
+                                <div class="text-center w-1/3 border-l border-slate-200">
+                                    <p class="text-[10px] font-bold text-slate-400 mb-1">المدفوع</p>
+                                    <p class="font-black text-sm text-green-600">${fmt(v.paidAmount)}</p>
+                                </div>
+                                <div class="text-center w-1/3">
+                                    <p class="text-[10px] font-bold text-slate-400 mb-1">الرصيد</p>
+                                    ${currentDebtDisplaySmall}
+                                </div>
+                            </div>
+                            <div class="bg-blue-600 rounded-2xl p-3.5 flex justify-between items-center text-white shadow-md">
+                                <span class="text-xs font-bold text-blue-100">حصة كاش (60%)</span>
+                                <span class="font-black text-xl">${fmt(docPaid.toFixed(0))} ج</span>
+                            </div>
+                        </div>`;
+                }
             });
 
-            document.getElementById('accTableTotal').innerText = fmt(sTot) + ' ج'; 
-            document.getElementById('accTablePaid').innerText = fmt(sPaid) + ' ج'; 
-            document.getElementById('accTableDebt').innerText = fmt(Math.abs(sDebt)) + ' ج';
-            document.getElementById('accTableDocPaid').innerText = fmt(sDocPaid.toFixed(0)) + ' ج';
+            // تحديث الأرقام في الملخصات
+            if(document.getElementById('accTableTotal')) document.getElementById('accTableTotal').innerText = fmt(sTot) + ' ج'; 
+            if(document.getElementById('accTablePaid')) document.getElementById('accTablePaid').innerText = fmt(sPaid) + ' ج'; 
+            if(document.getElementById('accTableDebt')) document.getElementById('accTableDebt').innerText = fmt(Math.abs(sDebt)) + ' ج';
+            if(document.getElementById('accTableDocPaid')) document.getElementById('accTableDocPaid').innerText = fmt(sDocPaid.toFixed(0)) + ' ج';
             
-            document.getElementById('accTotalDebts').innerText = fmt(sgDebt) + ' ج'; 
-            document.getElementById('accTotalDocDebts').innerText = fmt(sgDocDebt.toFixed(0)) + ' ج';
+            if(document.getElementById('accTotalDebts')) document.getElementById('accTotalDebts').innerText = fmt(sgDebt) + ' ج'; 
+            if(document.getElementById('accTotalDocDebts')) document.getElementById('accTotalDocDebts').innerText = fmt(sgDocDebt.toFixed(0)) + ' ج';
         }
 
         /* ------------------ أكواد المشتريات ------------------ */
