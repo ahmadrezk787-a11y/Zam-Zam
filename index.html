@@ -15,24 +15,21 @@
         
         body { 
             font-family: 'Cairo', sans-serif; 
-            background-color: #f3f6f9; /* خلفية ناعمة جداً ومريحة */
+            background-color: #f3f6f9; 
             color: #1e293b; 
         }
         
-        /* تأثيرات ناعمة */
         .fade-in { animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ستايل شريط التمرير */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* الكروت الفخمة (Premium Cards) */
         .premium-card {
             background: #ffffff;
             border-radius: 24px;
@@ -50,13 +47,13 @@
             color: white;
             box-shadow: 0 10px 25px rgba(30, 58, 138, 0.3);
         }
+        /* التعديل الجديد: البنفسجي الملكي بدل الدهبي */
         .doctor-debt-card {
-            background: linear-gradient(135deg, #78350f 0%, #d97706 100%);
+            background: linear-gradient(135deg, #2e1065 0%, #7c3aed 100%);
             color: white;
-            box-shadow: 0 10px 25px rgba(217, 119, 6, 0.3);
+            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3);
         }
 
-        /* الجداول الأنيقة */
         .data-table { border-collapse: separate; border-spacing: 0; width: 100%; }
         .data-table th {
             background-color: #f8fafc; color: #64748b; font-weight: 800; font-size: 0.85rem;
@@ -69,11 +66,10 @@
         }
         .data-table tr:hover td { background-color: #f8fafc; }
         
-        /* أعمدة حصة الدكتور في الجداول */
         .doc-col-cash { background-color: #eff6ff !important; color: #1e40af; border-left: 1px dashed #bfdbfe; border-right: 1px dashed #bfdbfe; }
-        .doc-col-debt { background-color: #fffbeb !important; color: #b45309; }
+        /* التعديل الجديد: عمود الديون باللون البنفسجي الفاتح */
+        .doc-col-debt { background-color: #f5f3ff !important; color: #6d28d9; border-left: 1px dashed #e9d5ff; border-right: 1px dashed #e9d5ff; }
 
-        /* المدخلات العصرية */
         .input-styled {
             width: 100%; padding: 1rem 1.25rem; border-radius: 16px; border: 1.5px solid #e2e8f0;
             outline: none; background-color: #f8fafc; transition: all 0.3s ease; font-weight: 700; color: #0f172a;
@@ -83,7 +79,6 @@
             box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
         }
 
-        /* أزرار القائمة الجانبية */
         .nav-item {
             display: flex; align-items: center; width: 100%; padding: 1rem 1.25rem;
             border-radius: 16px; font-weight: 800; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: #64748b;
@@ -97,12 +92,11 @@
         .nav-item.active i { color: #3b82f6 !important; }
         .nav-item i { width: 24px; color: #94a3b8; transition: color 0.3s; font-size: 1.1rem; }
 
-        /* شارات الأرقام (Badges) */
         .badge { display: inline-flex; align-items: center; justify-content: center; padding: 0.35rem 1rem; border-radius: 9999px; font-weight: 800; font-size: 0.85rem; }
         .badge-blue { background: #eff6ff; color: #1d4ed8; }
         .badge-green { background: #f0fdf4; color: #15803d; }
         .badge-rose { background: #fff1f2; color: #e11d48; }
-        .badge-amber { background: #fffbeb; color: #d97706; }
+        .badge-violet { background: #f5f3ff; color: #6d28d9; } /* بادج الديون الجديد */
         .badge-gray { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; }
 
         .tab-section { display: none; }
@@ -312,10 +306,10 @@
                     </div>
                     <div class="doctor-debt-card p-8 rounded-3xl flex justify-between items-center">
                         <div>
-                            <p class="text-sm font-bold text-amber-200 mb-1">حصة الطبيب من المتأخرات (آجل 60%)</p>
+                            <p class="text-sm font-bold text-violet-200 mb-1">حصة الطبيب من المتأخرات (آجل 60%)</p>
                             <h4 class="text-5xl font-black" id="dailyDocDebtShare">0 ج</h4>
                         </div>
-                        <i class="fa-solid fa-scale-balanced text-6xl text-amber-400 opacity-50"></i>
+                        <i class="fa-solid fa-scale-balanced text-6xl text-violet-400 opacity-50"></i>
                     </div>
                 </div>
             </div>
@@ -354,10 +348,10 @@
                     </div>
                     <div class="doctor-debt-card p-8 rounded-3xl flex justify-between items-center">
                         <div>
-                            <p class="text-sm font-bold text-amber-200 mb-1">إجمالي حصة الآجل للشهر (60%)</p>
+                            <p class="text-sm font-bold text-violet-200 mb-1">إجمالي حصة الآجل للشهر (60%)</p>
                             <h4 class="text-5xl font-black" id="monthlyDocDebtShare">0 ج</h4>
                         </div>
-                        <i class="fa-solid fa-file-invoice-dollar text-6xl text-amber-400 opacity-50"></i>
+                        <i class="fa-solid fa-file-invoice-dollar text-6xl text-violet-400 opacity-50"></i>
                     </div>
                 </div>
             </div>
@@ -365,10 +359,10 @@
 
         <div id="payments-section" class="tab-section hidden fade-in max-w-7xl mx-auto">
             <div class="flex items-center gap-4 mb-6">
-                <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl"><i class="fa-solid fa-money-check-dollar"></i></div>
+                <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl shadow-inner"><i class="fa-solid fa-money-check-dollar"></i></div>
                 <div>
                     <h2 class="text-3xl font-black text-slate-800">سجل المعاملات والمدفوعات</h2>
-                    <p class="text-slate-500 font-bold mt-1 text-sm">تفاصيل الدفع لكل حالة مع إبراز نصيب الطبيب</p>
+                    <p class="text-slate-500 font-bold mt-1 text-sm">تتبع كل عمليات الدفع وحصص الطبيب بالتفصيل</p>
                 </div>
             </div>
             
@@ -410,7 +404,7 @@
 
         <div id="debts-section" class="tab-section hidden fade-in max-w-5xl mx-auto">
             <div class="flex items-center gap-4 mb-6">
-                <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-scale-balanced"></i></div>
+                <div class="w-14 h-14 rounded-2xl bg-violet-50 text-violet-600 flex items-center justify-center text-2xl shadow-inner"><i class="fa-solid fa-scale-balanced"></i></div>
                 <div>
                     <h2 class="text-3xl font-black text-slate-800">سجل الديون والمتأخرات</h2>
                     <p class="text-slate-500 font-bold mt-1 text-sm">متابعة دقيقة للمتبقي وحصة الطبيب الآجلة</p>
@@ -418,10 +412,10 @@
             </div>
 
             <div class="premium-card p-6 md:p-8">
-                <div class="overflow-x-auto rounded-3xl border border-amber-200">
+                <div class="overflow-x-auto rounded-3xl border border-violet-200">
                     <table class="data-table">
                         <thead>
-                            <tr class="bg-amber-50">
+                            <tr class="bg-violet-50">
                                 <th>آخر زيارة</th>
                                 <th>المريض</th>
                                 <th>إجمالي الدين المطلوب</th>
@@ -433,7 +427,7 @@
                             <tr class="bg-slate-100">
                                 <td colspan="2" class="text-left font-black text-slate-800 pr-6">إجمالي الديون القائمة:</td>
                                 <td id="accTotalDebts" class="font-black text-rose-600 text-xl">0 ج</td>
-                                <td id="accTotalDocDebts" class="font-black text-2xl text-amber-600 bg-amber-100">0 ج</td>
+                                <td id="accTotalDocDebts" class="font-black text-2xl text-violet-700 bg-violet-100">0 ج</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -562,7 +556,7 @@
             drop.classList.remove('hidden');
             matches.forEach(p => {
                 const div = document.createElement('div');
-                div.className = "p-4 hover:bg-slate-50 cursor-pointer border-b border-slate-100 flex justify-between items-center transition";
+                div.className = "p-4 hover:bg-slate-50 cursor-pointer border-b border-slate-50 flex justify-between items-center transition";
                 div.innerHTML = `<span class="font-black text-slate-800"><i class="fa-solid fa-user ml-2 text-slate-300"></i>${p.name}</span> <span class="badge ${p.debt>0?'badge-rose':'badge-green'}">الديون: ${fmt(p.debt)} ج</span>`;
                 div.onclick = () => {
                     document.getElementById('patientName').value = p.name;
