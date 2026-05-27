@@ -686,7 +686,8 @@
                     const idx = patients.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
                     if (idx !== -1) {
                         if(age) patients[idx].age = age;
-                        patients[idx].proc += ` | ${date}: ${proc}`; 
+                        // تم التعديل هنا: منع دمج التاريخ والاسم، وجعل الإجراء الأخير فقط هو الذي يظهر
+                        patients[idx].proc = proc; 
                         patients[idx].totalCost += totalCost;
                         patients[idx].paidAmount += paidAmount;
                         patients[idx].debt = patients[idx].totalCost - patients[idx].paidAmount;
@@ -704,6 +705,8 @@
             } else {
                 patients[editIndex].name = name; patients[editIndex].age = age; patients[editIndex].totalCost = totalCost;
                 patients[editIndex].paidAmount = paidAmount; patients[editIndex].debt = debt; patients[editIndex].notes = notes;
+                // تم التعديل هنا لعدم تكرار الإجراء عند التعديل
+                patients[editIndex].proc = proc;
                 if(patients[editIndex].visits.length > 0) patients[editIndex].visits[patients[editIndex].visits.length - 1] = vObj;
                 triggerAlert("تم تعديل بيانات الزيارة بنجاح!");
                 editIndex = null;
@@ -753,9 +756,8 @@
             document.getElementById('visitDate').value = p.visits.length > 0 ? p.visits[p.visits.length - 1].date : p.date;
             document.getElementById('visitType').value = p.type;
             
-            const parts = p.proc.split(' | '); const lastP = (parts[parts.length - 1].includes(':') ? parts[parts.length - 1].split(':')[1] : parts[parts.length - 1]).trim();
             const sel = document.getElementById('procedureType');
-            let f = false; for(let j=0; j<sel.options.length; j++) if(sel.options[j].text === lastP) { sel.selectedIndex = j; f = true; break; }
+            let f = false; for(let j=0; j<sel.options.length; j++) if(sel.options[j].text === p.proc) { sel.selectedIndex = j; f = true; break; }
             if(!f) sel.selectedIndex = 0;
 
             document.getElementById('totalCost').value = p.totalCost; document.getElementById('paidAmount').value = p.paidAmount;
@@ -968,7 +970,6 @@
             if(document.getElementById('accTotalDocDebts')) document.getElementById('accTotalDocDebts').innerText = fmt(sgDocDebt.toFixed(0)) + ' ج';
         }
 
-        /* ------------------ أكواد المشتريات ------------------ */
         function calcPurchaseTotal() {
             const qty = parseFloat(document.getElementById('purQty').value) || 0;
             const price = parseFloat(document.getElementById('purPrice').value) || 0;
@@ -1026,7 +1027,6 @@
             }
         }
 
-        /* ------------------ أكواد النواقص ------------------ */
         function addShortage() {
             const name = document.getElementById('shortItemName').value.trim();
             if(!name) return;
