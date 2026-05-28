@@ -151,9 +151,10 @@
         </ul>
         
         <div class="mt-auto pt-6 border-t border-slate-100 text-center">
-            <button onclick="logoutUser()" class="w-full bg-rose-50 text-xs font-bold text-rose-500 hover:bg-rose-100 py-3 rounded-xl transition flex items-center justify-center gap-2">
+            <button onclick="logoutUser()" class="w-full bg-rose-50 text-xs font-bold text-rose-500 hover:bg-rose-100 py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i> تسجيل خروج
             </button>
+            <p class="text-[10px] font-bold text-slate-400">Powered by <span class="text-blue-500 font-black">Team10</span></p>
         </div>
     </aside>
 
@@ -968,6 +969,38 @@
             renderTable(patients.filter(p => p.name.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase()))); 
         }
 
+        // دالة إنشاء خريطة الأسنان المصغرة للسجلات
+        function generateMiniDentalChartHTML(chartData) {
+            if (!chartData || Object.keys(chartData).length === 0) return '';
+            
+            const upper = [18,17,16,15,14,13,12,11, 21,22,23,24,25,26,27,28];
+            const lower = [48,47,46,45,44,43,42,41, 31,32,33,34,35,36,37,38];
+            
+            let html = '<div class="flex flex-col items-center gap-1 mb-4 overflow-x-auto bg-slate-50 p-3 rounded-xl border border-slate-100">';
+            
+            const buildRow = (teethArray) => {
+                let rowHtml = '<div class="flex justify-center gap-[2px] min-w-max">';
+                teethArray.forEach(t => {
+                    let state = chartData[t];
+                    let colorClass = 'bg-white text-slate-400 border-slate-200'; 
+                    
+                    if(state === 'decay') colorClass = 'bg-rose-500 text-white border-rose-600';
+                    else if(state === 'filled') colorClass = 'bg-blue-500 text-white border-blue-600';
+                    else if(state === 'extracted') colorClass = 'bg-slate-800 text-white border-slate-900 line-through opacity-80';
+                    
+                    rowHtml += `<div class="w-6 h-7 flex items-center justify-center text-[9px] font-bold border rounded-md ${colorClass}">${t}</div>`;
+                });
+                rowHtml += '</div>';
+                return rowHtml;
+            };
+
+            html += buildRow(upper);
+            html += buildRow(lower);
+            html += '</div>';
+            
+            return html;
+        }
+
         function openModal(i) {
             currentModalIndex = i; 
             const p = patients[i];
@@ -987,35 +1020,28 @@
             if(p.visits && p.visits.length > 0) {
                 p.visits.forEach((v) => {
                     
-                    let teethSummary = '';
-                    if(v.dentalChart && Object.keys(v.dentalChart).length > 0) {
-                        let decay=[], filled=[], ext=[];
-                        for(let t in v.dentalChart) { 
-                            if(v.dentalChart[t]==='decay') decay.push(t); 
-                            else if(v.dentalChart[t]==='filled') filled.push(t); 
-                            else if(v.dentalChart[t]==='extracted') ext.push(t); 
-                        }
-                        if(decay.length) teethSummary += `<span class="text-rose-500 ml-3"><i class="fa-solid fa-tooth mr-1"></i>تسوس: ${decay.join(',')}</span>`;
-                        if(filled.length) teethSummary += `<span class="text-blue-500 ml-3"><i class="fa-solid fa-tooth mr-1"></i>حشو: ${filled.join(',')}</span>`;
-                        if(ext.length) teethSummary += `<span class="text-slate-800"><i class="fa-solid fa-tooth mr-1"></i>خلع: ${ext.join(',')}</span>`;
-                    }
+                    let miniChartHtml = generateMiniDentalChartHTML(v.dentalChart);
                     
                     runningDebt += (v.totalCost - v.paidAmount);
                     let badgeClass = runningDebt > 0 ? 'badge-rose' : (runningDebt < 0 ? 'badge-green' : 'badge-gray');
                     let debtText = runningDebt > 0 ? `متبقي: ${fmt(runningDebt)} ج` : (runningDebt < 0 ? `رصيد بزيادة: ${fmt(Math.abs(runningDebt))} ج` : `خالص`);
 
                     html += `
-                        <div class="bg-white p-5 rounded-2xl border border-slate-100 mb-3 shadow-sm">
-                            <div class="flex justify-between items-center mb-3">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 mb-4 shadow-sm">
+                            <div class="flex justify-between items-center mb-4 border-b border-slate-50 pb-3">
                                 <span class="badge badge-blue">${v.date.replace(/-/g, '/')}</span> 
                                 <span class="font-black text-slate-800 text-lg">${v.proc}</span>
                             </div>
-                            ${teethSummary ? `<div class="text-xs font-bold bg-slate-50 p-3 rounded-xl mb-3 border border-slate-100">${teethSummary}</div>` : ''}
-                            <div class="flex flex-wrap items-center gap-3 bg-slate-50 px-4 py-2 rounded-xl">
-                                <span class="text-sm font-bold text-slate-600">التكلفة: ${fmt(v.totalCost)}</span> 
-                                <span class="text-slate-300">|</span>
-                                <span class="text-sm font-bold text-green-600">المدفوع: ${fmt(v.paidAmount)}</span>
-                                <span class="badge ${badgeClass} mr-2">${debtText}</span>
+                            
+                            ${miniChartHtml}
+                            
+                            <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50 px-4 py-3 rounded-xl border border-slate-100">
+                                <div class="flex gap-4">
+                                    <span class="text-sm font-bold text-slate-600">التكلفة: ${fmt(v.totalCost)}</span> 
+                                    <span class="text-slate-300">|</span>
+                                    <span class="text-sm font-bold text-green-600">المدفوع: ${fmt(v.paidAmount)}</span>
+                                </div>
+                                <span class="badge ${badgeClass}">${debtText}</span>
                             </div>
                         </div>`;
                 });
