@@ -137,10 +137,10 @@
                 <i class="fa-solid fa-trash-can"></i>
             </div>
             <h3 class="text-2xl font-black text-slate-800 mb-2">هل أنت متأكد؟</h3>
-            <p id="confirmMessage" class="text-slate-500 font-bold text-sm mb-8">لا يمكن التراجع عن عملية الحذف نهائياً.</p>
+            <p id="confirmMessage" class="text-slate-500 font-bold text-sm mb-8">لا يمكن التراجع عن هذه العملية نهائياً.</p>
             <div class="flex gap-4">
                 <button onclick="closeConfirm()" class="flex-1 bg-slate-100 text-slate-600 py-3.5 rounded-xl font-bold hover:bg-slate-200 transition">إلغاء</button>
-                <button onclick="executeConfirm()" class="flex-1 bg-rose-500 text-white py-3.5 rounded-xl font-black hover:bg-rose-600 transition shadow-lg shadow-rose-500/30">تأكيد الحذف</button>
+                <button onclick="executeConfirm()" class="flex-1 bg-rose-500 text-white py-3.5 rounded-xl font-black hover:bg-rose-600 transition shadow-lg shadow-rose-500/30">تأكيد</button>
             </div>
         </div>
     </div>
@@ -156,6 +156,7 @@
         <ul class="space-y-2 flex-1">
             <li><button onclick="showTab('add-patient', this)" class="nav-item active"><i class="fa-solid fa-notes-medical ml-2"></i> تسجيل زيارة</button></li>
             <li><button onclick="showTab('patients-list', this)" class="nav-item"><i class="fa-solid fa-users-rectangle ml-2"></i> سجل المرضى</button></li>
+            <li><button onclick="showTab('appointments-section', this)" class="nav-item"><i class="fa-solid fa-calendar-days ml-2"></i> المواعيد القادمة</button></li>
             <li><button onclick="showTab('accounts-section', this)" class="nav-item"><i class="fa-solid fa-chart-pie ml-2"></i> الملخص المالي</button></li>
             <li><button onclick="showTab('payments-section', this)" class="nav-item"><i class="fa-solid fa-money-check-dollar ml-2"></i> حركة الخزينة</button></li>
             <li><button onclick="showTab('debts-section', this)" class="nav-item"><i class="fa-solid fa-hand-holding-dollar ml-2"></i> سجل الديون</button></li>
@@ -170,7 +171,6 @@
             <button onclick="logoutUser()" class="w-full bg-rose-50 text-xs font-bold text-rose-500 hover:bg-rose-100 py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3 border border-rose-100">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i> تسجيل خروج
             </button>
-            <p class="text-[10px] font-bold text-slate-400">Powered by <span class="text-blue-500 font-black">Team10</span></p>
         </div>
     </aside>
 
@@ -187,6 +187,7 @@
             <div class="flex flex-wrap gap-1.5 w-full justify-center mt-2" id="mobileNavMenu">
                 <button onclick="showTab('add-patient', this)" class="mobile-nav-btn flex-1 min-w-[22%] bg-blue-600 hover:bg-blue-500 py-2.5 rounded-xl text-[10px] font-bold transition">زيارة</button>
                 <button onclick="showTab('patients-list', this)" class="mobile-nav-btn flex-1 min-w-[22%] bg-slate-700 hover:bg-slate-600 py-2.5 rounded-xl text-[10px] font-bold transition">المرضى</button>
+                <button onclick="showTab('appointments-section', this)" class="mobile-nav-btn flex-1 min-w-[22%] bg-slate-700 hover:bg-slate-600 py-2.5 rounded-xl text-[10px] font-bold transition">مواعيد</button>
                 <button onclick="showTab('accounts-section', this)" class="mobile-nav-btn flex-1 min-w-[22%] bg-slate-700 hover:bg-slate-600 py-2.5 rounded-xl text-[10px] font-bold transition">ملخص</button>
                 <button onclick="showTab('payments-section', this)" class="mobile-nav-btn flex-1 min-w-[22%] bg-slate-700 hover:bg-slate-600 py-2.5 rounded-xl text-[10px] font-bold transition">الخزينة</button>
                 <button onclick="showTab('debts-section', this)" class="mobile-nav-btn flex-1 min-w-[22%] bg-slate-700 hover:bg-slate-600 py-2.5 rounded-xl text-[10px] font-bold transition">ديون</button>
@@ -337,6 +338,48 @@
                     </thead>
                     <tbody id="patientsTableBody"></tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- المواعيد القادمة -->
+        <div id="appointments-section" class="tab-section hidden fade-in max-w-5xl mx-auto w-full">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center text-2xl shadow-inner"><i class="fa-solid fa-calendar-days"></i></div>
+                <div>
+                    <h2 class="text-3xl font-black text-slate-800">المواعيد القادمة</h2>
+                    <p class="text-slate-500 font-bold mt-1 text-sm">تنظيم حجوزات المرضى القادمة</p>
+                </div>
+            </div>
+
+            <div class="premium-card p-6 md:p-8 mb-8">
+                <form id="appointmentForm" class="space-y-6" onsubmit="event.preventDefault(); addAppointment();">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2 pl-2">اسم المريض</label>
+                            <input type="text" id="aptPatientName" placeholder="اسم المريض..." class="input-styled" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2 pl-2">تاريخ الموعد</label>
+                            <input type="date" id="aptDate" class="input-styled cursor-pointer text-center" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2 pl-2">وقت الموعد</label>
+                            <input type="time" id="aptTime" class="input-styled cursor-pointer text-center" required>
+                        </div>
+                        <div class="md:col-span-3">
+                            <label class="block text-sm font-bold text-slate-700 mb-2 pl-2">ملاحظات (اختياري)</label>
+                            <input type="text" id="aptNotes" placeholder="سبب الزيارة أو أي ملاحظات..." class="input-styled">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full text-white py-4 rounded-2xl font-black text-lg transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 bg-teal-600 hover:bg-teal-700 flex justify-center items-center gap-3 mt-4">
+                        <i class="fa-solid fa-calendar-plus"></i> إضافة الموعد
+                    </button>
+                </form>
+            </div>
+
+            <div class="premium-card p-6">
+                <h3 class="text-lg font-black text-slate-700 mb-4 border-b border-slate-100 pb-3">قائمة الحجوزات القادمة:</h3>
+                <div id="appointmentsListContainer" class="space-y-3"></div>
             </div>
         </div>
 
@@ -563,9 +606,10 @@
                         </thead>
                         <tbody id="purchasesTableBody"></tbody>
                         <tfoot>
-                            <tr class="bg-slate-800 text-white">
-                                <td colspan="4" class="text-right font-black text-slate-200 pr-6">الإجمالي الكلي (لكل الأوقات):</td>
-                                <td id="purGrandTotal" colspan="2" class="font-black text-amber-400 text-xl text-right pr-4">0 ج</td>
+                            <!-- تم تعديل الألوان هنا ليكون متناسق ومقروء بوضوح -->
+                            <tr class="bg-slate-100">
+                                <td colspan="4" class="text-right font-black text-slate-800 pr-6">الإجمالي الكلي (لكل الأوقات):</td>
+                                <td id="purGrandTotal" colspan="2" class="font-black text-rose-600 text-xl text-right pr-4">0 ج</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -633,7 +677,6 @@
     </div>
 
     <script>
-        // إعدادات فايربيز 
         const firebaseConfig = {
             apiKey: "AIzaSyBVhS98mRV5anAqbF-knYeG0FcFNXa8T_c",
             authDomain: "zamzam-clinic-a7e58.firebaseapp.com",
@@ -651,15 +694,15 @@
         let patients = []; 
         let purchases = []; 
         let shortages = [];
+        let appointments = []; // مصفوفة المواعيد الجديدة
         let editIndex = null; 
         let currentModalIndex = null;
-        let pendingConfirmAction = null; // لتخزين الوظيفة المراد تنفيذها بعد تأكيد الحذف
+        let pendingConfirmAction = null; 
         
         const upperTeeth = [18,17,16,15,14,13,12,11, 21,22,23,24,25,26,27,28];
         const lowerTeeth = [48,47,46,45,44,43,42,41, 31,32,33,34,35,36,37,38];
         let currentDentalChart = {}; 
 
-        // إغلاق أي قائمة منسدلة عند النقر خارجها
         document.addEventListener('click', (e) => { 
             const suggestions = document.getElementById('suggestionsDropdown'); 
             const patientInp = document.getElementById('patientName'); 
@@ -703,12 +746,12 @@
         document.getElementById('visitDate').valueAsDate = today; 
         document.getElementById('purDate').valueAsDate = today;
         document.getElementById('dailyAccountDate').valueAsDate = today;
+        document.getElementById('aptDate').valueAsDate = today;
         
         let monthStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
         document.getElementById('monthlyAccountDate').value = monthStr;
         document.getElementById('purMonthFilter').value = monthStr;
 
-        // دالة التنبيهات
         function triggerAlert(msgText, type = 'success') {
             const toast = document.getElementById('customAlert'); 
             document.getElementById('alertMessage').innerText = msgText;
@@ -723,19 +766,10 @@
             }
             
             toast.classList.remove('hidden'); 
-            setTimeout(() => { 
-                toast.classList.remove('opacity-0', 'scale-95'); 
-                toast.classList.add('opacity-100', 'scale-100'); 
-            }, 10);
-            
-            setTimeout(() => { 
-                toast.classList.remove('opacity-100', 'scale-100'); 
-                toast.classList.add('opacity-0', 'scale-95'); 
-                setTimeout(() => toast.classList.add('hidden'), 300); 
-            }, 3000);
+            setTimeout(() => { toast.classList.remove('opacity-0', 'scale-95'); toast.classList.add('opacity-100', 'scale-100'); }, 10);
+            setTimeout(() => { toast.classList.remove('opacity-100', 'scale-100'); toast.classList.add('opacity-0', 'scale-95'); setTimeout(() => toast.classList.add('hidden'), 300); }, 3000);
         }
 
-        // دوال نافذة تأكيد الحذف المخصصة
         function showCustomConfirm(message, callback) {
             document.getElementById('confirmMessage').innerText = message;
             pendingConfirmAction = callback;
@@ -752,25 +786,16 @@
             closeConfirm();
         }
 
-        // دوال القوائم المنسدلة المخصصة
-        function toggleDropdown(id) {
-            document.getElementById(id).classList.toggle('hidden');
-        }
+        function toggleDropdown(id) { document.getElementById(id).classList.toggle('hidden'); }
 
         function selectDropdownVal(inputId, dropdownId, val) {
             document.getElementById(inputId).value = val;
             document.getElementById(dropdownId).classList.add('hidden');
         }
 
-        // دالة النسخ الاحتياطي
         function exportBackup() {
             try {
-                const backupData = {
-                    exportDate: new Date().toISOString(),
-                    patientsList: patients,
-                    purchasesList: purchases,
-                    shortagesList: shortages
-                };
+                const backupData = { exportDate: new Date().toISOString(), patientsList: patients, purchasesList: purchases, shortagesList: shortages, appointmentsList: appointments };
                 const dataStr = JSON.stringify(backupData, null, 2);
                 const blob = new Blob([dataStr], { type: "application/json" });
                 const url = URL.createObjectURL(blob);
@@ -781,10 +806,7 @@
                 a.href = url; a.download = fileName; document.body.appendChild(a);
                 a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
                 triggerAlert("تم تحميل النسخة الاحتياطية بنجاح!", "success");
-            } catch (error) {
-                console.error(error);
-                triggerAlert("حدث خطأ أثناء أخذ النسخة الاحتياطية", "error");
-            }
+            } catch (error) { triggerAlert("حدث خطأ أثناء أخذ النسخة الاحتياطية", "error"); }
         }
 
         function renderDentalChartUI() {
@@ -812,9 +834,7 @@
                 };
                 container.appendChild(btn);
             };
-            
-            upperTeeth.forEach(t => buildTooth(t, uCont)); 
-            lowerTeeth.forEach(t => buildTooth(t, lCont));
+            upperTeeth.forEach(t => buildTooth(t, uCont)); lowerTeeth.forEach(t => buildTooth(t, lCont));
         }
 
         function showTab(tabId, btnElement) {
@@ -827,12 +847,8 @@
                     btnElement.classList.add('active'); 
                 }
                 if (btnElement.classList.contains('mobile-nav-btn')) { 
-                    document.querySelectorAll('.mobile-nav-btn').forEach(btn => { 
-                        btn.classList.remove('bg-blue-600', 'hover:bg-blue-500'); 
-                        btn.classList.add('bg-slate-700', 'hover:bg-slate-600'); 
-                    }); 
-                    btnElement.classList.remove('bg-slate-700', 'hover:bg-slate-600'); 
-                    btnElement.classList.add('bg-blue-600', 'hover:bg-blue-500'); 
+                    document.querySelectorAll('.mobile-nav-btn').forEach(btn => { btn.classList.remove('bg-blue-600', 'hover:bg-blue-500'); btn.classList.add('bg-slate-700', 'hover:bg-slate-600'); }); 
+                    btnElement.classList.remove('bg-slate-700', 'hover:bg-slate-600'); btnElement.classList.add('bg-blue-600', 'hover:bg-blue-500'); 
                 }
             }
             
@@ -840,6 +856,7 @@
             if(tabId === 'accounts-section' || tabId === 'payments-section' || tabId === 'debts-section') renderAllAccounts();
             if(tabId === 'purchases-section') renderPurchases();
             if(tabId === 'shortages-section') renderShortages();
+            if(tabId === 'appointments-section') renderAppointments();
         }
 
         function calculateFormDebt() {
@@ -848,13 +865,9 @@
             const diff = total - paid;
             const badge = document.getElementById('formDebtBadge');
             
-            if (diff > 0) { 
-                badge.innerHTML = `${fmt(diff)} ج (آجل)`; badge.className = "badge badge-rose text-lg px-6 py-2"; 
-            } else if (diff < 0) { 
-                badge.innerHTML = `${fmt(Math.abs(diff))} ج (سداد)`; badge.className = "badge badge-green text-lg px-6 py-2"; 
-            } else { 
-                badge.innerHTML = `0 ج (خالص)`; badge.className = "badge badge-gray text-lg px-6 py-2"; 
-            }
+            if (diff > 0) { badge.innerHTML = `${fmt(diff)} ج (آجل)`; badge.className = "badge badge-rose text-lg px-6 py-2"; } 
+            else if (diff < 0) { badge.innerHTML = `${fmt(Math.abs(diff))} ج (سداد)`; badge.className = "badge badge-green text-lg px-6 py-2"; } 
+            else { badge.innerHTML = `0 ج (خالص)`; badge.className = "badge badge-gray text-lg px-6 py-2"; }
         }
 
         function handleNameInput() {
@@ -879,10 +892,8 @@
                 div.className = "p-4 hover:bg-slate-50 cursor-pointer border-b border-slate-50 flex justify-between items-center transition";
                 div.innerHTML = `<span class="font-black text-slate-800"><i class="fa-solid fa-user ml-2 text-slate-300"></i>${p.name}</span> <span class="badge ${p.debt>0?'badge-rose':'badge-green'}">الديون: ${fmt(p.debt)} ج</span>`;
                 div.onclick = () => {
-                    document.getElementById('patientName').value = p.name; 
-                    document.getElementById('patientAge').value = p.age || '';
-                    drop.classList.add('hidden'); 
-                    badge.innerText = `تنبيه مديونية: ${fmt(p.debt)} ج.م`; badge.classList.remove('hidden');
+                    document.getElementById('patientName').value = p.name; document.getElementById('patientAge').value = p.age || '';
+                    drop.classList.add('hidden'); badge.innerText = `تنبيه مديونية: ${fmt(p.debt)} ج.م`; badge.classList.remove('hidden');
                 }; 
                 drop.appendChild(div);
             });
@@ -892,11 +903,12 @@
             renderTable(); renderAllAccounts();
             try {
                 await db.collection("clinic").doc("patients_data").set({ patientsList: patients });
-                await db.collection("clinic").doc("inventory_data").set({ purchasesList: purchases, shortagesList: shortages });
-            } catch (error) {
-                console.error("Error saving data:", error);
-                triggerAlert("حدث خطأ أثناء حفظ البيانات على السيرفر", "error");
-            }
+                await db.collection("clinic").doc("inventory_data").set({ 
+                    purchasesList: purchases, 
+                    shortagesList: shortages,
+                    appointmentsList: appointments
+                });
+            } catch (error) { triggerAlert("حدث خطأ أثناء حفظ البيانات على السيرفر", "error"); }
         }
 
         function handleSubmit() {
@@ -920,14 +932,10 @@
                 if (type === 'متابعة') {
                     const idx = patients.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
                     if (idx !== -1) {
-                        if(age) patients[idx].age = age; 
-                        patients[idx].proc = proc; 
-                        patients[idx].totalCost += totalCost; 
-                        patients[idx].paidAmount += paidAmount;
-                        patients[idx].debt = patients[idx].totalCost - patients[idx].paidAmount;
+                        if(age) patients[idx].age = age; patients[idx].proc = proc; patients[idx].totalCost += totalCost; 
+                        patients[idx].paidAmount += paidAmount; patients[idx].debt = patients[idx].totalCost - patients[idx].paidAmount;
                         if (notes) patients[idx].notes += `\n[${date}]: ${notes}`;
-                        patients[idx].visits.push(vObj); 
-                        triggerAlert(`تم إضافة المتابعة لـ ${name}!`);
+                        patients[idx].visits.push(vObj); triggerAlert(`تم إضافة المتابعة لـ ${name}!`);
                     } else {
                         patients.push({ name, age, date, type: 'مريض جديد', proc, totalCost, paidAmount, debt, notes, visits: [vObj] });
                         triggerAlert("تم تسجيل ملف جديد بنجاح!");
@@ -941,16 +949,12 @@
                 patients[editIndex].paidAmount = paidAmount; patients[editIndex].debt = debt; 
                 patients[editIndex].notes = notes; patients[editIndex].proc = proc;
                 if(patients[editIndex].visits.length > 0) patients[editIndex].visits[patients[editIndex].visits.length - 1] = vObj;
-                triggerAlert("تم تعديل بيانات الزيارة بنجاح!"); 
-                editIndex = null;
+                triggerAlert("تم تعديل بيانات الزيارة بنجاح!"); editIndex = null;
             }
             
-            document.getElementById('patientForm').reset(); 
-            document.getElementById('visitDate').valueAsDate = new Date();
-            document.getElementById('formDebtBadge').innerText = "0 ج.م"; 
-            document.getElementById('formDebtBadge').className = "badge badge-gray text-lg px-6 py-2";
+            document.getElementById('patientForm').reset(); document.getElementById('visitDate').valueAsDate = new Date();
+            document.getElementById('formDebtBadge').innerText = "0 ج.م"; document.getElementById('formDebtBadge').className = "badge badge-gray text-lg px-6 py-2";
             document.getElementById('formPreviousDebt').classList.add('hidden');
-            
             currentDentalChart = {}; renderDentalChartUI();
             btn.innerHTML = `<i class="fa-solid fa-check"></i> حفظ بيانات الزيارة`; btn.disabled = false;
             saveAndSyncSystemData();
@@ -981,27 +985,20 @@
             });
         }
 
-        // استخدام نافذة الحذف المخصصة
         function deletePatient(i) { 
             showCustomConfirm("هل أنت متأكد من حذف هذا الملف نهائياً؟", () => {
-                patients.splice(i, 1); 
-                saveAndSyncSystemData(); 
-                triggerAlert("تم الحذف بنجاح");
+                patients.splice(i, 1); saveAndSyncSystemData(); triggerAlert("تم الحذف بنجاح");
             });
         }
 
         function editPatient(i) {
             editIndex = i; const p = patients[i];
-            document.getElementById('patientName').value = p.name; 
-            document.getElementById('patientAge').value = p.age || '';
+            document.getElementById('patientName').value = p.name; document.getElementById('patientAge').value = p.age || '';
             
             let lastVisit = p.visits && p.visits.length > 0 ? p.visits[p.visits.length - 1] : p;
-            document.getElementById('visitDate').value = lastVisit.date; 
-            document.getElementById('visitTypeInput').value = p.type;
-            
+            document.getElementById('visitDate').value = lastVisit.date; document.getElementById('visitTypeInput').value = p.type;
             document.getElementById('procedureTypeInput').value = lastVisit.proc || '';
-            document.getElementById('totalCost').value = lastVisit.totalCost; 
-            document.getElementById('paidAmount').value = lastVisit.paidAmount;
+            document.getElementById('totalCost').value = lastVisit.totalCost; document.getElementById('paidAmount').value = lastVisit.paidAmount;
             document.getElementById('notes').value = p.notes; 
             
             calculateFormDebt();
@@ -1012,36 +1009,92 @@
 
         function searchPatient() { renderTable(patients.filter(p => p.name.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase()))); }
 
-        // خريطة الأسنان المصغرة (التعديل الخاص بالسحب الأفقي)
+        // دالة إضافة المواعيد
+        function addAppointment() {
+            const name = document.getElementById('aptPatientName').value.trim();
+            const date = document.getElementById('aptDate').value;
+            const time = document.getElementById('aptTime').value;
+            const notes = document.getElementById('aptNotes').value.trim();
+
+            if(!name || !date || !time) return triggerAlert("تأكد من إدخال الاسم والتاريخ والوقت", "error");
+
+            appointments.push({ name, date, time, notes, addedAt: new Date().toISOString() });
+            
+            document.getElementById('appointmentForm').reset();
+            document.getElementById('aptDate').valueAsDate = new Date();
+            
+            triggerAlert("تم تسجيل الموعد بنجاح!");
+            saveAndSyncSystemData();
+            renderAppointments();
+        }
+
+        // دالة عرض المواعيد
+        function renderAppointments() {
+            const container = document.getElementById('appointmentsListContainer');
+            container.innerHTML = '';
+            
+            appointments.sort((a, b) => {
+                const dateA = new Date(`${a.date}T${a.time}`);
+                const dateB = new Date(`${b.date}T${b.time}`);
+                return dateA - dateB;
+            });
+
+            if(appointments.length === 0) {
+                container.innerHTML = '<p class="text-slate-400 font-bold text-center py-6">لا توجد مواعيد مسجلة حالياً.</p>';
+                return;
+            }
+
+            appointments.forEach((apt, index) => {
+                const aptDateObj = new Date(`${apt.date}T${apt.time}`);
+                const isPast = aptDateObj < new Date();
+                
+                container.innerHTML += `
+                    <div class="flex flex-col md:flex-row justify-between md:items-center bg-slate-50 p-4 rounded-2xl border ${isPast ? 'border-rose-200 bg-rose-50/50' : 'border-slate-100'} transition hover:shadow-md gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl ${isPast ? 'bg-rose-100 text-rose-500' : 'bg-teal-100 text-teal-600'} flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-user-clock"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-black text-slate-800 text-lg">${apt.name}</h4>
+                                <div class="flex flex-wrap items-center gap-3 mt-1">
+                                    <span class="text-xs font-bold ${isPast ? 'text-rose-500' : 'text-slate-500'}"><i class="fa-regular fa-calendar ml-1"></i>${apt.date}</span>
+                                    <span class="text-xs font-bold ${isPast ? 'text-rose-500' : 'text-slate-500'}"><i class="fa-regular fa-clock ml-1"></i>${apt.time}</span>
+                                    ${apt.notes ? `<span class="text-xs font-bold text-slate-400 bg-slate-200 px-2 py-0.5 rounded-md">${apt.notes}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="deleteAppointment(${index})" class="bg-white border border-slate-200 text-rose-500 hover:bg-rose-50 px-4 py-2 rounded-xl font-bold transition flex items-center justify-center gap-2 text-sm shadow-sm whitespace-nowrap">
+                            <i class="fa-solid fa-check"></i> إنهاء / حذف
+                        </button>
+                    </div>`;
+            });
+        }
+
+        function deleteAppointment(index) {
+            showCustomConfirm("هل تريد إنهاء أو حذف هذا الموعد؟", () => {
+                appointments.splice(index, 1);
+                saveAndSyncSystemData();
+                renderAppointments();
+                triggerAlert("تم إزالة الموعد");
+            });
+        }
+
         function generateMiniDentalChartHTML(chartData) {
             if (!chartData || Object.keys(chartData).length === 0) return '';
-            
             let html = '<div class="mb-4 bg-slate-50 p-4 rounded-2xl border border-slate-100 shadow-sm overflow-x-auto"><div class="min-w-max flex flex-col items-center gap-3">';
-            
             const buildRow = (teethArray) => {
                 let rowHtml = '<div class="flex flex-nowrap justify-center gap-2 sm:gap-3">';
                 teethArray.forEach(t => {
                     let state = chartData[t];
                     let iconColor = 'text-slate-200'; let textColor = 'text-slate-400'; let extraClass = '';
-                    
                     if(state === 'decay') { iconColor = 'text-rose-500'; textColor = 'text-rose-700'; }
                     else if(state === 'filled') { iconColor = 'text-blue-500'; textColor = 'text-blue-700'; }
                     else if(state === 'extracted') { iconColor = 'text-slate-800'; textColor = 'text-slate-800'; extraClass = 'opacity-30 line-through'; }
-                    
-                    rowHtml += `
-                    <div class="flex flex-col items-center justify-center min-w-[28px] ${extraClass}">
-                        <i class="fa-solid fa-tooth ${iconColor} text-xl sm:text-2xl drop-shadow-sm"></i>
-                        <span class="text-[10px] font-black mt-1 ${textColor}">${t}</span>
-                    </div>`;
+                    rowHtml += `<div class="flex flex-col items-center justify-center min-w-[28px] ${extraClass}"><i class="fa-solid fa-tooth ${iconColor} text-xl sm:text-2xl drop-shadow-sm"></i><span class="text-[10px] font-black mt-1 ${textColor}">${t}</span></div>`;
                 });
-                rowHtml += '</div>';
-                return rowHtml;
+                rowHtml += '</div>'; return rowHtml;
             };
-
-            html += buildRow(upperTeeth);
-            html += '<div class="w-full h-[2px] bg-slate-200 rounded-full my-1 opacity-50"></div>';
-            html += buildRow(lowerTeeth);
-            html += '</div></div>';
+            html += buildRow(upperTeeth); html += '<div class="w-full h-[2px] bg-slate-200 rounded-full my-1 opacity-50"></div>'; html += buildRow(lowerTeeth); html += '</div></div>';
             return html;
         }
 
@@ -1059,28 +1112,11 @@
                     runningDebt += (v.totalCost - v.paidAmount);
                     let badgeClass = runningDebt > 0 ? 'badge-rose' : (runningDebt < 0 ? 'badge-green' : 'badge-gray');
                     let debtText = runningDebt > 0 ? `متبقي: ${fmt(runningDebt)} ج` : (runningDebt < 0 ? `رصيد بزيادة: ${fmt(Math.abs(runningDebt))} ج` : `خالص`);
-
-                    html += `
-                        <div class="bg-white p-5 rounded-2xl border border-slate-100 mb-4 shadow-sm">
-                            <div class="flex justify-between items-center mb-4 border-b border-slate-50 pb-3">
-                                <span class="badge badge-blue">${v.date.replace(/-/g, '/')}</span> 
-                                <span class="font-black text-slate-800 text-lg">${v.proc}</span>
-                            </div>
-                            ${miniChartHtml}
-                            <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50 px-4 py-3 rounded-xl border border-slate-100">
-                                <div class="flex gap-4">
-                                    <span class="text-sm font-bold text-slate-600">التكلفة: ${fmt(v.totalCost)}</span> 
-                                    <span class="text-slate-300">|</span>
-                                    <span class="text-sm font-bold text-green-600">المدفوع: ${fmt(v.paidAmount)}</span>
-                                </div>
-                                <span class="badge ${badgeClass}">${debtText}</span>
-                            </div>
-                        </div>`;
+                    html += `<div class="bg-white p-5 rounded-2xl border border-slate-100 mb-4 shadow-sm"><div class="flex justify-between items-center mb-4 border-b border-slate-50 pb-3"><span class="badge badge-blue">${v.date.replace(/-/g, '/')}</span><span class="font-black text-slate-800 text-lg">${v.proc}</span></div>${miniChartHtml}<div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50 px-4 py-3 rounded-xl border border-slate-100"><div class="flex gap-4"><span class="text-sm font-bold text-slate-600">التكلفة: ${fmt(v.totalCost)}</span><span class="text-slate-300">|</span><span class="text-sm font-bold text-green-600">المدفوع: ${fmt(v.paidAmount)}</span></div><span class="badge ${badgeClass}">${debtText}</span></div></div>`;
                 });
             } else html = '<p class="text-slate-400 text-sm font-bold text-center py-4">لا يوجد تفاصيل.</p>';
             
-            document.getElementById('modalPatientProc').innerHTML = html; 
-            document.getElementById('modalNotes').value = p.notes;
+            document.getElementById('modalPatientProc').innerHTML = html; document.getElementById('modalNotes').value = p.notes;
             document.getElementById('patientModal').classList.remove('hidden');
         }
 
@@ -1096,49 +1132,20 @@
         function renderAllAccounts() {
             const dDate = document.getElementById('dailyAccountDate').value; 
             let dTot = 0, dCash = 0, dNewDebt = 0;
-            
-            patients.forEach(p => { 
-                if (p.visits) p.visits.forEach(v => { 
-                    if (v.date === dDate) { dTot += v.totalCost; dCash += v.paidAmount; dNewDebt += (v.totalCost - v.paidAmount); } 
-                });
-            });
-            
-            document.getElementById('dailyTotalVal').innerText = fmt(dTot) + ' ج'; 
-            document.getElementById('dailyCashCollected').innerText = fmt(dCash) + ' ج'; 
-            document.getElementById('dailyDocCashShare').innerText = fmt((dCash * 0.60).toFixed(0)) + ' ج'; 
-            document.getElementById('dailyDebtGenerated').innerText = fmt(dNewDebt) + ' ج'; 
-            document.getElementById('dailyDocDebtShare').innerText = fmt((dNewDebt * 0.60).toFixed(0)) + ' ج';
-            
+            patients.forEach(p => { if (p.visits) p.visits.forEach(v => { if (v.date === dDate) { dTot += v.totalCost; dCash += v.paidAmount; dNewDebt += (v.totalCost - v.paidAmount); } }); });
+            document.getElementById('dailyTotalVal').innerText = fmt(dTot) + ' ج'; document.getElementById('dailyCashCollected').innerText = fmt(dCash) + ' ج'; document.getElementById('dailyDocCashShare').innerText = fmt((dCash * 0.60).toFixed(0)) + ' ج'; document.getElementById('dailyDebtGenerated').innerText = fmt(dNewDebt) + ' ج'; document.getElementById('dailyDocDebtShare').innerText = fmt((dNewDebt * 0.60).toFixed(0)) + ' ج';
             const mDate = document.getElementById('monthlyAccountDate').value; 
             let mTot = 0, mCash = 0, mNewDebt = 0;
-            
-            if(mDate) { 
-                patients.forEach(p => { 
-                    if (p.visits) p.visits.forEach(v => { 
-                        if (v.date && v.date.startsWith(mDate)) { mTot += v.totalCost; mCash += v.paidAmount; mNewDebt += (v.totalCost - v.paidAmount); } 
-                    }); 
-                }); 
-            }
-            
-            document.getElementById('monthlyTotalVal').innerText = fmt(mTot) + ' ج'; 
-            document.getElementById('monthlyCashCollected').innerText = fmt(mCash) + ' ج'; 
-            document.getElementById('monthlyDebtGenerated').innerText = fmt(mNewDebt) + ' ج'; 
-            document.getElementById('monthlyDocCashShare').innerText = fmt((mCash * 0.60).toFixed(0)) + ' ج'; 
-            document.getElementById('monthlyDocDebtShare').innerText = fmt((mNewDebt * 0.60).toFixed(0)) + ' ج';
-            
+            if(mDate) { patients.forEach(p => { if (p.visits) p.visits.forEach(v => { if (v.date && v.date.startsWith(mDate)) { mTot += v.totalCost; mCash += v.paidAmount; mNewDebt += (v.totalCost - v.paidAmount); } }); }); }
+            document.getElementById('monthlyTotalVal').innerText = fmt(mTot) + ' ج'; document.getElementById('monthlyCashCollected').innerText = fmt(mCash) + ' ج'; document.getElementById('monthlyDebtGenerated').innerText = fmt(mNewDebt) + ' ج'; document.getElementById('monthlyDocCashShare').innerText = fmt((mCash * 0.60).toFixed(0)) + ' ج'; document.getElementById('monthlyDocDebtShare').innerText = fmt((mNewDebt * 0.60).toFixed(0)) + ' ج';
             renderAccountsTables();
         }
 
         function renderAccountsTables() {
             const q = document.getElementById('accSearchInput').value.toLowerCase();
-            const payContainer = document.getElementById('accPaymentsCardsContainer'); 
-            const debtContainer = document.getElementById('accDebtCardsContainer');
-            
-            if (payContainer) payContainer.innerHTML = ''; 
-            if (debtContainer) debtContainer.innerHTML = '';
-            
-            let sTot=0, sPaid=0, sDebt=0, sDocPaid=0, sgDebt=0, sgDocDebt=0; 
-            let aggregatedCards = []; let aggregatedDebtCards = [];
+            const payContainer = document.getElementById('accPaymentsCardsContainer'); const debtContainer = document.getElementById('accDebtCardsContainer');
+            if (payContainer) payContainer.innerHTML = ''; if (debtContainer) debtContainer.innerHTML = '';
+            let sTot=0, sPaid=0, sDebt=0, sDocPaid=0, sgDebt=0, sgDocDebt=0; let aggregatedCards = []; let aggregatedDebtCards = [];
 
             patients.forEach(p => {
                 if(p.name.toLowerCase().includes(q)) {
@@ -1148,29 +1155,20 @@
                         let debtHtml = `<div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-lg transition-all relative overflow-hidden group"><div class="absolute top-0 right-0 w-2 h-full bg-rose-500 group-hover:bg-rose-600 transition-colors"></div><div class="flex justify-between items-start mb-4 pr-3"><div><h3 class="text-xl font-black text-slate-800 mb-1 line-clamp-1" title="${p.name}">${p.name}</h3><p class="text-[11px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-md inline-block"><i class="fa-regular fa-clock ml-1"></i>آخر زيارة: ${lastDate.replace(/-/g, '/')}</p></div></div><div class="bg-rose-50 rounded-2xl p-4 mb-3 flex flex-col justify-center items-center text-center"><span class="text-xs font-bold text-rose-600 mb-1">إجمالي المطلوب من المريض</span><span class="text-3xl font-black text-rose-700">${fmt(p.debt)} ج</span></div><div class="bg-slate-50 rounded-2xl p-4 flex justify-between items-center border border-slate-100"><span class="text-xs font-bold text-slate-600"><i class="fa-solid fa-sack-dollar text-slate-400 ml-1"></i> حصة آجل (60%):</span><span class="text-xl font-black text-slate-800">${fmt((p.debt*0.6).toFixed(0))} ج</span></div></div>`;
                         aggregatedDebtCards.push({ dateObj: new Date(lastDate), html: debtHtml });
                     }
-
-                    sTot+=p.totalCost; sPaid+=p.paidAmount; sDebt+=p.debt; 
-                    let docPaid = p.paidAmount * 0.60; sDocPaid += docPaid;
-                    
-                    let visitCount = p.visits ? p.visits.length : 1;
-                    let lastProc = p.visits && p.visits.length>0 ? p.visits[p.visits.length-1].proc : p.proc;
+                    sTot+=p.totalCost; sPaid+=p.paidAmount; sDebt+=p.debt; let docPaid = p.paidAmount * 0.60; sDocPaid += docPaid;
+                    let visitCount = p.visits ? p.visits.length : 1; let lastProc = p.visits && p.visits.length>0 ? p.visits[p.visits.length-1].proc : p.proc;
                     let procText = visitCount > 1 ? `آخر إجراء: ${lastProc} (${visitCount} زيارات)` : lastProc;
-
                     let currentDebtDisplaySmall = '';
                     if (p.debt > 0) currentDebtDisplaySmall = `<p class="font-black text-sm text-rose-600">${fmt(p.debt)} ج</p>`;
                     else if (p.debt < 0) currentDebtDisplaySmall = `<p class="font-black text-sm text-green-600">+${fmt(Math.abs(p.debt))}</p>`;
                     else currentDebtDisplaySmall = `<p class="font-black text-sm text-slate-400">خالص</p>`;
-
                     let payHtml = `<div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-lg transition-all relative"><div class="flex justify-between items-center mb-3 border-b border-slate-50 pb-3"><span class="font-black text-lg text-slate-800 line-clamp-1" title="${p.name}">${p.name}</span><span class="text-[10px] font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-md">${lastDate.replace(/-/g, '/')}</span></div><div class="mb-4 text-center"><span class="inline-block bg-blue-50 text-blue-600 text-[11px] font-bold px-3 py-1.5 rounded-lg max-w-full truncate" title="${procText}">${procText}</span></div><div class="flex justify-between items-center bg-slate-50 rounded-2xl p-3 mb-4"><div class="text-center w-1/3 border-l border-slate-200"><p class="text-[10px] font-bold text-slate-400 mb-1">إجمالي التكلفة</p><p class="font-black text-sm text-slate-700">${fmt(p.totalCost)}</p></div><div class="text-center w-1/3 border-l border-slate-200"><p class="text-[10px] font-bold text-slate-400 mb-1">المدفوع كلياً</p><p class="font-black text-sm text-green-600">${fmt(p.paidAmount)}</p></div><div class="text-center w-1/3"><p class="text-[10px] font-bold text-slate-400 mb-1">الرصيد</p>${currentDebtDisplaySmall}</div></div><div class="bg-blue-600 rounded-2xl p-3.5 flex justify-between items-center text-white shadow-md"><span class="text-xs font-bold text-blue-100">إجمالي حصة كاش (60%)</span><span class="font-black text-xl">${fmt(docPaid.toFixed(0))} ج</span></div></div>`;
                     aggregatedCards.push({ dateObj: new Date(lastDate), html: payHtml });
                 }
             });
 
-            aggregatedCards.sort((a,b) => b.dateObj - a.dateObj);
-            if(payContainer) aggregatedCards.forEach(card => payContainer.innerHTML += card.html);
-            
-            aggregatedDebtCards.sort((a,b) => b.dateObj - a.dateObj);
-            if(debtContainer) aggregatedDebtCards.forEach(card => debtContainer.innerHTML += card.html);
+            aggregatedCards.sort((a,b) => b.dateObj - a.dateObj); if(payContainer) aggregatedCards.forEach(card => payContainer.innerHTML += card.html);
+            aggregatedDebtCards.sort((a,b) => b.dateObj - a.dateObj); if(debtContainer) aggregatedDebtCards.forEach(card => debtContainer.innerHTML += card.html);
 
             if(document.getElementById('accTableTotal')) document.getElementById('accTableTotal').innerText = fmt(sTot) + ' ج'; 
             if(document.getElementById('accTablePaid')) document.getElementById('accTablePaid').innerText = fmt(sPaid) + ' ج'; 
@@ -1181,45 +1179,27 @@
         }
 
         function calcPurchaseTotal() { 
-            const qty = parseFloat(document.getElementById('purQty').value) || 0;
-            const price = parseFloat(document.getElementById('purPrice').value) || 0;
+            const qty = parseFloat(document.getElementById('purQty').value) || 0; const price = parseFloat(document.getElementById('purPrice').value) || 0;
             document.getElementById('purTotal').value = qty * price; 
         }
 
         function addPurchase() {
-            const name = document.getElementById('purItemName').value.trim(); 
-            const date = document.getElementById('purDate').value;
-            const qty = parseFloat(document.getElementById('purQty').value) || 0; 
-            const price = parseFloat(document.getElementById('purPrice').value) || 0; 
-            const total = qty * price;
-            
+            const name = document.getElementById('purItemName').value.trim(); const date = document.getElementById('purDate').value;
+            const qty = parseFloat(document.getElementById('purQty').value) || 0; const price = parseFloat(document.getElementById('purPrice').value) || 0; const total = qty * price;
             if(!name || price <= 0) return triggerAlert("تأكد من إدخال الصنف والسعر بشكل صحيح", "error");
             
-            purchases.push({ name, date, qty, price, total }); 
-            document.getElementById('purchaseForm').reset(); 
-            document.getElementById('purDate').valueAsDate = new Date(); 
-            document.getElementById('purQty').value = "1";
-            
-            triggerAlert("تم تسجيل المشتريات بنجاح!"); 
-            saveAndSyncSystemData(); renderPurchases();
+            purchases.push({ name, date, qty, price, total }); document.getElementById('purchaseForm').reset(); 
+            document.getElementById('purDate').valueAsDate = new Date(); document.getElementById('purQty').value = "1";
+            triggerAlert("تم تسجيل المشتريات بنجاح!"); saveAndSyncSystemData(); renderPurchases();
         }
 
-        // دالة المشتريات (بعد إضافة فلتر الشهر)
         function renderPurchases() {
-            const tbody = document.getElementById('purchasesTableBody'); 
-            const selectedMonth = document.getElementById('purMonthFilter').value;
-            
-            tbody.innerHTML = ''; 
-            let grandTotal = 0;
-            let monthTotal = 0;
+            const tbody = document.getElementById('purchasesTableBody'); const selectedMonth = document.getElementById('purMonthFilter').value;
+            tbody.innerHTML = ''; let grandTotal = 0; let monthTotal = 0;
             
             purchases.forEach((p, index) => { 
                 grandTotal += p.total; 
-                
-                // حساب مشتريات الشهر المحدد
-                if (p.date && p.date.startsWith(selectedMonth)) {
-                    monthTotal += p.total;
-                }
+                if (p.date && p.date.startsWith(selectedMonth)) monthTotal += p.total;
                 
                 tbody.innerHTML += `
                     <tr>
@@ -1229,59 +1209,41 @@
                         <td class="font-bold text-slate-600">${fmt(p.price)} ج</td>
                         <td class="font-black text-rose-600">${fmt(p.total)} ج</td>
                         <td>
-                            <button onclick="deletePurchase(${index})" class="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
+                            <button onclick="deletePurchase(${index})" class="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>`; 
             });
-            
             document.getElementById('purGrandTotal').innerText = fmt(grandTotal) + ' ج';
             document.getElementById('monthlyPurTotal').innerText = fmt(monthTotal) + ' ج';
         }
 
         function deletePurchase(i) { 
             showCustomConfirm("هل أنت متأكد من حذف هذا العنصر من المشتريات؟", () => {
-                purchases.splice(i, 1); 
-                saveAndSyncSystemData(); renderPurchases(); 
-                triggerAlert("تم حذف العنصر بنجاح");
+                purchases.splice(i, 1); saveAndSyncSystemData(); renderPurchases(); triggerAlert("تم حذف العنصر بنجاح");
             });
         }
 
         function addShortage() { 
-            const name = document.getElementById('shortItemName').value.trim(); 
-            if(!name) return; 
+            const name = document.getElementById('shortItemName').value.trim(); if(!name) return; 
             shortages.push({ name: name, addedAt: new Date().toISOString() }); 
-            document.getElementById('shortItemName').value = ''; 
-            triggerAlert("تم إضافة العنصر للنواقص!"); saveAndSyncSystemData(); renderShortages(); 
+            document.getElementById('shortItemName').value = ''; triggerAlert("تم إضافة العنصر للنواقص!"); saveAndSyncSystemData(); renderShortages(); 
         }
 
         function renderShortages() {
-            const container = document.getElementById('shortagesListContainer'); 
-            container.innerHTML = '';
-            if(shortages.length === 0) {
-                container.innerHTML = '<p class="text-slate-400 font-bold text-center py-6">لا توجد نواقص مسجلة حالياً.</p>';
-                return;
-            }
+            const container = document.getElementById('shortagesListContainer'); container.innerHTML = '';
+            if(shortages.length === 0) { container.innerHTML = '<p class="text-slate-400 font-bold text-center py-6">لا توجد نواقص مسجلة حالياً.</p>'; return; }
             shortages.forEach((s, index) => { 
                 container.innerHTML += `
                     <div class="flex justify-between items-center bg-slate-50 p-4 rounded-2xl border border-slate-100 transition hover:bg-white hover:shadow-md">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-box-open"></i></div>
-                            <span class="font-black text-slate-800 text-lg">${s.name}</span>
-                        </div>
-                        <button onclick="deleteShortage(${index})" class="bg-green-50 text-green-600 hover:bg-green-600 hover:text-white px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 text-sm">
-                            <i class="fa-solid fa-check"></i> تم الشراء
-                        </button>
+                        <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-box-open"></i></div><span class="font-black text-slate-800 text-lg">${s.name}</span></div>
+                        <button onclick="deleteShortage(${index})" class="bg-green-50 text-green-600 hover:bg-green-600 hover:text-white px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 text-sm"><i class="fa-solid fa-check"></i> تم الشراء</button>
                     </div>`; 
             });
         }
 
         function deleteShortage(index) { 
             showCustomConfirm("هل قمت بشراء هذه الخامات فعلاً وتريد إزالتها؟", () => {
-                shortages.splice(index, 1); 
-                saveAndSyncSystemData(); renderShortages(); 
-                triggerAlert("تم إزالة العنصر من النواقص");
+                shortages.splice(index, 1); saveAndSyncSystemData(); renderShortages(); triggerAlert("تم إزالة العنصر من النواقص");
             });
         }
 
@@ -1301,9 +1263,9 @@
                 if(invSnap.exists) {
                     purchases = invSnap.data().purchasesList || [];
                     shortages = invSnap.data().shortagesList || [];
+                    appointments = invSnap.data().appointmentsList || [];
                 }
-
-                renderTable(); renderAllAccounts(); renderPurchases(); renderShortages();
+                renderTable(); renderAllAccounts(); renderPurchases(); renderShortages(); renderAppointments();
                 showTab('add-patient', document.querySelectorAll('.mobile-nav-btn')[0]);
             } catch(e) { console.error(e); triggerAlert("حدث خطأ في جلب بيانات السيرفر", "error"); }
         }
