@@ -148,6 +148,20 @@
         </div>
     </div>
 
+    <!-- نافذة اختيار الزيارة للتعديل -->
+    <div id="selectVisitModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[200] p-4 transition-opacity">
+        <div class="bg-white p-6 rounded-[2rem] w-full max-w-md shadow-2xl fade-in border border-slate-100 max-h-[80vh] flex flex-col">
+            <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
+                <div>
+                    <h3 class="text-xl font-black text-slate-800"><i class="fa-solid fa-list-check text-blue-500 ml-2"></i>اختر الزيارة للتعديل</h3>
+                    <p class="text-xs font-bold text-slate-500 mt-1">المريض له أكثر من زيارة، حدد المعاملة المطلوبة</p>
+                </div>
+                <button onclick="closeSelectVisitModal()" class="text-slate-400 hover:text-rose-500 transition-colors w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div id="visitSelectionList" class="overflow-y-auto space-y-3 pr-2 pb-2"></div>
+        </div>
+    </div>
+
     <aside class="w-[220px] bg-white border-l border-slate-200 p-4 hidden md:flex flex-col z-10 shadow-sm relative overflow-y-auto">
         <div class="text-center mb-8 pb-5 border-b border-slate-100">
             <h1 class="text-3xl font-black tracking-tight flex justify-center items-center gap-1">
@@ -337,9 +351,9 @@
                             <th>العمر</th>
                             <th>النوع</th>
                             <th>الإجراء</th>
-                            <th>التكلفة</th>
-                            <th>المدفوع</th>
-                            <th>الديون</th>
+                            <th>إجمالي التكلفة</th>
+                            <th>إجمالي المدفوع</th>
+                            <th>متبقي الديون</th>
                             <th>إدارة</th>
                         </tr>
                     </thead>
@@ -697,7 +711,7 @@
         const auth = firebase.auth();
 
         let patients = []; let purchases = []; let shortages = []; let appointments = [];
-        let editIndex = null; let currentModalIndex = null; let pendingConfirmAction = null; 
+        let editIndex = null; let editVisitIndex = null; let currentModalIndex = null; let pendingConfirmAction = null; 
         let currentUserUid = null; 
         
         const upperTeeth = [18,17,16,15,14,13,12,11, 21,22,23,24,25,26,27,28];
@@ -966,10 +980,43 @@
                     triggerAlert("تم تسجيل المريض الجديد بنجاح!");
                 }
             } else {
-                patients[editIndex].name = name; patients[editIndex].age = age; patients[editIndex].totalCost = totalCost;
-                patients[editIndex].paidAmount = paidAmount; patients[editIndex].debt = debt; patients[editIndex].notes = notes; patients[editIndex].proc = proc;
-                if(patients[editIndex].visits.length > 0) patients[editIndex].visits[patients[editIndex].visits.length - 1] = vObj;
-                triggerAlert("تم تعديل بيانات الزيارة بنجاح!"); editIndex = null;
+                // وضع التعديل (Edit Mode)
+                patients[editIndex].name = name; 
+                patients[editIndex].age = age; 
+                patients[editIndex].notes = notes; 
+                
+                if(patients[editIndex].visits && patients[editIndex].visits.length > 0) {
+                    // تحديث الزيارة المحددة
+                    let vIdx = editVisitIndex !== null ? editVisitIndex : patients[editIndex].visits.length - 1;
+                    patients[editIndex].visits[vIdx] = vObj;
+                    
+                    // إعادة حساب إجمالي التكلفة والمدفوع للمريض بناءً على كل الزيارات
+                    let recalculatedTotalCost = 0;
+                    let recalculatedPaidAmount = 0;
+                    patients[editIndex].visits.forEach(vis => {
+                        recalculatedTotalCost += vis.totalCost;
+                        recalculatedPaidAmount += vis.paidAmount;
+                    });
+                    
+                    patients[editIndex].totalCost = recalculatedTotalCost;
+                    patients[editIndex].paidAmount = recalculatedPaidAmount;
+                    patients[editIndex].debt = recalculatedTotalCost - recalculatedPaidAmount;
+                    
+                    // تحديث الإجراء الأساسي ليكون الإجراء بتاع آخر زيارة
+                    let lastVis = patients[editIndex].visits[patients[editIndex].visits.length - 1];
+                    patients[editIndex].proc = lastVis.proc;
+
+                } else {
+                    // حالة نادرة لو المريض قديم جداً ومفيش مصفوفة زيارات
+                    patients[editIndex].totalCost = totalCost;
+                    patients[editIndex].paidAmount = paidAmount;
+                    patients[editIndex].debt = debt;
+                    patients[editIndex].proc = proc;
+                }
+
+                triggerAlert("تم تعديل بيانات الزيارة بنجاح!"); 
+                editIndex = null;
+                editVisitIndex = null;
             }
             
             document.getElementById('patientForm').reset(); document.getElementById('visitDate').valueAsDate = new Date();
@@ -1010,18 +1057,81 @@
             showCustomConfirm("هل أنت متأكد من حذف هذا الملف نهائياً؟", () => { patients.splice(i, 1); saveAndSyncSystemData(); triggerAlert("تم الحذف بنجاح"); });
         }
 
+        // --- دوال التعديل الجديدة الخاصة باختيار الزيارة ---
         function editPatient(i) {
-            editIndex = i; const p = patients[i];
-            document.getElementById('patientName').value = p.name; document.getElementById('patientAge').value = p.age || '';
-            let lastVisit = p.visits && p.visits.length > 0 ? p.visits[p.visits.length - 1] : p;
-            document.getElementById('visitDate').value = lastVisit.date; document.getElementById('visitTypeInput').value = p.type;
-            document.getElementById('procedureTypeInput').value = lastVisit.proc || '';
-            document.getElementById('totalCost').value = lastVisit.totalCost; document.getElementById('paidAmount').value = lastVisit.paidAmount;
+            const p = patients[i];
+            if (!p.visits || p.visits.length <= 1) {
+                // لو زيارة واحدة أو مفيش مصفوفة زيارات، افتحها مباشرة
+                loadVisitToForm(i, 0);
+            } else {
+                // لو المريض ليه كذا زيارة، نعرض قايمة تختار منها
+                const container = document.getElementById('visitSelectionList');
+                container.innerHTML = '';
+                
+                p.visits.forEach((v, vIndex) => {
+                    let isPayment = v.proc === 'تسديد دفعة حساب';
+                    let bgClass = isPayment ? 'bg-green-50 border-green-100' : 'bg-slate-50 border-slate-100';
+                    let title = isPayment ? 'تسديد دفعة نقدية' : v.proc;
+                    
+                    container.innerHTML += `
+                        <div onclick="loadVisitToForm(${i}, ${vIndex})" class="cursor-pointer p-4 rounded-xl border ${bgClass} hover:shadow-md transition flex justify-between items-center group">
+                            <div>
+                                <span class="badge badge-blue mb-2 text-[10px]">${v.date.replace(/-/g, '/')}</span>
+                                <h4 class="font-black text-slate-800 text-md group-hover:text-blue-600 transition-colors">${title}</h4>
+                            </div>
+                            <div class="text-left bg-white p-2 rounded-lg border border-slate-100 shadow-sm">
+                                <p class="text-[10px] font-bold text-slate-500 mb-1">التكلفة: <span class="text-slate-800">${fmt(v.totalCost)}</span></p>
+                                <p class="text-[10px] font-bold text-green-700">المدفوع: <span class="text-green-600">${fmt(v.paidAmount)}</span></p>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('selectVisitModal').classList.remove('hidden');
+            }
+        }
+
+        function closeSelectVisitModal() {
+            document.getElementById('selectVisitModal').classList.add('hidden');
+        }
+
+        function loadVisitToForm(pIndex, vIndex) {
+            closeSelectVisitModal();
+            editIndex = pIndex;
+            editVisitIndex = vIndex;
+            
+            const p = patients[pIndex];
+            const v = p.visits && p.visits.length > 0 ? p.visits[vIndex] : p;
+
+            document.getElementById('patientName').value = p.name; 
+            document.getElementById('patientAge').value = p.age || '';
+            document.getElementById('visitDate').value = v.date; 
+            
+            if (v.proc === 'تسديد دفعة حساب') {
+                document.getElementById('visitTypeInput').value = 'تسديد دفعة';
+                handleVisitTypeChange('تسديد دفعة');
+            } else {
+                if (vIndex === 0 && (!p.visits || p.visits.length === 1)) {
+                    document.getElementById('visitTypeInput').value = p.type || 'متابعة';
+                } else {
+                    document.getElementById('visitTypeInput').value = 'متابعة';
+                }
+                handleVisitTypeChange('متابعة');
+                document.getElementById('procedureTypeInput').value = v.proc || '';
+            }
+            
+            document.getElementById('totalCost').value = v.totalCost; 
+            document.getElementById('paidAmount').value = v.paidAmount;
             document.getElementById('notes').value = p.notes; 
-            calculateFormDebt(); currentDentalChart = lastVisit.dentalChart || {}; renderDentalChartUI();
+            
+            calculateFormDebt(); 
+            currentDentalChart = v.dentalChart || {}; 
+            renderDentalChartUI();
+            
             document.getElementById('submitBtn').innerHTML = `<i class="fa-solid fa-pen text-xl"></i> تحديث بيانات الزيارة`;
             showTab('add-patient', document.querySelector('.mobile-nav-btn')); 
         }
+        // ----------------------------------------------------
 
         function searchPatient() { renderTable(patients.filter(p => p.name.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase()))); }
 
