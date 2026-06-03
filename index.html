@@ -711,12 +711,24 @@
         const auth = firebase.auth();
 
         let patients = []; let purchases = []; let shortages = []; let appointments = [];
-        let editIndex = null; let editVisitIndex = null; let currentModalIndex = null; let pendingConfirmAction = null; 
+        let editIndex = null; let editVisitIndex = null; let editAptIndex = null; 
+        let currentModalIndex = null; let pendingConfirmAction = null; 
         let currentUserUid = null; 
         
         const upperTeeth = [18,17,16,15,14,13,12,11, 21,22,23,24,25,26,27,28];
         const lowerTeeth = [48,47,46,45,44,43,42,41, 31,32,33,34,35,36,37,38];
         let currentDentalChart = {}; 
+
+        // تحويل الوقت إلى 12 ساعة للعرض
+        function format12Hour(timeString) {
+            if (!timeString) return '';
+            let [h, m] = timeString.split(':');
+            let hours = parseInt(h, 10);
+            let ampm = hours >= 12 ? 'م' : 'ص';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            return `${hours}:${m} ${ampm}`;
+        }
 
         document.addEventListener('click', (e) => { 
             const suggestions = document.getElementById('suggestionsDropdown'); 
@@ -980,17 +992,14 @@
                     triggerAlert("تم تسجيل المريض الجديد بنجاح!");
                 }
             } else {
-                // وضع التعديل (Edit Mode)
                 patients[editIndex].name = name; 
                 patients[editIndex].age = age; 
                 patients[editIndex].notes = notes; 
                 
                 if(patients[editIndex].visits && patients[editIndex].visits.length > 0) {
-                    // تحديث الزيارة المحددة
                     let vIdx = editVisitIndex !== null ? editVisitIndex : patients[editIndex].visits.length - 1;
                     patients[editIndex].visits[vIdx] = vObj;
                     
-                    // إعادة حساب إجمالي التكلفة والمدفوع للمريض بناءً على كل الزيارات
                     let recalculatedTotalCost = 0;
                     let recalculatedPaidAmount = 0;
                     patients[editIndex].visits.forEach(vis => {
@@ -1002,12 +1011,10 @@
                     patients[editIndex].paidAmount = recalculatedPaidAmount;
                     patients[editIndex].debt = recalculatedTotalCost - recalculatedPaidAmount;
                     
-                    // تحديث الإجراء الأساسي ليكون الإجراء بتاع آخر زيارة
                     let lastVis = patients[editIndex].visits[patients[editIndex].visits.length - 1];
                     patients[editIndex].proc = lastVis.proc;
 
                 } else {
-                    // حالة نادرة لو المريض قديم جداً ومفيش مصفوفة زيارات
                     patients[editIndex].totalCost = totalCost;
                     patients[editIndex].paidAmount = paidAmount;
                     patients[editIndex].debt = debt;
@@ -1057,14 +1064,11 @@
             showCustomConfirm("هل أنت متأكد من حذف هذا الملف نهائياً؟", () => { patients.splice(i, 1); saveAndSyncSystemData(); triggerAlert("تم الحذف بنجاح"); });
         }
 
-        // --- دوال التعديل الجديدة الخاصة باختيار الزيارة ---
         function editPatient(i) {
             const p = patients[i];
             if (!p.visits || p.visits.length <= 1) {
-                // لو زيارة واحدة أو مفيش مصفوفة زيارات، افتحها مباشرة
                 loadVisitToForm(i, 0);
             } else {
-                // لو المريض ليه كذا زيارة، نعرض قايمة تختار منها
                 const container = document.getElementById('visitSelectionList');
                 container.innerHTML = '';
                 
@@ -1131,17 +1135,49 @@
             document.getElementById('submitBtn').innerHTML = `<i class="fa-solid fa-pen text-xl"></i> تحديث بيانات الزيارة`;
             showTab('add-patient', document.querySelector('.mobile-nav-btn')); 
         }
-        // ----------------------------------------------------
 
         function searchPatient() { renderTable(patients.filter(p => p.name.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase()))); }
 
+        // --- المواعيد (تم تعديلها لدعم نظام الـ 12 ساعة والتعديل) ---
         function addAppointment() {
-            const name = document.getElementById('aptPatientName').value.trim(); const date = document.getElementById('aptDate').value;
-            const time = document.getElementById('aptTime').value; const notes = document.getElementById('aptNotes').value.trim();
+            const name = document.getElementById('aptPatientName').value.trim(); 
+            const date = document.getElementById('aptDate').value;
+            const time = document.getElementById('aptTime').value; 
+            const notes = document.getElementById('aptNotes').value.trim();
+            
             if(!name || !date || !time) return triggerAlert("تأكد من إدخال الاسم والتاريخ والوقت", "error");
-            appointments.push({ name, date, time, notes, addedAt: new Date().toISOString() });
-            document.getElementById('appointmentForm').reset(); document.getElementById('aptDate').valueAsDate = new Date();
-            triggerAlert("تم تسجيل الموعد بنجاح!"); saveAndSyncSystemData(); renderAppointments();
+
+            if (editAptIndex !== null) {
+                appointments[editAptIndex].name = name;
+                appointments[editAptIndex].date = date;
+                appointments[editAptIndex].time = time;
+                appointments[editAptIndex].notes = notes;
+                triggerAlert("تم تعديل الموعد بنجاح!");
+                editAptIndex = null;
+                document.querySelector('#appointmentForm button[type="submit"]').innerHTML = `<i class="fa-solid fa-calendar-plus"></i> إضافة الموعد`;
+            } else {
+                appointments.push({ name, date, time, notes, addedAt: new Date().toISOString() });
+                triggerAlert("تم تسجيل الموعد بنجاح!");
+            }
+
+            document.getElementById('appointmentForm').reset(); 
+            document.getElementById('aptDate').valueAsDate = new Date();
+            saveAndSyncSystemData(); 
+            renderAppointments();
+        }
+
+        function editAppointment(index) {
+            editAptIndex = index;
+            const apt = appointments[index];
+            document.getElementById('aptPatientName').value = apt.name;
+            document.getElementById('aptDate').value = apt.date;
+            document.getElementById('aptTime').value = apt.time; // يظل 24 ساعة للفورم عشان يقرأه صح
+            document.getElementById('aptNotes').value = apt.notes || '';
+            
+            document.querySelector('#appointmentForm button[type="submit"]').innerHTML = `<i class="fa-solid fa-pen"></i> تحديث الموعد`;
+            
+            // رفع الشاشة لأعلى الفورم بسلاسة
+            document.getElementById('appointments-section').scrollIntoView({ behavior: 'smooth' });
         }
 
         function renderAppointments() {
@@ -1150,7 +1186,10 @@
             if(appointments.length === 0) { container.innerHTML = '<p class="text-slate-400 font-bold text-center py-6">لا توجد مواعيد مسجلة حالياً.</p>'; return; }
 
             appointments.forEach((apt, index) => {
-                const aptDateObj = new Date(`${apt.date}T${apt.time}`); const isPast = aptDateObj < new Date();
+                const aptDateObj = new Date(`${apt.date}T${apt.time}`); 
+                const isPast = aptDateObj < new Date();
+                const displayTime = format12Hour(apt.time); // العرض بنظام 12 ساعة
+                
                 container.innerHTML += `
                     <div class="flex flex-col md:flex-row justify-between md:items-center bg-slate-50 p-4 rounded-2xl border ${isPast ? 'border-rose-200 bg-rose-50/50' : 'border-slate-100'} transition hover:shadow-md gap-4">
                         <div class="flex items-center gap-4">
@@ -1159,15 +1198,19 @@
                                 <h4 class="font-black text-slate-800 text-lg">${apt.name}</h4>
                                 <div class="flex flex-wrap items-center gap-3 mt-1">
                                     <span class="text-xs font-bold ${isPast ? 'text-rose-500' : 'text-slate-500'}"><i class="fa-regular fa-calendar ml-1"></i>${apt.date}</span>
-                                    <span class="text-xs font-bold ${isPast ? 'text-rose-500' : 'text-slate-500'}"><i class="fa-regular fa-clock ml-1"></i>${apt.time}</span>
+                                    <span class="text-xs font-bold ${isPast ? 'text-rose-500' : 'text-slate-500'}"><i class="fa-regular fa-clock ml-1"></i>${displayTime}</span>
                                     ${apt.notes ? `<span class="text-xs font-bold text-slate-400 bg-slate-200 px-2 py-0.5 rounded-md">${apt.notes}</span>` : ''}
                                 </div>
                             </div>
                         </div>
-                        <button onclick="deleteAppointment(${index})" class="bg-white border border-slate-200 text-rose-500 hover:bg-rose-50 px-4 py-2 rounded-xl font-bold transition flex items-center justify-center gap-2 text-sm shadow-sm whitespace-nowrap"><i class="fa-solid fa-check"></i> إنهاء / حذف</button>
+                        <div class="flex gap-2">
+                            <button onclick="editAppointment(${index})" class="bg-white border border-slate-200 text-slate-500 hover:text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-xl font-bold transition flex items-center justify-center gap-2 text-sm shadow-sm whitespace-nowrap"><i class="fa-solid fa-pen"></i> تعديل</button>
+                            <button onclick="deleteAppointment(${index})" class="bg-white border border-slate-200 text-rose-500 hover:bg-rose-50 px-4 py-2 rounded-xl font-bold transition flex items-center justify-center gap-2 text-sm shadow-sm whitespace-nowrap"><i class="fa-solid fa-check"></i> إنهاء / حذف</button>
+                        </div>
                     </div>`;
             });
         }
+        // ----------------------------------------------------
 
         function deleteAppointment(index) {
             showCustomConfirm("هل تريد إنهاء أو حذف هذا الموعد؟", () => { appointments.splice(index, 1); saveAndSyncSystemData(); renderAppointments(); triggerAlert("تم إزالة الموعد"); });
