@@ -1113,13 +1113,61 @@
         }
 
         function renderAllAccounts() {
-            const dDate = document.getElementById('dailyAccountDate').value; let dTot = 0, dCash = 0, dNewDebt = 0;
-            patients.forEach(p => { if (p.visits) p.visits.forEach(v => { if (v.date === dDate) { dTot += v.totalCost; dCash += v.paidAmount; dNewDebt += (v.totalCost - v.paidAmount); } }); });
-            document.getElementById('dailyTotalVal').innerText = fmt(dTot) + ' ج'; document.getElementById('dailyCashCollected').innerText = fmt(dCash) + ' ج'; document.getElementById('dailyDocCashShare').innerText = fmt((dCash * 0.60).toFixed(0)) + ' ج'; document.getElementById('dailyDebtGenerated').innerText = fmt(dNewDebt) + ' ج'; document.getElementById('dailyDocDebtShare').innerText = fmt((dNewDebt * 0.60).toFixed(0)) + ' ج';
+            const dDate = document.getElementById('dailyAccountDate').value; 
+            let dTot = 0, dCash = 0, dNewDebt = 0;
             
-            const mDate = document.getElementById('monthlyAccountDate').value; let mTot = 0, mCash = 0, mNewDebt = 0;
-            if(mDate) { patients.forEach(p => { if (p.visits) p.visits.forEach(v => { if (v.date && v.date.startsWith(mDate)) { mTot += v.totalCost; mCash += v.paidAmount; mNewDebt += (v.totalCost - v.paidAmount); } }); }); }
-            document.getElementById('monthlyTotalVal').innerText = fmt(mTot) + ' ج'; document.getElementById('monthlyCashCollected').innerText = fmt(mCash) + ' ج'; document.getElementById('monthlyDebtGenerated').innerText = fmt(mNewDebt) + ' ج'; document.getElementById('monthlyDocCashShare').innerText = fmt((mCash * 0.60).toFixed(0)) + ' ج'; document.getElementById('monthlyDocDebtShare').innerText = fmt((mNewDebt * 0.60).toFixed(0)) + ' ج';
+            patients.forEach(p => { 
+                if (p.visits) {
+                    p.visits.forEach(v => { 
+                        if (v.date === dDate) { 
+                            dTot += v.totalCost; 
+                            dCash += v.paidAmount; 
+                            let sessionDebt = v.totalCost - v.paidAmount;
+                            if (sessionDebt > 0) {
+                                dNewDebt += sessionDebt; 
+                            }
+                        } 
+                    }); 
+                }
+            });
+            
+            document.getElementById('dailyTotalVal').innerText = fmt(dTot) + ' ج'; 
+            document.getElementById('dailyCashCollected').innerText = fmt(dCash) + ' ج'; 
+            document.getElementById('dailyDocCashShare').innerText = fmt((dCash * 0.60).toFixed(0)) + ' ج'; 
+            
+            let dDebtEl = document.getElementById('dailyDebtGenerated');
+            dDebtEl.innerText = fmt(dNewDebt) + ' ج';
+            dDebtEl.className = "text-3xl font-black text-rose-600";
+            document.getElementById('dailyDocDebtShare').innerText = fmt((dNewDebt * 0.60).toFixed(0)) + ' ج';
+
+            const mDate = document.getElementById('monthlyAccountDate').value; 
+            let mTot = 0, mCash = 0, mNewDebt = 0;
+            
+            if(mDate) { 
+                patients.forEach(p => { 
+                    if (p.visits) {
+                        p.visits.forEach(v => { 
+                            if (v.date && v.date.startsWith(mDate)) { 
+                                mTot += v.totalCost; 
+                                mCash += v.paidAmount; 
+                                let sessionDebt = v.totalCost - v.paidAmount;
+                                if (sessionDebt > 0) {
+                                    mNewDebt += sessionDebt; 
+                                }
+                            } 
+                        }); 
+                    }
+                }); 
+            }
+            
+            document.getElementById('monthlyTotalVal').innerText = fmt(mTot) + ' ج'; 
+            document.getElementById('monthlyCashCollected').innerText = fmt(mCash) + ' ج'; 
+            document.getElementById('monthlyDocCashShare').innerText = fmt((mCash * 0.60).toFixed(0)) + ' ج'; 
+            
+            let mDebtEl = document.getElementById('monthlyDebtGenerated');
+            mDebtEl.innerText = fmt(mNewDebt) + ' ج';
+            mDebtEl.className = "text-3xl font-black text-rose-600";
+            document.getElementById('monthlyDocDebtShare').innerText = fmt((mNewDebt * 0.60).toFixed(0)) + ' ج';
             
             renderAccountsTables();
         }
