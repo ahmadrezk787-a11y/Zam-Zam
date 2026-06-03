@@ -220,8 +220,9 @@
                             <i class="fa-solid fa-chevron-down absolute left-4 top-4 text-slate-400 pointer-events-none"></i>
                         </div>
                         <div id="visitTypeDropdown" class="hidden absolute z-50 w-full mt-2 bg-white border border-slate-100 rounded-2xl shadow-xl overflow-hidden">
-                            <div class="p-4 hover:bg-slate-50 cursor-pointer font-bold text-slate-700 border-b border-slate-50" onclick="selectDropdownVal('visitTypeInput', 'visitTypeDropdown', 'مريض جديد'); handleNameInput();">مريض جديد</div>
-                            <div class="p-4 hover:bg-slate-50 cursor-pointer font-bold text-slate-700" onclick="selectDropdownVal('visitTypeInput', 'visitTypeDropdown', 'متابعة'); handleNameInput();">متابعة (مريض مسجل)</div>
+                            <div class="p-4 hover:bg-slate-50 cursor-pointer font-bold text-slate-700 border-b border-slate-50" onclick="selectDropdownVal('visitTypeInput', 'visitTypeDropdown', 'مريض جديد'); handleVisitTypeChange('مريض جديد'); handleNameInput();">مريض جديد</div>
+                            <div class="p-4 hover:bg-slate-50 cursor-pointer font-bold text-slate-700 border-b border-slate-50" onclick="selectDropdownVal('visitTypeInput', 'visitTypeDropdown', 'متابعة'); handleVisitTypeChange('متابعة'); handleNameInput();">متابعة (مريض مسجل)</div>
+                            <div class="p-4 hover:bg-slate-50 cursor-pointer font-bold text-slate-700" onclick="selectDropdownVal('visitTypeInput', 'visitTypeDropdown', 'تسديد دفعة'); handleVisitTypeChange('تسديد دفعة'); handleNameInput();">تسديد دفعة (مريض مسجل)</div>
                         </div>
                     </div>
 
@@ -257,9 +258,11 @@
                         <div class="p-4 hover:bg-slate-50 cursor-pointer font-bold text-slate-700 border-b border-slate-50" onclick="selectDropdownVal('procedureTypeInput', 'procDropdown', 'تنظيف وتلميع أسنان')">تنظيف وتلميع أسنان</div>
                         <div class="p-4 hover:bg-slate-50 cursor-pointer font-bold text-slate-700 border-b border-slate-50" onclick="selectDropdownVal('procedureTypeInput', 'procDropdown', 'حشو عادي')">حشو عادي</div>
                         <div class="p-4 hover:bg-slate-50 cursor-pointer font-bold text-slate-700 border-b border-slate-50" onclick="selectDropdownVal('procedureTypeInput', 'procDropdown', 'حشو عصب')">حشو عصب</div>
+                        <div class="p-4 hover:bg-slate-50 cursor-pointer font-bold text-slate-700 border-b border-slate-50" onclick="selectDropdownVal('procedureTypeInput', 'procDropdown', 'حشو عصب أطفال')">حشو عصب أطفال</div>
                         <div class="p-4 hover:bg-slate-50 cursor-pointer font-bold text-slate-700 border-b border-slate-50" onclick="selectDropdownVal('procedureTypeInput', 'procDropdown', 'خلع عادي')">خلع عادي</div>
                         <div class="p-4 hover:bg-slate-50 cursor-pointer font-bold text-slate-700 border-b border-slate-50" onclick="selectDropdownVal('procedureTypeInput', 'procDropdown', 'خلع جراحي')">خلع جراحي</div>
                         <div class="p-4 hover:bg-slate-50 cursor-pointer font-bold text-slate-700 border-b border-slate-50" onclick="selectDropdownVal('procedureTypeInput', 'procDropdown', 'خلع ضرس عقل')">خلع ضرس عقل</div>
+                        <div class="p-4 hover:bg-slate-50 cursor-pointer font-bold text-slate-700 border-b border-slate-50" onclick="selectDropdownVal('procedureTypeInput', 'procDropdown', 'خلع أطفال')">خلع أطفال</div>
                         <div class="p-4 hover:bg-slate-50 cursor-pointer font-bold text-slate-700 border-b border-slate-50" onclick="selectDropdownVal('procedureTypeInput', 'procDropdown', 'تركيبات / تيجان')">تركيبات / تيجان</div>
                         <div class="p-4 hover:bg-slate-50 cursor-pointer font-bold text-slate-700 border-b border-slate-50" onclick="selectDropdownVal('procedureTypeInput', 'procDropdown', 'تبييض أسنان')">تبييض أسنان</div>
                         <div class="p-4 hover:bg-slate-50 cursor-pointer font-bold text-slate-700 border-b border-slate-50" onclick="selectDropdownVal('procedureTypeInput', 'procDropdown', 'تقويم')">تقويم</div>
@@ -804,6 +807,23 @@
             document.getElementById(dropdownId).classList.add('hidden');
         }
 
+        function handleVisitTypeChange(type) {
+            const procInput = document.getElementById('procedureTypeInput');
+            const totalCostInput = document.getElementById('totalCost');
+            
+            if (type === 'تسديد دفعة') {
+                procInput.value = 'تسديد دفعة حساب';
+                totalCostInput.value = 0;
+                totalCostInput.readOnly = true;
+                totalCostInput.classList.add('bg-slate-100'); 
+            } else {
+                if (procInput.value === 'تسديد دفعة حساب') procInput.value = '';
+                totalCostInput.readOnly = false;
+                totalCostInput.classList.remove('bg-slate-100');
+            }
+            calculateFormDebt();
+        }
+
         function exportBackup() {
             try {
                 const backupData = { exportDate: new Date().toISOString(), patientsList: patients, purchasesList: purchases, shortagesList: shortages, appointmentsList: appointments };
@@ -884,7 +904,7 @@
             const badge = document.getElementById('formPreviousDebt');
             drop.innerHTML = '';
             
-            if (type !== 'متابعة' || q === '') { 
+            if ((type !== 'متابعة' && type !== 'تسديد دفعة') || q === '') { 
                 drop.classList.add('hidden'); badge.classList.add('hidden'); 
                 if(!editIndex) { document.getElementById('patientAge').value = ''; currentDentalChart = {}; renderDentalChartUI(); } 
                 return; 
@@ -930,13 +950,13 @@
             const vObj = { date, proc, totalCost, paidAmount, dentalChart: {...currentDentalChart} };
 
             if (editIndex === null) {
-                if (type === 'متابعة') {
+                if (type === 'متابعة' || type === 'تسديد دفعة') {
                     const idx = patients.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
                     if (idx !== -1) {
                         if(age) patients[idx].age = age; patients[idx].proc = proc; patients[idx].totalCost += totalCost; 
                         patients[idx].paidAmount += paidAmount; patients[idx].debt = patients[idx].totalCost - patients[idx].paidAmount;
                         if (notes) patients[idx].notes += `\n[${date}]: ${notes}`;
-                        patients[idx].visits.push(vObj); triggerAlert(`تم إضافة المتابعة لـ ${name}!`);
+                        patients[idx].visits.push(vObj); triggerAlert(`تم إضافة المعاملة لـ ${name}!`);
                     } else {
                         patients.push({ name, age, date, type: 'مريض جديد', proc, totalCost, paidAmount, debt, notes, visits: [vObj] });
                         triggerAlert("تم تسجيل ملف جديد بنجاح!");
@@ -955,6 +975,7 @@
             document.getElementById('patientForm').reset(); document.getElementById('visitDate').valueAsDate = new Date();
             document.getElementById('formDebtBadge').innerText = "0 ج.م"; document.getElementById('formDebtBadge').className = "badge badge-gray text-lg px-6 py-2";
             document.getElementById('formPreviousDebt').classList.add('hidden');
+            document.getElementById('totalCost').readOnly = false; document.getElementById('totalCost').classList.remove('bg-slate-100');
             currentDentalChart = {}; renderDentalChartUI();
             btn.innerHTML = `<i class="fa-solid fa-check"></i> حفظ بيانات الزيارة`; btn.disabled = false;
             saveAndSyncSystemData();
