@@ -148,7 +148,6 @@
         </div>
     </div>
 
-    <!-- نافذة اختيار الزيارة للتعديل -->
     <div id="selectVisitModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[200] p-4 transition-opacity">
         <div class="bg-white p-6 rounded-[2rem] w-full max-w-md shadow-2xl fade-in border border-slate-100 max-h-[80vh] flex flex-col">
             <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
@@ -342,24 +341,8 @@
                 </div>
             </div>
             
-            <div class="overflow-x-auto rounded-3xl border border-slate-100">
-                <table class="data-table whitespace-nowrap w-full">
-                    <thead>
-                        <tr>
-                            <th>التاريخ</th>
-                            <th>الاسم</th>
-                            <th>العمر</th>
-                            <th>النوع</th>
-                            <th>الإجراء</th>
-                            <th>إجمالي التكلفة</th>
-                            <th>إجمالي المدفوع</th>
-                            <th>متبقي الديون</th>
-                            <th>إدارة</th>
-                        </tr>
-                    </thead>
-                    <tbody id="patientsTableBody"></tbody>
-                </table>
-            </div>
+            <div id="patientsCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-4">
+                </div>
         </div>
 
         <div id="appointments-section" class="tab-section hidden fade-in max-w-5xl mx-auto w-full">
@@ -719,7 +702,6 @@
         const lowerTeeth = [48,47,46,45,44,43,42,41, 31,32,33,34,35,36,37,38];
         let currentDentalChart = {}; 
 
-        // تحويل الوقت إلى 12 ساعة للعرض
         function format12Hour(timeString) {
             if (!timeString) return '';
             let [h, m] = timeString.split(':');
@@ -1035,28 +1017,76 @@
             saveAndSyncSystemData();
         }
 
+        // التعديل الجديد على دالة renderTable لطباعة البيانات كروت وترتيبها
         function renderTable(data = patients) {
-            const tbody = document.getElementById('patientsTableBody'); tbody.innerHTML = '';
-            data.forEach((p) => {
-                const i = patients.indexOf(p);
-                let badgeType = p.type === 'مريض جديد' ? 'badge-blue' : 'badge-gray';
-                let debtHtml = p.debt > 0 ? `<span class="badge badge-rose">${fmt(p.debt)} ج</span>` : `<span class="text-slate-400 font-bold">خالص</span>`;
+            const container = document.getElementById('patientsCardsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            // 1. ترتيب البيانات من الأحدث للأقدم بناءً على تاريخ آخر زيارة للمريض
+            const sortedData = [...data].sort((a, b) => {
+                let dateA = a.visits && a.visits.length > 0 ? a.visits[a.visits.length - 1].date : a.date;
+                let dateB = b.visits && b.visits.length > 0 ? b.visits[b.visits.length - 1].date : b.date;
+                return new Date(dateB) - new Date(dateA);
+            });
+
+            // لو مفيش مرضى
+            if (sortedData.length === 0) {
+                container.innerHTML = '<div class="col-span-full text-center py-12 text-slate-400 font-black text-lg bg-slate-50 rounded-3xl border border-dashed border-slate-200">لا يوجد مرضى مطابقين للبحث أو مسجلين حالياً.</div>';
+                return;
+            }
+
+            // 2. طباعة الكروت
+            sortedData.forEach((p) => {
+                const i = patients.indexOf(p); // نحتفظ بالاندكس الأصلي عشان التعديل والحذف يفضل شغال صح
+                let badgeType = p.type === 'مريض جديد' ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-600';
+                let debtHtml = p.debt > 0 
+                    ? `<span class="bg-rose-50 text-rose-600 px-3 py-1.5 rounded-lg text-[11px] font-black border border-rose-100 shadow-sm"><i class="fa-solid fa-scale-balanced ml-1"></i>دين: ${fmt(p.debt)} ج</span>` 
+                    : `<span class="bg-green-50 text-green-600 px-3 py-1.5 rounded-lg text-[11px] font-black border border-green-100 shadow-sm"><i class="fa-solid fa-check-double ml-1"></i>خالص</span>`;
                 
-                tbody.innerHTML += `
-                    <tr>
-                        <td class="text-slate-500">${p.date.replace(/-/g, '/')}</td>
-                        <td class="font-black text-slate-800 hover:text-blue-600 cursor-pointer transition" onclick="openModal(${i})">${p.name}</td>
-                        <td>${p.age||'-'}</td>
-                        <td><span class="badge ${badgeType}">${p.type}</span></td>
-                        <td class="truncate max-w-[150px]" title="${p.proc}">${p.proc}</td>
-                        <td class="font-black text-slate-700">${fmt(p.totalCost)} ج</td>
-                        <td class="font-black text-green-600">${fmt(p.paidAmount)} ج</td>
-                        <td>${debtHtml}</td>
-                        <td class="flex justify-center gap-2">
-                            <button onclick="editPatient(${i})" class="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deletePatient(${i})" class="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>`;
+                let lastDate = p.visits && p.visits.length > 0 ? p.visits[p.visits.length - 1].date : p.date;
+
+                container.innerHTML += `
+                    <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-[0_4px_20px_rgb(0,0,0,0.02)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative group flex flex-col h-full">
+                        <div class="flex justify-between items-start mb-4 border-b border-slate-50 pb-4">
+                            <div class="flex items-center gap-3 cursor-pointer group-hover:translate-x-1 transition-transform" onclick="openModal(${i})">
+                                <div class="w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center text-xl group-hover:bg-blue-50 group-hover:text-blue-500 transition-colors">
+                                    <i class="fa-solid fa-user-injured"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-black text-slate-800 text-lg line-clamp-1 hover:text-blue-600 transition-colors">${p.name}</h3>
+                                    <p class="text-[11px] font-bold text-slate-400 mt-1 bg-slate-50 inline-block px-2 py-0.5 rounded-md"><i class="fa-regular fa-clock ml-1"></i>${lastDate.replace(/-/g, '/')}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex-1">
+                            <div class="flex justify-between items-center mb-3 px-1">
+                                <span class="text-[10px] font-bold px-2 py-1 rounded-md ${badgeType}">${p.type}</span>
+                                ${debtHtml}
+                            </div>
+                            <div class="bg-slate-50 rounded-2xl p-4 flex justify-between items-center border border-slate-100">
+                                <div class="text-center w-1/2 border-l border-slate-200">
+                                    <p class="text-[10px] font-bold text-slate-400 mb-1">آخر إجراء</p>
+                                    <p class="font-bold text-xs text-slate-700 truncate px-1" title="${p.proc}">${p.proc}</p>
+                                </div>
+                                <div class="text-center w-1/2">
+                                    <p class="text-[10px] font-bold text-slate-400 mb-1">إجمالي المدفوع</p>
+                                    <p class="font-black text-sm text-green-600">${fmt(p.paidAmount)} ج</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2 mt-4 pt-4 border-t border-slate-50">
+                            <button onclick="editPatient(${i})" class="flex-1 bg-white border border-slate-100 shadow-sm hover:bg-blue-50 text-slate-500 hover:text-blue-600 py-3 rounded-xl text-sm font-black transition-all flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-pen"></i> تعديل
+                            </button>
+                            <button onclick="deletePatient(${i})" class="w-14 bg-white border border-slate-100 shadow-sm hover:bg-rose-50 text-slate-500 hover:text-rose-600 py-3 rounded-xl text-sm font-black transition-all flex items-center justify-center">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
             });
         }
 
@@ -1138,7 +1168,6 @@
 
         function searchPatient() { renderTable(patients.filter(p => p.name.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase()))); }
 
-        // --- المواعيد (تم تعديلها لدعم نظام الـ 12 ساعة والتعديل) ---
         function addAppointment() {
             const name = document.getElementById('aptPatientName').value.trim(); 
             const date = document.getElementById('aptDate').value;
@@ -1171,12 +1200,11 @@
             const apt = appointments[index];
             document.getElementById('aptPatientName').value = apt.name;
             document.getElementById('aptDate').value = apt.date;
-            document.getElementById('aptTime').value = apt.time; // يظل 24 ساعة للفورم عشان يقرأه صح
+            document.getElementById('aptTime').value = apt.time; 
             document.getElementById('aptNotes').value = apt.notes || '';
             
             document.querySelector('#appointmentForm button[type="submit"]').innerHTML = `<i class="fa-solid fa-pen"></i> تحديث الموعد`;
             
-            // رفع الشاشة لأعلى الفورم بسلاسة
             document.getElementById('appointments-section').scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -1188,7 +1216,7 @@
             appointments.forEach((apt, index) => {
                 const aptDateObj = new Date(`${apt.date}T${apt.time}`); 
                 const isPast = aptDateObj < new Date();
-                const displayTime = format12Hour(apt.time); // العرض بنظام 12 ساعة
+                const displayTime = format12Hour(apt.time);
                 
                 container.innerHTML += `
                     <div class="flex flex-col md:flex-row justify-between md:items-center bg-slate-50 p-4 rounded-2xl border ${isPast ? 'border-rose-200 bg-rose-50/50' : 'border-slate-100'} transition hover:shadow-md gap-4">
@@ -1210,7 +1238,6 @@
                     </div>`;
             });
         }
-        // ----------------------------------------------------
 
         function deleteAppointment(index) {
             showCustomConfirm("هل تريد إنهاء أو حذف هذا الموعد؟", () => { appointments.splice(index, 1); saveAndSyncSystemData(); renderAppointments(); triggerAlert("تم إزالة الموعد"); });
