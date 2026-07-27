@@ -1350,9 +1350,7 @@
                             dTot += v.totalCost; 
                             dCash += v.paidAmount; 
                             let sessionDebt = v.totalCost - v.paidAmount;
-                            if (sessionDebt > 0) {
-                                dNewDebt += sessionDebt; 
-                            }
+                            dNewDebt += sessionDebt; 
                         } 
                     }); 
                 }
@@ -1378,9 +1376,7 @@
                                 mTot += v.totalCost; 
                                 mCash += v.paidAmount; 
                                 let sessionDebt = v.totalCost - v.paidAmount;
-                                if (sessionDebt > 0) {
-                                    mNewDebt += sessionDebt; 
-                                }
+                                mNewDebt += sessionDebt; 
                             } 
                         }); 
                     }
