@@ -1023,35 +1023,27 @@
             saveAndSyncSystemData();
         }
 
-        // دالة جديدة لاستخراج آخر تاريخ زيارة "طبية" وتجاهل "تسديد دفعة حساب"
         function getLastMedicalVisitDate(patient) {
             if (!patient.visits || patient.visits.length === 0) return patient.date;
-            // بنمشي على الزيارات من الآخر للأول
             for (let i = patient.visits.length - 1; i >= 0; i--) {
                 if (patient.visits[i].proc !== 'تسديد دفعة حساب') {
                     return patient.visits[i].date;
                 }
             }
-            // لو كل الزيارات كانت تسديد دفعات (حالة نادرة)، نرجع تاريخ أول تسجيل
             return patient.date;
         }
 
-        // دالة تفريغ بحث التاريخ
         function clearDateSearch() {
             document.getElementById('searchDateInput').value = '';
             searchPatient();
         }
 
-        // دالة البحث المحدثة (بالاسم والتاريخ)
         function searchPatient() { 
             const nameQuery = document.getElementById('searchInput').value.toLowerCase().trim();
             const dateQuery = document.getElementById('searchDateInput').value;
 
             const filtered = patients.filter(p => {
-                // فحص تطابق الاسم
                 const matchName = p.name.toLowerCase().includes(nameQuery);
-                
-                // فحص تطابق التاريخ (هل المريض ده جيه في التاريخ المحدد سواء كشف أو دفعة؟)
                 let matchDate = true;
                 if (dateQuery) {
                     if (p.visits && p.visits.length > 0) {
@@ -1060,31 +1052,26 @@
                         matchDate = p.date === dateQuery;
                     }
                 }
-                
                 return matchName && matchDate;
             });
 
             renderTable(filtered); 
         }
 
-        // دالة عرض الكروت المحدثة
         function renderTable(data = patients) {
             const container = document.getElementById('patientsCardsContainer');
             if (!container) return;
             container.innerHTML = '';
 
-            // 1. ترتيب البيانات من الأحدث للأقدم بناءً على تاريخ "آخر زيارة طبية"
             const sortedData = [...data].sort((a, b) => {
                 return new Date(getLastMedicalVisitDate(b)) - new Date(getLastMedicalVisitDate(a));
             });
 
-            // لو مفيش مرضى
             if (sortedData.length === 0) {
                 container.innerHTML = '<div class="col-span-full text-center py-12 text-slate-400 font-black text-lg bg-slate-50 rounded-3xl border border-dashed border-slate-200">لا يوجد مرضى مطابقين للبحث أو مسجلين حالياً.</div>';
                 return;
             }
 
-            // 2. طباعة الكروت
             sortedData.forEach((p) => {
                 const i = patients.indexOf(p); 
                 let badgeType = p.type === 'مريض جديد' ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-600';
@@ -1092,7 +1079,6 @@
                     ? `<span class="bg-rose-50 text-rose-600 px-3 py-1.5 rounded-lg text-[11px] font-black border border-rose-100 shadow-sm"><i class="fa-solid fa-scale-balanced ml-1"></i>دين: ${fmt(p.debt)} ج</span>` 
                     : `<span class="bg-green-50 text-green-600 px-3 py-1.5 rounded-lg text-[11px] font-black border border-green-100 shadow-sm"><i class="fa-solid fa-check-double ml-1"></i>خالص</span>`;
                 
-                // هنا هنستخدم الدالة الجديدة لعرض التاريخ عشان ميظهرش تاريخ الدفع
                 let lastMedicalDate = getLastMedicalVisitDate(p);
 
                 container.innerHTML += `
@@ -1449,10 +1435,14 @@
         }
 
         function renderPurchases() {
-            const tbody = document.getElementById('purchasesTableBody'); const selectedMonth = document.getElementById('purMonthFilter').value;
-            tbody.innerHTML = ''; let grandTotal = 0; let monthTotal = 0;
+            const tbody = document.getElementById('purchasesTableBody'); 
+            const selectedMonth = document.getElementById('purMonthFilter').value;
+            tbody.innerHTML = ''; 
+            let grandTotal = 0; 
+            let monthTotal = 0;
             
-            purchases.forEach((p, index) => { 
+            for (let index = purchases.length - 1; index >= 0; index--) {
+                const p = purchases[index];
                 grandTotal += p.total; 
                 if (p.date && p.date.startsWith(selectedMonth)) monthTotal += p.total;
                 tbody.innerHTML += `
@@ -1463,10 +1453,13 @@
                         <td class="font-bold text-slate-600">${fmt(p.price)} ج</td>
                         <td class="font-black text-rose-600">${fmt(p.total)} ج</td>
                         <td>
-                            <button onclick="deletePurchase(${index})" class="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="deletePurchase(${index})" class="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </td>
                     </tr>`; 
-            });
+            }
+            
             document.getElementById('purGrandTotal').innerText = fmt(grandTotal) + ' ج';
             document.getElementById('monthlyPurTotal').innerText = fmt(monthTotal) + ' ج';
         }
