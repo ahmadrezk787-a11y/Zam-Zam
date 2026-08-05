@@ -750,21 +750,51 @@
         });
 
         function loginUser() {
-            const e = document.getElementById('loginEmail').value; const p = document.getElementById('loginPassword').value;
+            const e = document.getElementById('loginEmail').value; 
+            const p = document.getElementById('loginPassword').value;
             if(!e || !p) return triggerAlert("أدخل البريد وكلمة المرور", "error");
-            auth.signInWithEmailAndPassword(e, p).catch(err => triggerAlert("بيانات الدخول غير صحيحة", "error"));
+            
+            const btn = document.querySelector('button[onclick="loginUser()"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحقق...';
+            btn.disabled = true;
+
+            auth.signInWithEmailAndPassword(e, p)
+                .then(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                })
+                .catch(err => {
+                    console.error("Login Error:", err);
+                    triggerAlert("خطأ: " + err.message, "error");
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                });
         }
 
         function registerUser() {
-            const e = document.getElementById('loginEmail').value; const p = document.getElementById('loginPassword').value;
+            const e = document.getElementById('loginEmail').value; 
+            const p = document.getElementById('loginPassword').value;
             if(!e || !p) return triggerAlert("أدخل البريد وكلمة المرور لإنشاء الحساب", "error");
             if(p.length < 6) return triggerAlert("كلمة المرور يجب أن تكون 6 أحرف على الأقل", "error");
 
-            auth.createUserWithEmailAndPassword(e, p).then(() => {
-                triggerAlert("تم إنشاء حساب الطبيب بنجاح!");
-            }).catch(err => {
-                triggerAlert("حدث خطأ، ربما البريد مستخدم بالفعل", "error");
-            });
+            const btn = document.querySelector('button[onclick="registerUser()"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الإنشاء...';
+            btn.disabled = true;
+
+            auth.createUserWithEmailAndPassword(e, p)
+                .then(() => {
+                    triggerAlert("تم إنشاء حساب الطبيب بنجاح!");
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                })
+                .catch(err => {
+                    console.error("Register Error:", err);
+                    triggerAlert("خطأ في الإنشاء: " + err.message, "error");
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                });
         }
 
         function logoutUser() { auth.signOut(); }
@@ -1320,7 +1350,7 @@
         
         function saveModalChanges() {
             if (currentModalIndex !== null) { 
-                patients[currentModalIndex].notes = document.getElementById('modalNotes'].value; 
+                patients[currentModalIndex].notes = document.getElementById('modalNotes').value; 
                 triggerAlert("تم حفظ الملاحظات!"); closeModal(); saveAndSyncSystemData();
             }
         }
