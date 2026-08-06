@@ -1174,6 +1174,50 @@
             showCustomConfirm("هل أنت متأكد من حذف هذا الملف نهائياً؟", () => { patients.splice(i, 1); saveAndSyncSystemData(); triggerAlert("تم الحذف بنجاح"); });
         }
 
+        function deleteSpecificVisit(pIndex, vIndex, event) {
+            if(event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+            
+            showCustomConfirm("هل أنت متأكد من حذف هذه المعاملة نهائياً؟ سيتم إعادة حساب مديونية المريض.", () => {
+                const p = patients[pIndex];
+                p.visits.splice(vIndex, 1);
+                
+                if (p.visits.length > 0) {
+                    let recalculatedTotalCost = 0;
+                    let recalculatedPaidAmount = 0;
+                    
+                    p.visits.forEach(vis => {
+                        recalculatedTotalCost += vis.totalCost;
+                        recalculatedPaidAmount += vis.paidAmount;
+                    });
+                    
+                    p.totalCost = recalculatedTotalCost;
+                    p.paidAmount = recalculatedPaidAmount;
+                    p.debt = recalculatedTotalCost - recalculatedPaidAmount;
+                    
+                    let lastVis = p.visits[p.visits.length - 1];
+                    p.proc = lastVis.proc;
+                    
+                    triggerAlert("تم حذف الزيارة وإعادة حساب الديون بنجاح!");
+                    
+                    if(p.visits.length > 1) {
+                        editPatient(pIndex);
+                    } else {
+                        closeSelectVisitModal();
+                        renderTable();
+                    }
+                } else {
+                    patients.splice(pIndex, 1);
+                    closeSelectVisitModal();
+                    triggerAlert("تم حذف الزيارة، وبما أنها الوحيدة تم إزالة ملف المريض.");
+                }
+                
+                saveAndSyncSystemData();
+            });
+        }
+
         function editPatient(i) {
             const p = patients[i];
             if (!p.visits || p.visits.length <= 1) {
@@ -1188,15 +1232,20 @@
                     let title = isPayment ? 'تسديد دفعة نقدية' : v.proc;
                     
                     container.innerHTML += `
-                        <div onclick="loadVisitToForm(${i}, ${vIndex})" class="cursor-pointer p-4 rounded-xl border ${bgClass} hover:shadow-md transition flex justify-between items-center group">
-                            <div>
-                                <span class="badge badge-blue mb-2 text-[10px]">${v.date.replace(/-/g, '/')}</span>
-                                <h4 class="font-black text-slate-800 text-md group-hover:text-blue-600 transition-colors">${title}</h4>
+                        <div class="flex items-center gap-2">
+                            <div onclick="loadVisitToForm(${i}, ${vIndex})" class="flex-1 cursor-pointer p-4 rounded-xl border ${bgClass} hover:shadow-md transition flex justify-between items-center group">
+                                <div>
+                                    <span class="badge badge-blue mb-2 text-[10px]">${v.date.replace(/-/g, '/')}</span>
+                                    <h4 class="font-black text-slate-800 text-md group-hover:text-blue-600 transition-colors">${title}</h4>
+                                </div>
+                                <div class="text-left bg-white p-2 rounded-lg border border-slate-100 shadow-sm">
+                                    <p class="text-[10px] font-bold text-slate-500 mb-1">التكلفة: <span class="text-slate-800">${fmt(v.totalCost)}</span></p>
+                                    <p class="text-[10px] font-bold text-green-700">المدفوع: <span class="text-green-600">${fmt(v.paidAmount)}</span></p>
+                                </div>
                             </div>
-                            <div class="text-left bg-white p-2 rounded-lg border border-slate-100 shadow-sm">
-                                <p class="text-[10px] font-bold text-slate-500 mb-1">التكلفة: <span class="text-slate-800">${fmt(v.totalCost)}</span></p>
-                                <p class="text-[10px] font-bold text-green-700">المدفوع: <span class="text-green-600">${fmt(v.paidAmount)}</span></p>
-                            </div>
+                            <button onclick="deleteSpecificVisit(${i}, ${vIndex}, event)" class="w-12 h-12 bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white rounded-xl flex items-center justify-center transition shadow-sm border border-rose-100 flex-shrink-0" title="حذف الزيارة">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </div>
                     `;
                 });
