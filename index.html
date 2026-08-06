@@ -161,6 +161,19 @@
         </div>
     </div>
 
+    <div id="debtDetailsModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[300] p-4 transition-opacity">
+        <div class="bg-white p-6 rounded-[2rem] w-full max-w-md shadow-2xl fade-in border border-slate-100 max-h-[80vh] flex flex-col">
+            <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
+                <div>
+                    <h3 class="text-xl font-black text-slate-800"><i class="fa-solid fa-clipboard-user text-rose-500 ml-2"></i>تفاصيل الديون</h3>
+                    <p class="text-xs font-bold text-slate-500 mt-1" id="debtModalSubtitle">قائمة بأسماء المرضى والمبالغ</p>
+                </div>
+                <button onclick="closeDebtModal()" class="text-slate-400 hover:text-rose-500 transition-colors w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div id="debtDetailsList" class="overflow-y-auto space-y-3 pr-2 pb-2"></div>
+        </div>
+    </div>
+
     <aside class="w-[220px] bg-white border-l border-slate-200 p-4 hidden md:flex flex-col z-10 shadow-sm relative overflow-y-auto">
         <div class="text-center mb-8 pb-5 border-b border-slate-100">
             <h1 class="text-3xl font-black tracking-tight flex justify-center items-center gap-1">
@@ -419,8 +432,9 @@
                         <p class="text-sm font-bold text-green-700 mb-2">المُحصّل الفعلي (كاش)</p>
                         <h4 class="text-3xl font-black text-green-600" id="dailyCashCollected">0 ج</h4>
                     </div>
-                    <div class="p-6 rounded-3xl bg-rose-50 border border-rose-100 flex flex-col justify-center items-center">
-                        <p class="text-sm font-bold text-rose-700 mb-2">الديون الجديدة للزيارات</p>
+                    <div onclick="showDebtDetails('daily')" class="p-6 rounded-3xl bg-rose-50 border border-rose-100 flex flex-col justify-center items-center cursor-pointer hover:bg-rose-100 hover:shadow-md transition-all active:scale-95 relative group">
+                        <div class="absolute top-3 left-3 text-rose-200 group-hover:text-rose-400 transition"><i class="fa-solid fa-expand"></i></div>
+                        <p class="text-sm font-bold text-rose-700 mb-2">الديون القائمة لزيارات اليوم</p>
                         <h4 class="text-3xl font-black text-rose-600" id="dailyDebtGenerated">0 ج</h4>
                     </div>
                 </div>
@@ -461,8 +475,9 @@
                         <p class="text-sm font-bold text-green-700 mb-2">محصلات الشهر</p>
                         <h4 class="text-3xl font-black text-green-600" id="monthlyCashCollected">0 ج</h4>
                     </div>
-                    <div class="p-6 rounded-3xl bg-rose-50 border border-rose-100 flex flex-col justify-center items-center">
-                        <p class="text-sm font-bold text-rose-700 mb-2">ديون الزيارات للشهر</p>
+                    <div onclick="showDebtDetails('monthly')" class="p-6 rounded-3xl bg-rose-50 border border-rose-100 flex flex-col justify-center items-center cursor-pointer hover:bg-rose-100 hover:shadow-md transition-all active:scale-95 relative group">
+                        <div class="absolute top-3 left-3 text-rose-200 group-hover:text-rose-400 transition"><i class="fa-solid fa-expand"></i></div>
+                        <p class="text-sm font-bold text-rose-700 mb-2">الديون القائمة لزيارات الشهر</p>
                         <h4 class="text-3xl font-black text-rose-600" id="monthlyDebtGenerated">0 ج</h4>
                     </div>
                 </div>
@@ -1357,18 +1372,37 @@
 
         function renderAllAccounts() {
             const dDate = document.getElementById('dailyAccountDate').value; 
-            let dTot = 0, dCash = 0, dNewDebt = 0;
+            const mDate = document.getElementById('monthlyAccountDate').value; 
+            
+            let dTot = 0, dCash = 0, dActiveDebt = 0;
+            let mTot = 0, mCash = 0, mActiveDebt = 0;
             
             patients.forEach(p => { 
                 if (p.visits) {
+                    let unallocatedDebt = p.debt > 0 ? p.debt : 0;
+                    for (let i = p.visits.length - 1; i >= 0; i--) {
+                        let v = p.visits[i];
+                        v.tempActiveDebt = 0;
+                        if (v.proc !== 'تسديد دفعة حساب' && unallocatedDebt > 0) {
+                            let sDebt = v.totalCost - v.paidAmount;
+                            if (sDebt > 0) {
+                                let allocated = Math.min(sDebt, unallocatedDebt);
+                                v.tempActiveDebt = allocated;
+                                unallocatedDebt -= allocated;
+                            }
+                        }
+                    }
+
                     p.visits.forEach(v => { 
                         if (v.date === dDate) { 
-                            if (v.proc !== 'تسديد دفعة حساب') {
-                                dTot += v.totalCost; 
-                                let sessionDebt = v.totalCost - v.paidAmount;
-                                if (sessionDebt > 0) dNewDebt += sessionDebt;
-                            }
+                            if (v.proc !== 'تسديد دفعة حساب') dTot += v.totalCost; 
                             dCash += v.paidAmount; 
+                            dActiveDebt += (v.tempActiveDebt || 0); 
+                        } 
+                        if (mDate && v.date && v.date.startsWith(mDate)) { 
+                            if (v.proc !== 'تسديد دفعة حساب') mTot += v.totalCost; 
+                            mCash += v.paidAmount; 
+                            mActiveDebt += (v.tempActiveDebt || 0); 
                         } 
                     }); 
                 }
@@ -1379,40 +1413,79 @@
             document.getElementById('dailyDocCashShare').innerText = fmt((dCash * 0.60).toFixed(0)) + ' ج'; 
             
             let dDebtEl = document.getElementById('dailyDebtGenerated');
-            dDebtEl.innerText = fmt(dNewDebt) + ' ج';
-            dDebtEl.className = "text-3xl font-black text-rose-600";
-            document.getElementById('dailyDocDebtShare').innerText = fmt((dNewDebt * 0.60).toFixed(0)) + ' ج';
+            dDebtEl.innerText = fmt(dActiveDebt) + ' ج';
+            dDebtEl.className = "text-3xl font-black " + (dActiveDebt > 0 ? "text-rose-600" : "text-slate-400");
+            document.getElementById('dailyDocDebtShare').innerText = fmt((dActiveDebt * 0.60).toFixed(0)) + ' ج';
 
-            const mDate = document.getElementById('monthlyAccountDate').value; 
-            let mTot = 0, mCash = 0, mNewDebt = 0;
-            
-            if(mDate) { 
-                patients.forEach(p => { 
-                    if (p.visits) {
-                        p.visits.forEach(v => { 
-                            if (v.date && v.date.startsWith(mDate)) { 
-                                if (v.proc !== 'تسديد دفعة حساب') {
-                                    mTot += v.totalCost; 
-                                    let sessionDebt = v.totalCost - v.paidAmount;
-                                    if (sessionDebt > 0) mNewDebt += sessionDebt;
-                                }
-                                mCash += v.paidAmount; 
-                            } 
-                        }); 
-                    }
-                }); 
-            }
-            
             document.getElementById('monthlyTotalVal').innerText = fmt(mTot) + ' ج'; 
             document.getElementById('monthlyCashCollected').innerText = fmt(mCash) + ' ج'; 
             document.getElementById('monthlyDocCashShare').innerText = fmt((mCash * 0.60).toFixed(0)) + ' ج'; 
             
             let mDebtEl = document.getElementById('monthlyDebtGenerated');
-            mDebtEl.innerText = fmt(mNewDebt) + ' ج';
-            mDebtEl.className = "text-3xl font-black text-rose-600";
-            document.getElementById('monthlyDocDebtShare').innerText = fmt((mNewDebt * 0.60).toFixed(0)) + ' ج';
+            mDebtEl.innerText = fmt(mActiveDebt) + ' ج';
+            mDebtEl.className = "text-3xl font-black " + (mActiveDebt > 0 ? "text-rose-600" : "text-slate-400");
+            document.getElementById('monthlyDocDebtShare').innerText = fmt((mActiveDebt * 0.60).toFixed(0)) + ' ج';
             
             renderAccountsTables();
+        }
+        
+        function showDebtDetails(type) {
+            const listContainer = document.getElementById('debtDetailsList');
+            listContainer.innerHTML = '';
+            const dDate = document.getElementById('dailyAccountDate').value; 
+            const mDate = document.getElementById('monthlyAccountDate').value; 
+            
+            let targetPatients = [];
+            let subtitle = "";
+
+            if (type === 'daily') {
+                subtitle = "ديون زيارات يوم: " + dDate;
+                patients.forEach(p => {
+                    if (p.visits) {
+                        let dailyDebt = 0;
+                        p.visits.forEach(v => {
+                            if (v.date === dDate && v.proc !== 'تسديد دفعة حساب') {
+                                dailyDebt += (v.tempActiveDebt || 0);
+                            }
+                        });
+                        if (dailyDebt > 0) targetPatients.push({ name: p.name, debt: dailyDebt });
+                    }
+                });
+            } else if (type === 'monthly') {
+                subtitle = "ديون زيارات شهر: " + mDate;
+                patients.forEach(p => {
+                    if (p.visits) {
+                        let monthlyDebt = 0;
+                        p.visits.forEach(v => {
+                            if (v.date && v.date.startsWith(mDate) && v.proc !== 'تسديد دفعة حساب') {
+                                monthlyDebt += (v.tempActiveDebt || 0);
+                            }
+                        });
+                        if (monthlyDebt > 0) targetPatients.push({ name: p.name, debt: monthlyDebt });
+                    }
+                });
+            }
+
+            document.getElementById('debtModalSubtitle').innerText = subtitle;
+
+            if (targetPatients.length === 0) {
+                listContainer.innerHTML = '<p class="text-center text-slate-400 font-bold py-4">لا توجد ديون مسجلة لهذه الفترة.</p>';
+            } else {
+                targetPatients.forEach(tp => {
+                    listContainer.innerHTML += `
+                        <div class="flex justify-between items-center bg-slate-50 p-4 rounded-xl border border-slate-100 hover:bg-rose-50 transition">
+                            <span class="font-black text-slate-800"><i class="fa-solid fa-user text-slate-300 ml-2"></i>${tp.name}</span>
+                            <span class="badge badge-rose font-black text-sm">${fmt(tp.debt)} ج</span>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('debtDetailsModal').classList.remove('hidden');
+        }
+
+        function closeDebtModal() {
+            document.getElementById('debtDetailsModal').classList.add('hidden');
         }
 
         function renderAccountsTables() {
