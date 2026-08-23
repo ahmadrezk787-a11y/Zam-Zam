@@ -712,6 +712,17 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        
+        // تفعيل التخزين المحلي لتسريع فتح التطبيق وتجاوز بطء الإنترنت
+        db.enablePersistence()
+          .catch(function(err) {
+              if (err.code == 'failed-precondition') {
+                  console.log("لا يمكن تفعيل التخزين المحلي لأن التطبيق مفتوح في أكثر من تبويب.");
+              } else if (err.code == 'unimplemented') {
+                  console.log("المتصفح الحالي لا يدعم ميزة التخزين المحلي.");
+              }
+          });
+
         const auth = firebase.auth();
 
         let patients = []; let purchases = []; let shortages = []; let appointments = [];
